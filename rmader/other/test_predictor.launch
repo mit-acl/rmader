@@ -1,0 +1,12 @@
+<launch>
+
+	<arg name="quad" default="SQ01s"/>
+
+	<node ns="$(arg quad)" name="predictor" pkg="rmader" type="test_predictor_node" output="screen" clear_params="true" > 
+		<rosparam file="$(find rmader)/param/rmader.yaml" command="load" ns="rmader"/>
+
+		<remap from="~state" to="state"/>
+	</node>
+
+
+</launch>

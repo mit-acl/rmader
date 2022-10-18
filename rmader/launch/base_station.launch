@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="gui" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="environment" default="true"/>
+  <arg name="type_of_environment" default="high_bay"/>  <!-- dynamic_corridor or dynamic_forest or high_bay -->
+
+<!-- Start Behaviour Selector-->
+<node pkg="behavior_selector" type="behavior_selector_node.py" name="behavior_selector" output="screen" />
+
+<!-- Start RVIZ -->
+<group if="$(arg rviz)">
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rmader)/rviz_cfgs/rmader.rviz"/>
+</group>
+
+<!-- Behavior selector gui --> 
+<group if="$(arg gui)"> 
+  <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/demo_interface.perspective"/>
+</group>
+
+<!-- Environment setup -->
+<group if="$(arg environment)">
+  <node name="$(arg type_of_environment)" pkg="rmader" type="$(arg type_of_environment).py" output="screen" args="175"/> <!-- args is not used in dynamic_forest (TODO)-->
+</group>
+
+</launch>

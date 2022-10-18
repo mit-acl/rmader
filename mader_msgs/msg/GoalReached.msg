@@ -1,2 +1,0 @@
-float64 completion_time
-bool is_goal_reached

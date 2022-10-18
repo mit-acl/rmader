@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	<arg name="quad"/>
+	<arg name="mode"/>
+
+	<!-- Start random_goal -->
+	<node ns="$(arg quad)" name="position_exchange" pkg="rmader" type="position_exchange.py" output="screen"/>
+		<param name="$(arg quad)/mode" value="$(arg mode)"/>
+
+</launch>
+
+
+
