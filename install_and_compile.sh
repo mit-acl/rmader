@@ -34,7 +34,7 @@ sudo apt-get install python-catkin-tools -y
 
 #CLONE SUBMODULES, INSTALL DEPENDENCIES AND COMPILE
 ##########################################
-cd $path_to_ws/src/mader && git submodule init && git submodule update && cd ../../
+cd $path_to_ws/src/rmader && git submodule init && git submodule update && cd ../../
 rosdep install --from-paths src --ignore-src -r -y
 catkin config -DCMAKE_BUILD_TYPE=Release
 catkin build #GLPK will be installed when the `separator` package is compiled (see its CMakeList.txt)
