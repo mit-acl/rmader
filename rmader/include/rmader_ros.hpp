@@ -37,7 +37,7 @@ namespace rvt = rviz_visual_tools;
 class RmaderRos
 {
 public:
-  RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3, ros::NodeHandle nh4, ros::NodeHandle nh5);
+  RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3);
   ~RmaderRos();
 
 private:

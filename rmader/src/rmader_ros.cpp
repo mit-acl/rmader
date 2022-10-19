@@ -25,9 +25,7 @@
 typedef RMADER_timers::Timer MyTimer;
 
 // this object is created in the rmader_ros_node
-RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3, ros::NodeHandle nh4,
-                     ros::NodeHandle nh5)
-  : nh1_(nh1), nh2_(nh2), nh3_(nh3), nh4_(nh4), nh5_(nh5)
+RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3) : nh1_(nh1), nh2_(nh2), nh3_(nh3)
 {
   // Parameters from rmader.yaml
   // if this is simulation or hardware
@@ -238,7 +236,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         }
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh5_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
@@ -258,7 +256,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         }
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh5_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
@@ -312,9 +310,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // id.erase(0, 2);  // Erase SQ or HX i.e. SQ12s --> 12s  HX8621 --> 8621 # TODO Hard-coded for this this convention
   id_ = std::stoi(id);
 
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->getID(id_);
-  // mtx_mader_ptr_.unlock();
 
   timer_stop_.Reset();
 
@@ -430,7 +426,7 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
     alltrajs_.push_back(tmp);
     ros::Timer alltrajs_timer =
-        nh4_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+        nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
     alltrajsTimers_.push_back(alltrajs_timer);
 
     // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in TrajCB" << std::endl;
