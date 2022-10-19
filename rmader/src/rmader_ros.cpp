@@ -72,84 +72,79 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // if using artificallly introduced comm delay
   mu::safeGetParam(nh1_, "is_artificial_comm_delay", is_artificial_comm_delay_);
 
-  // if using delay check(this has to be true if we wanna use RMADER)
-  mu::safeGetParam(nh1_, "delay_check", par_.delay_check);
-  delay_check_ = par_.delay_check;
+  mu::safeGetParam(nh1_, "yaw/w_max", par_.w_max);
+  mu::safeGetParam(nh1_, "yaw/alpha_filter_dyaw", par_.alpha_filter_dyaw);
 
-  mu::safeGetParam(nh1_, "simulated_comm_delay", simulated_comm_delay_);
+  mu::safeGetParam(nh1_, "visual/is_visual", par_.visual);
+  mu::safeGetParam(nh1_, "visual/color_type", par_.color_type);
+  mu::safeGetParam(nh1_, "visual/n_agents", par_.n_agents);
+  mu::safeGetParam(nh1_, "visual/res_plot_traj", par_.res_plot_traj);
 
-  mu::safeGetParam(nh1_, "comm_delay_param", par_.comm_delay_param);
-
-  // mu::safeGetParam(nh1_, "use_ff", par_.use_ff);
-  mu::safeGetParam(nh1_, "visual", par_.visual);
-  mu::safeGetParam(nh1_, "color_type", par_.color_type);
-  mu::safeGetParam(nh1_, "n_agents", par_.n_agents);
-
-  mu::safeGetParam(nh1_, "dc", par_.dc);
-  mu::safeGetParam(nh1_, "goal_radius", par_.goal_radius);
-  mu::safeGetParam(nh1_, "drone_radius", par_.drone_radius);
+  mu::safeGetParam(nh1_, "setting/dc", par_.dc);
+  mu::safeGetParam(nh1_, "setting/goal_radius", par_.goal_radius);
 
   // since drone_bbox is a vector, you need a workaround like this
   std::vector<double> drone_bbox_tmp;
-  mu::safeGetParam(nh1_, "drone_bbox", drone_bbox_tmp);
+  mu::safeGetParam(nh1_, "tuning_param/drone_bbox", drone_bbox_tmp);
   par_.drone_bbox << drone_bbox_tmp[0], drone_bbox_tmp[1], drone_bbox_tmp[2];
+  mu::safeGetParam(nh1_, "tuning_param/Ra", par_.Ra);
+  // if using delay check(this has to be true if we wanna use RMADER)
+  mu::safeGetParam(nh1_, "tuning_param/delay_check", par_.delay_check);
+  delay_check_ = par_.delay_check;
+  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay", simulated_comm_delay_);
+  mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
-  mu::safeGetParam(nh1_, "Ra", par_.Ra);
+  std::string env_size = "";
+  sim_ ? env_size = "sim_size" : env_size = "highbay_size";
 
-  mu::safeGetParam(nh1_, "w_max", par_.w_max);
-  mu::safeGetParam(nh1_, "alpha_filter_dyaw", par_.alpha_filter_dyaw);
+  mu::safeGetParam(nh1_, env_size + "/x_min", par_.x_min);
+  mu::safeGetParam(nh1_, env_size + "/x_max", par_.x_max);
 
-  mu::safeGetParam(nh1_, "x_min", par_.x_min);
-  mu::safeGetParam(nh1_, "x_max", par_.x_max);
+  mu::safeGetParam(nh1_, env_size + "/y_min", par_.y_min);
+  mu::safeGetParam(nh1_, env_size + "/y_max", par_.y_max);
 
-  mu::safeGetParam(nh1_, "y_min", par_.y_min);
-  mu::safeGetParam(nh1_, "y_max", par_.y_max);
-
-  mu::safeGetParam(nh1_, "z_min", par_.z_min);
-  mu::safeGetParam(nh1_, "z_max", par_.z_max);
+  mu::safeGetParam(nh1_, env_size + "/z_min", par_.z_min);
+  mu::safeGetParam(nh1_, env_size + "/z_max", par_.z_max);
 
   std::vector<double> v_max_tmp;
   std::vector<double> a_max_tmp;
   std::vector<double> j_max_tmp;
 
-  mu::safeGetParam(nh1_, "v_max", v_max_tmp);
-  mu::safeGetParam(nh1_, "a_max", a_max_tmp);
-  mu::safeGetParam(nh1_, "j_max", j_max_tmp);
+  mu::safeGetParam(nh1_, "tuning_param/v_max", v_max_tmp);
+  mu::safeGetParam(nh1_, "tuning_param/a_max", a_max_tmp);
+  mu::safeGetParam(nh1_, "tuning_param/j_max", j_max_tmp);
 
   par_.v_max << v_max_tmp[0], v_max_tmp[1], v_max_tmp[2];
   par_.a_max << a_max_tmp[0], a_max_tmp[1], a_max_tmp[2];
   par_.j_max << j_max_tmp[0], j_max_tmp[1], j_max_tmp[2];
 
-  mu::safeGetParam(nh1_, "factor_alloc", par_.factor_alloc);
-  mu::safeGetParam(nh1_, "factor_alloc_close", par_.factor_alloc_close);
-  mu::safeGetParam(nh1_, "dist_factor_alloc_close", par_.dist_factor_alloc_close);
+  mu::safeGetParam(nh1_, "nlopt/num_pol", par_.num_pol);
+  mu::safeGetParam(nh1_, "nlopt/deg_pol", par_.deg_pol);
+  mu::safeGetParam(nh1_, "nlopt/weight", par_.weight);
+  mu::safeGetParam(nh1_, "nlopt/epsilon_tol_constraints", par_.epsilon_tol_constraints);
+  mu::safeGetParam(nh1_, "nlopt/xtol_rel", par_.xtol_rel);
+  mu::safeGetParam(nh1_, "nlopt/ftol_rel", par_.ftol_rel);
+  mu::safeGetParam(nh1_, "nlopt/solver", par_.solver);
 
-  mu::safeGetParam(nh1_, "factor_alpha", par_.factor_alpha);
+  mu::safeGetParam(nh1_, "opt/upper_bound_runtime_snlopt", par_.upper_bound_runtime_snlopt);
+  mu::safeGetParam(nh1_, "opt/lower_bound_runtime_snlopt", par_.lower_bound_runtime_snlopt);
+  mu::safeGetParam(nh1_, "opt/kappa", par_.kappa);
+  mu::safeGetParam(nh1_, "opt/mu", par_.mu);
 
-  mu::safeGetParam(nh1_, "num_pol", par_.num_pol);
-  mu::safeGetParam(nh1_, "deg_pol", par_.deg_pol);
-  mu::safeGetParam(nh1_, "weight", par_.weight);
-  mu::safeGetParam(nh1_, "epsilon_tol_constraints", par_.epsilon_tol_constraints);
-  mu::safeGetParam(nh1_, "xtol_rel", par_.xtol_rel);
-  mu::safeGetParam(nh1_, "ftol_rel", par_.ftol_rel);
-  mu::safeGetParam(nh1_, "solver", par_.solver);
+  mu::safeGetParam(nh1_, "opt/a_star_samp_x", par_.a_star_samp_x);
+  mu::safeGetParam(nh1_, "opt/a_star_samp_y", par_.a_star_samp_y);
+  mu::safeGetParam(nh1_, "opt/a_star_samp_z", par_.a_star_samp_z);
+  mu::safeGetParam(nh1_, "opt/a_star_fraction_voxel_size", par_.a_star_fraction_voxel_size);
+  mu::safeGetParam(nh1_, "opt/allow_infeasible_guess", par_.allow_infeasible_guess);
 
-  mu::safeGetParam(nh1_, "upper_bound_runtime_snlopt", par_.upper_bound_runtime_snlopt);
-  mu::safeGetParam(nh1_, "lower_bound_runtime_snlopt", par_.lower_bound_runtime_snlopt);
-  mu::safeGetParam(nh1_, "kappa", par_.kappa);
-  mu::safeGetParam(nh1_, "mu", par_.mu);
+  mu::safeGetParam(nh1_, "opt/a_star_bias", par_.a_star_bias);
 
-  mu::safeGetParam(nh1_, "a_star_samp_x", par_.a_star_samp_x);
-  mu::safeGetParam(nh1_, "a_star_samp_y", par_.a_star_samp_y);
-  mu::safeGetParam(nh1_, "a_star_samp_z", par_.a_star_samp_z);
-  mu::safeGetParam(nh1_, "a_star_fraction_voxel_size", par_.a_star_fraction_voxel_size);
-  mu::safeGetParam(nh1_, "allow_infeasible_guess", par_.allow_infeasible_guess);
-
-  mu::safeGetParam(nh1_, "a_star_bias", par_.a_star_bias);
+  mu::safeGetParam(nh1_, "opt/factor_alpha", par_.factor_alpha);
+  mu::safeGetParam(nh1_, "opt/factor_alloc", par_.factor_alloc);
+  mu::safeGetParam(nh1_, "opt/factor_alloc_close", par_.factor_alloc_close);
+  mu::safeGetParam(nh1_, "opt/dist_factor_alloc_close", par_.dist_factor_alloc_close);
 
   mu::safeGetParam(nh1_, "basis", par_.basis);
-
-  mu::safeGetParam(nh1_, "res_plot_traj", par_.res_plot_traj);
 
   mu::safeGetParam(nh1_, "alpha", par_.alpha);
   mu::safeGetParam(nh1_, "beta", par_.beta);
@@ -636,10 +631,8 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     {
       std::vector<mt::dynTrajCompiled> trajs;
 
-      // mtx_mader_ptr_.lock();
       replanned = rmader_ptr_->replan_with_delaycheck(edges_obstacles, traj_plan, planes, num_of_LPs_run_,
                                                       num_of_QCQPs_run_, pwp_now_, headsup_time_);
-
       if (replanned)
       {
         // let others know my new trajectory

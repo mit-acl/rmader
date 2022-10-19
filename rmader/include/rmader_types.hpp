@@ -572,7 +572,6 @@ struct parameters
 
   double comm_delay_param;
 
-  bool use_ff;
   bool visual;
 
   std::string color_type;
@@ -582,7 +581,6 @@ struct parameters
 
   double dc;
   double goal_radius;
-  double drone_radius;
   Eigen::Vector3d drone_bbox;
 
   double Ra;

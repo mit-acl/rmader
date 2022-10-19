@@ -1547,8 +1547,6 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
     return false;
   }
 
-  std::cout << "1" << std::endl;
-
   ////////////////
   // std::cout << "bef mtx_trajs_.lock() in replan" << std::endl;
   mtx_trajs_.lock();
