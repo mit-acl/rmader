@@ -9,7 +9,7 @@ is_centralized: true
 
 # use delay check or not?
 
-##############is_delaycheck: true
+is_delaycheck: true
 
 # max number of agents (not the actual number. it's max number of id)
 max_agent_number: 10
