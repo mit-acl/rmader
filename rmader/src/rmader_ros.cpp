@@ -46,11 +46,14 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   bool is_centralized = false;
   mu::safeGetParam(nh1_, "is_centralized", is_centralized);
 
-  // determine who is the camera man
-  mu::safeGetParam(nh1_, "is_camera_yawing", par_.is_camera_yawing);
-
   // sequencial start
   mu::safeGetParam(nh1_, "is_sequencial_start", is_sequencial_start_);
+
+  // use adaptive delay check?
+  mu::safeGetParam(nh1_, "adpt/is_adaptive_delaycheck", is_adaptive_delaycheck_);
+  mu::safeGetParam(nh1_, "adpt/initial_adaptive_delay_check", adaptive_delay_check_);
+  mu::safeGetParam(nh1_, "adpt/adpt_freq_msgs", adpt_freq_msgs_);
+  mu::safeGetParam(nh1_, "adpt/weight", adpt_weight_);
 
   // need these lines to get id
   name_drone_ = ros::this_node::getNamespace();  // Return also the slashes (2 in Kinetic, 1 in Melodic)
@@ -61,11 +64,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   std::string camera1, camera2;
   mu::safeGetParam(nh1_, "camera1", camera1);
   mu::safeGetParam(nh1_, "camera2", camera2);
-
-  if (id == camera1 || id == camera2)
-  {
-    par_.is_camera_yawing = true;
-  }
+  (id == camera1 || id == camera2) ? par_.is_camera_yawing = true : par_.is_camera_yawing = false;
 
   // if using artificallly introduced comm delay
   mu::safeGetParam(nh1_, "is_artificial_comm_delay", is_artificial_comm_delay_);
@@ -359,23 +358,6 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   bool can_use_its_info;
 
-  // if (par_.impose_fov == false)
-  // {  // same as 360 deg of FOV
-  //   can_use_its_info = dist <= par_.R_local_map;
-  // }
-  // else
-  // {  // impose_fov==true
-
-  //   Eigen::Vector3d B_pos = W_T_B_.inverse() * W_pos;  // position of the obstacle in body frame
-  //   // check if it's inside the field of view.
-  //   can_use_its_info =
-  //       B_pos.x() < par_.fov_depth &&                                                       //////////////////////
-  //       fabs(atan2(B_pos.y(), B_pos.x())) < ((par_.fov_horiz_deg * M_PI / 180.0) / 2.0) &&  //////////////////////
-  //       fabs(atan2(B_pos.z(), B_pos.x())) < ((par_.fov_vert_deg * M_PI / 180.0) / 2.0);     ///////////////////////
-
-  //   // std::cout << "inFOV= " << can_use_its_info << std::endl;
-  // }
-
   can_use_its_info = (dist <= 4 * par_.Ra);  // See explanation of 4*Ra in Rmader::updateTrajObstacles
 
   if (can_use_its_info == false)
@@ -409,69 +391,49 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   tmp.time_received = ros::Time::now().toSec();
 
-  // double comm_delay = tmp.time_received - tmp.time_created;
-  // if (comm_delay > delay_check_ - simulated_comm_delay_){
-  //   std::cout << "comm delay is " << comm_delay << " [s]" << std::endl;
-  //   std::cout << "comm delay is huge!!!!" << std::endl;
-  // }
-
-  if (is_artificial_comm_delay_ && is_term_goal_initialized_)
+  if (is_term_goal_initialized_)
   {
-    //****** Communication delay introduced in the simulation
-    // save all the trajectories into alltrajs_ and create a timer corresponding to that
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are locked() in TrajCB" << std::endl;
-    // mtx_alltrajs_.lock();
-    // mtx_alltrajsTimers_.lock();
-    // std::cout << "aft alltrajs_ and alltrajsTimers_ are locked() in TrajCB" << std::endl;
+    if (is_artificial_comm_delay_)
+    {
+      alltrajs_.push_back(tmp);
+      ros::Timer alltrajs_timer =
+          nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+      alltrajsTimers_.push_back(alltrajs_timer);
+    }
+    else
+    {
+      rmader_ptr_->updateTrajObstacles(tmp);
 
-    alltrajs_.push_back(tmp);
-    ros::Timer alltrajs_timer =
-        nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
-    alltrajsTimers_.push_back(alltrajs_timer);
+      double time_now = ros::Time::now().toSec();
+      double supposedly_simulated_comm_delay = time_now - tmp.time_created;
+      // supposedly_simulated_time_delay should be simulated_comm_delay_
+      if (supposedly_simulated_comm_delay > delay_check_)
+      {
+        missed_msgs_cnt_ = missed_msgs_cnt_ + 1;
+        msgs_cnt_ = msgs_cnt_ + 1;
+      }
+      else
+      {
+        msgs_cnt_ = msgs_cnt_ + 1;
+      }
 
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in TrajCB" << std::endl;
-    // mtx_alltrajs_.unlock();
-    // mtx_alltrajsTimers_.unlock();
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in TrajCB" << std::endl;
-  }
-  else
-  {
-    // mtx_mader_ptr_.lock();
-    rmader_ptr_->updateTrajObstacles(tmp);
-    // mtx_mader_ptr_.unlock();
+      rmader_msgs::CommDelay msg;
+      msg.id = tmp.id;
+      msg.comm_delay = supposedly_simulated_comm_delay;
+      msg.adaptive_delay_check = 0.0;
+      pub_comm_delay_.publish(msg);
+    }
   }
 }
 
 void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
 {
-  // std::cout << "delayed enough" << std::endl;
-
-  // just measure how long it takes to check collisions
-
-  // if (is_in_DC_)
-  // {
-  //   // MyTimer each_collision_check_t(true);
-  //   rmader_ptr_->updateTrajObstacles(alltrajs_[0], pwp_new_, is_in_DC_, headsup_time_, delay_check_result_);
-  //   // std::cout << "each collision check takes " << each_collision_check_t.ElapsedUs() << "us" << std::endl;
-  // } else {
-  //   rmader_ptr_->updateTrajObstacles(alltrajs_[0], pwp_new_, is_in_DC_, headsup_time_, delay_check_result_);
-  // }
-  // std::cout << "bef alltrajs_ and alltrajsTimers_ are locked() in allTrajsTimerCB" << std::endl;
-  // std::cout << "aft alltrajs_ and alltrajsTimers_ are locked() in allTrajsTimerCB" << std::endl;
-
-  // mtx_alltrajs_.lock();
-  // mtx_alltrajsTimers_.lock();
-
   mt::dynTraj tmp = alltrajs_[0];
 
   alltrajs_.pop_front();
   alltrajsTimers_.pop_front();
 
-  // mtx_alltrajs_.unlock();
-  // mtx_alltrajsTimers_.unlock();
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->updateTrajObstacles_with_delaycheck(tmp);
-  // mtx_mader_ptr_.unlock();
 
   double time_now = ros::Time::now().toSec();
   double supposedly_simulated_comm_delay = time_now - tmp.time_created;
@@ -479,8 +441,6 @@ void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
   // supposedly_simulated_time_delay should be simulated_comm_delay_
   if (supposedly_simulated_comm_delay > delay_check_)
   {
-    // std::cout << "supposedly_simulated_comm_delay is too big " << supposedly_simulated_comm_delay << " s"
-    // << std::endl;
     missed_msgs_cnt_ = missed_msgs_cnt_ + 1;
     msgs_cnt_ = msgs_cnt_ + 1;
   }
@@ -489,12 +449,25 @@ void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
     msgs_cnt_ = msgs_cnt_ + 1;
   }
 
+  comm_delay_sum_ = comm_delay_sum_ + supposedly_simulated_comm_delay;
   rmader_msgs::CommDelay msg;
+  msg.id = tmp.id;
   msg.comm_delay = supposedly_simulated_comm_delay;
+  if (msgs_cnt_ > adpt_freq_msgs_)
+  {
+    mtx_adaptive_dc_.lock();
+    adaptive_delay_check_ = adpt_weight_ * (comm_delay_sum_ / msgs_cnt_) + (1 - adpt_weight_) * adaptive_delay_check_;
+    mtx_adaptive_dc_.unlock();
+    comm_delay_sum_ = 0.0;
+    msgs_cnt_ = 0;
+  }
+  msg.adaptive_delay_check = adaptive_delay_check_;
   pub_comm_delay_.publish(msg);
+}
 
-  // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in allTrajsTimerCB" << std::endl;
-  // std::cout << "aft alltrajs_ and alltrajsTimers_ are unlocked() in allTrajsTimerCB" << std::endl;
+// calculate how long adaptive delay check should be
+void RmaderRos::findAdaptiveDelayCheck()
+{
 }
 
 // This trajectory contains all the future trajectory (current_pos --> A --> final_point_of_traj), because it's the
@@ -637,19 +610,40 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         // visualization
         visual(edges_obstacles, traj_plan, false);
 
-        // delay check *******************************************************
-        MyTimer delay_check_t(true);
-        while (delay_check_t.ElapsedMs() / 1000.0 < delay_check_)
+        if (is_adaptive_delaycheck_)
         {
-          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
-          if (delay_check_result_ == false)
+          // adaptive delay check *******************************************************
+          MyTimer delay_check_t(true);
+          mtx_adaptive_dc_.lock();
+          while (delay_check_t.ElapsedMs() / 1000.0 < adaptive_delay_check_)
           {
-            break;
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+            if (delay_check_result_ == false)
+            {
+              break;
+            }
+            ros::Duration(delay_check_ / 5.0).sleep();
           }
-          ros::Duration(delay_check_ / 5.0).sleep();
+          mtx_adaptive_dc_.unlock();
+          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+          // end of adaptive delay check *******************************************************
         }
-        delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
-        // end of delay check *******************************************************
+        else
+        {
+          // constant delay check *******************************************************
+          MyTimer delay_check_t(true);
+          while (delay_check_t.ElapsedMs() / 1000.0 < delay_check_)
+          {
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+            if (delay_check_result_ == false)
+            {
+              break;
+            }
+            ros::Duration(delay_check_ / 5.0).sleep();
+          }
+          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+          // end of constant delay check *******************************************************
+        }
 
         if (delay_check_result_)
         {
