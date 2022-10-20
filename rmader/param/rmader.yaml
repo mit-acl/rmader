@@ -61,7 +61,7 @@ visual:
   is_visual: true #publish visualization stuff
   color_type: "vel" #"vel" or "plain"
   n_agents: 10
-  res_plot_traj: 15.0  #Higher --> More resolution when plotting the trajectory 
+  res_plot_traj: 25.0  #Higher --> More resolution when plotting the trajectory 
 
 setting:
   dc: 0.01            #(seconds) Duration for the interpolation=Value of the timer pubGoal
