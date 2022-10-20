@@ -153,9 +153,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   mu::safeGetParam(nh1_, "alpha_shrink", par_.alpha_shrink);
 
-  mu::safeGetParam(nh1_, "fov_horiz_deg", par_.fov_horiz_deg);
-  mu::safeGetParam(nh1_, "fov_vert_deg", par_.fov_vert_deg);
-  mu::safeGetParam(nh1_, "fov_depth", par_.fov_depth);
+  // mu::safeGetParam(nh1_, "fov_horiz_deg", par_.fov_horiz_deg);
+  // mu::safeGetParam(nh1_, "fov_vert_deg", par_.fov_vert_deg);
+  // mu::safeGetParam(nh1_, "fov_depth", par_.fov_depth);
 
   std::cout << "Parameters obtained" << std::endl;
 
