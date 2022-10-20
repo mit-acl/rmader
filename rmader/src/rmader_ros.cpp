@@ -29,14 +29,18 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 {
   // Parameters from rmader.yaml
   // if this is simulation or hardware
-  mu::safeGetParam(nh1_, "sim", sim_);
+  mu::safeGetParam(nh1_, "is_sim", sim_);
+
+  // use highbay space size?
+  bool is_highbay;
+  mu::safeGetParam(nh1_, "is_highbay", is_highbay);
 
   // using delay check or not
   mu::safeGetParam(nh1_, "is_delaycheck", is_delaycheck_);
 
   // max number of agents
-  int max_agent_number;
-  mu::safeGetParam(nh1_, "max_agent_number", max_agent_number);
+  std::vector<int> agents_ids;
+  mu::safeGetParam(nh1_, "agents_ids", agents_ids);
 
   // using take off in the beginning
   bool is_take_off;
@@ -92,7 +96,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
   std::string env_size = "";
-  sim_ ? env_size = "sim_size" : env_size = "highbay_size";
+  is_highbay ? env_size = "highbay_size" : env_size = "sim_size";
 
   mu::safeGetParam(nh1_, env_size + "/x_min", par_.x_min);
   mu::safeGetParam(nh1_, env_size + "/x_max", par_.x_max);
@@ -222,17 +226,10 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   {
     if (sim_)
     {
-      for (int i = 1; i <= max_agent_number; ++i)
+      for (int id : agents_ids)
       {
         std::string agent;
-        if (i <= 9)
-        {
-          agent = "SQ0" + std::to_string(i) + "s";
-        }
-        else
-        {
-          agent = "SQ" + std::to_string(i) + "s";
-        }
+        (id <= 9) ? agent = "SQ0" + std::to_string(id) + "s" : agent = "SQ" + std::to_string(id) + "s";
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
           sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
@@ -242,17 +239,10 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
     }
     else
     {  // if it's hardware
-      for (int i = 1; i <= max_agent_number; ++i)
+      for (int id : agents_ids)
       {
         std::string agent;
-        if (i <= 9)
-        {
-          agent = "NX0" + std::to_string(i);
-        }
-        else
-        {
-          agent = "NX" + std::to_string(i);
-        }
+        (id <= 9) ? agent = "NX0" + std::to_string(id) + "s" : agent = "NX" + std::to_string(id) + "s";
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
           sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,

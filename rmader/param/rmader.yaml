@@ -11,10 +11,13 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-sim: true
+is_sim: true
+
+# use highbay space?
+is_highbay: true
 
 # need take off?
-is_take_off: false
+is_take_off: true
 
 # use centralized or decentralized trajs?
 is_centralized: false
@@ -22,8 +25,8 @@ is_centralized: false
 # use delay check or not? (this has to be true if we wanna use RMADER)
 is_delaycheck: true
 
-# max number of agents (not the actual number. it's max number of id)
-max_agent_number: 10
+# agents' ids
+agents_ids: [1, 2, 3, 4, 5, 6]
 
 # introduce roughly sequential start?
 is_sequencial_start: false
@@ -126,7 +129,7 @@ highbay_size:
   y_min: -3.5  # [m] don't forget the .0
   y_max: 4.0   # [m] don't forget the .0
 
-  z_min: 1.0  # [m] don't forget the .0
+  z_min: 0.9  # [m] don't forget the .0
   z_max: 3.5  # [m] don't forget the .0
 
 ###############################################################
