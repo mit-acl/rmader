@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# this script creates multiple windows for fly and mader
+# this script creates multiple windows for fly and rmader
 # referred to fly script used for voxl setup, which is in /extras
 
 # if deleting old .bag and .active in voxl and .txt on nuc
 ifDELETE=$1
 
 # session name
-SESSION=mader
+SESSION=rmader
 WINDOW=base_station
 
 # creates the session with a name and renames the window name
@@ -83,7 +83,7 @@ tmux send-keys -t $SESSION:$w.11 "ssh nuc08@192.168.22.2" C-m
 
 sleep 1
 
-# run mader hw_onboard and save termial data into txt files
+# run rmader hw_onboard and save termial data into txt files
 
 # ntp date
 tmux send-keys -t $SESSION:$w.1 "sudo ntpdate time.nist.gov" C-m
@@ -119,17 +119,17 @@ done
 sleep 10
 
 # hw_onboard
-# tmux send-keys -t $SESSION:$w.1 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc1/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX01) 2>&1 | tee ~/Research/bags/nx01_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m #by using /home/nuc1/ instead of ~/, we can stop record data on sikorsky when we are not using the vehicle.
-tmux send-keys -t $SESSION:$w.1 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc2/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX02) 2>&1 | tee ~/Research/bags/nx02_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.3 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc3/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX03) 2>&1 | tee ~/Research/bags/nx03_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.5 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc4/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX04) 2>&1 | tee ~/Research/bags/nx04_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.7 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc5/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX05) 2>&1 | tee ~/Research/bags/nx05_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.9 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc6/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX06) 2>&1 | tee ~/Research/bags/nx06_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.11 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc08/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-# tmux send-keys -t $SESSION:$w.11 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc6/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX06) 2>&1 | tee ~/Research/bags/nx05_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-# tmux send-keys -t $SESSION:$w.7 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX07) 2>&1 | tee ~/Research/bags/nx07_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-# tmux send-keys -t $SESSION:$w.9 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc08/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-# tmux send-keys -t $SESSION:$w.11 "(roscd mader && git rev-parse HEAD && git diff --color && cd /home/nuc9/Research/bags/ && roslaunch mader hw_onboard.launch quad:=NX09) 2>&1 | tee ~/Research/bags/nx09_mader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+# tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc1/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX01) 2>&1 | tee ~/Research/bags/nx01_rrmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m #by using /home/nuc1/ instead of ~/, we can stop record data on sikorsky when we are not using the vehicle.
+tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc2/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX02) 2>&1 | tee ~/Research/bags/nx02_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.3 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc3/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX03) 2>&1 | tee ~/Research/bags/nx03_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.5 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc4/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX04) 2>&1 | tee ~/Research/bags/nx04_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc5/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX05) 2>&1 | tee ~/Research/bags/nx05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.9 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc6/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX06) 2>&1 | tee ~/Research/bags/nx06_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc08/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+# tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc6/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX06) 2>&1 | tee ~/Research/bags/nx05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+# tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX07) 2>&1 | tee ~/Research/bags/nx07_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+# tmux send-keys -t $SESSION:$w.9 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc08/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+# tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc9/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX09) 2>&1 | tee ~/Research/bags/nx09_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 
 # run the nuc connection command and fly command (fly script record related rostopics so the below command should be sent at last)
 sleep 5 
