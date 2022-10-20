@@ -39,18 +39,18 @@ class TermGoalSender:
 
         # define waypoints in highbay
 
-        self.wp1 = np.array([-4.0+2.8*0, 3.6-2.3*0])
-        self.wp2 = np.array([-4.0+2.8*1, 3.6-2.3*0])
-        self.wp3 = np.array([-4.0+2.8*2, 3.6-2.3*0])
-        self.wp4 = np.array([-4.0+2.8*3, 3.6-2.3*0])
-        self.wp5 = np.array([-4.0+2.8*0, 3.6-2.3*1])
-        self.wp6 = np.array([-4.0+2.8*3, 3.6-2.3*1])
-        self.wp7 = np.array([-4.0+2.8*0, 3.6-2.3*2])
-        self.wp8 = np.array([-4.0+2.8*3, 3.6-2.3*2])
-        self.wp9 = np.array([-4.0+2.8*0, 3.6-2.3*3])
-        self.wp10 = np.array([-4.0+2.8*1, 3.6-2.3*3])
-        self.wp11 = np.array([-4.0+2.8*2, 3.6-2.3*3])
-        self.wp12 = np.array([-4.0+2.8*3, 3.6-2.3*3])
+        self.wp1 = np.array([-3.8+2.7*0, 3.6-2.3*0])
+        self.wp2 = np.array([-3.8+2.7*1, 3.6-2.3*0])
+        self.wp3 = np.array([-3.8+2.7*2, 3.6-2.3*0])
+        self.wp4 = np.array([-3.8+2.7*3, 3.6-2.3*0])
+        self.wp5 = np.array([-3.8+2.7*0, 3.6-2.3*1])
+        self.wp6 = np.array([-3.8+2.7*3, 3.6-2.3*1])
+        self.wp7 = np.array([-3.8+2.7*0, 3.6-2.3*2])
+        self.wp8 = np.array([-3.8+2.7*3, 3.6-2.3*2])
+        self.wp9 = np.array([-3.8+2.7*0, 3.6-2.3*3])
+        self.wp10 = np.array([-4.0+2.7*1, 3.6-2.3*3])
+        self.wp11 = np.array([-4.0+2.7*2, 3.6-2.3*3])
+        self.wp12 = np.array([-4.0+2.7*3, 3.6-2.3*3])
 
         # waypoints
         self.wpidx = 0
