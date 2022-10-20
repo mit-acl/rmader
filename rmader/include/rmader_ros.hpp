@@ -52,7 +52,7 @@ private:
   void terminalGoalCB(const geometry_msgs::PoseStamped& msg);
   void pubState(const mt::state& msg, const ros::Publisher pub);
   void stateCB(const snapstack_msgs::State& msg);
-  void findAdaptiveDelayCheck();
+  void findAdaptiveDelayCheck(const mt::dynTraj tmp);
   // void modeCB(const rmader_msgs::Mode& msg);
   void whoPlansCB(const rmader_msgs::WhoPlans& msg);
   void pubCB(const ros::TimerEvent& e);

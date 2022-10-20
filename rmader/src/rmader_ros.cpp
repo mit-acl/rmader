@@ -361,17 +361,11 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
   tmp.function.push_back(msg.function[2]);
 
   tmp.is_committed = msg.is_committed;
-
   tmp.bbox << msg.bbox[0], msg.bbox[1], msg.bbox[2];
-
   tmp.id = msg.id;
-
   tmp.is_agent = msg.is_agent;
-
   // tmp.time_sent = msg.time_sent;
-
   tmp.time_created = msg.time_created;
-
   tmp.traj_id = msg.traj_id;
 
   if (msg.is_agent)
@@ -393,25 +387,7 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
     else
     {
       rmader_ptr_->updateTrajObstacles(tmp);
-
-      double time_now = ros::Time::now().toSec();
-      double supposedly_simulated_comm_delay = time_now - tmp.time_created;
-      // supposedly_simulated_time_delay should be simulated_comm_delay_
-      if (supposedly_simulated_comm_delay > delay_check_)
-      {
-        missed_msgs_cnt_ = missed_msgs_cnt_ + 1;
-        msgs_cnt_ = msgs_cnt_ + 1;
-      }
-      else
-      {
-        msgs_cnt_ = msgs_cnt_ + 1;
-      }
-
-      rmader_msgs::CommDelay msg;
-      msg.id = tmp.id;
-      msg.comm_delay = supposedly_simulated_comm_delay;
-      msg.adaptive_delay_check = 0.0;
-      pub_comm_delay_.publish(msg);
+      findAdaptiveDelayCheck(tmp);
     }
   }
 }
@@ -419,15 +395,17 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
 {
   mt::dynTraj tmp = alltrajs_[0];
-
   alltrajs_.pop_front();
   alltrajsTimers_.pop_front();
-
   rmader_ptr_->updateTrajObstacles_with_delaycheck(tmp);
+  findAdaptiveDelayCheck(tmp);
+}
 
+// calculate how long adaptive delay check should be
+void RmaderRos::findAdaptiveDelayCheck(const mt::dynTraj tmp)
+{
   double time_now = ros::Time::now().toSec();
   double supposedly_simulated_comm_delay = time_now - tmp.time_created;
-
   // supposedly_simulated_time_delay should be simulated_comm_delay_
   if (supposedly_simulated_comm_delay > delay_check_)
   {
@@ -451,13 +429,8 @@ void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
     comm_delay_sum_ = 0.0;
     msgs_cnt_ = 0;
   }
-  msg.adaptive_delay_check = adaptive_delay_check_;
+  is_adaptive_delaycheck_ ? msg.adaptive_delay_check = adaptive_delay_check_ : msg.adaptive_delay_check = 0.0;
   pub_comm_delay_.publish(msg);
-}
-
-// calculate how long adaptive delay check should be
-void RmaderRos::findAdaptiveDelayCheck()
-{
 }
 
 // This trajectory contains all the future trajectory (current_pos --> A --> final_point_of_traj), because it's the

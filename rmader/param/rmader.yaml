@@ -11,7 +11,7 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-is_sim: false
+is_sim: true
 
 # use highbay space?
 is_highbay: true
@@ -45,7 +45,7 @@ is_artificial_comm_delay: false
 
 adpt:
   # use adaptive delay check?
-  is_adaptive_delaycheck: true
+  is_adaptive_delaycheck: false
   initial_adaptive_delay_check: 0.05 #[s]
   adpt_freq_msgs: 10 #every how many msgs we update delay check
   weight: 0.5 # adapt_dc = weight * new_adapt_dc + (1-weight) * old_adapt_dc
@@ -69,7 +69,7 @@ setting:
   goal_radius: 0.15    #(m) Drone has arrived to the goal when distance_to_goal<GOAL_RADIUS
 
 tuning_param:
-  drone_bbox: [2.0, 2.0, 2.0] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
+  drone_bbox: [0.7, 0.7, 0.7] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
   Ra: 25.0           # [m] Radius of my planning sphere (planning horizon). Should be < fov_depth
   delay_check: 0.05 # seconds
   simulated_comm_delay: 0.05 #seconds
