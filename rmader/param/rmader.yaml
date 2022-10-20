@@ -11,7 +11,7 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-is_sim: true
+is_sim: false
 
 # use highbay space?
 is_highbay: true
@@ -26,7 +26,8 @@ is_centralized: false
 is_delaycheck: true
 
 # agents' ids
-agents_ids: [1, 2, 3, 4, 5, 6]
+# agents_ids: [1, 2, 3, 4, 5, 6]
+agents_ids: [2, 3, 4, 5, 6, 8]
 
 # introduce roughly sequential start?
 is_sequencial_start: false
@@ -36,7 +37,7 @@ camera1: "05"
 camera2: "07"
 
 # introduce artificial comm delay?
-is_artificial_comm_delay: true
+is_artificial_comm_delay: false
 
 ###############################################################
 # adaptive delay related Parameters
