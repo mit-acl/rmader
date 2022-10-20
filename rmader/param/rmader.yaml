@@ -131,7 +131,7 @@ highbay_size:
   y_max: 4.0   # [m] don't forget the .0
 
   z_min: 0.9  # [m] don't forget the .0
-  z_max: 3.5  # [m] don't forget the .0
+  z_max: 3.2  # [m] don't forget the .0
 
 ###############################################################
 # NLOPT Parameters (usually no need to change)

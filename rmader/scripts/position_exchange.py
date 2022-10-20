@@ -221,7 +221,7 @@ class TermGoalSender:
                     self.term_goal.pose.position.x = self.wp8[0]
                     self.term_goal.pose.position.y = self.wp8[1]
 
-            self.term_goal.pose.position.z = 1.0 + 2.5 * random()
+            self.term_goal.pose.position.z = 1.0 + 2.0 * random()
             # self.term_goal.pose.position.z = 1.0
 
             self.if_arrived = not self.if_arrived
