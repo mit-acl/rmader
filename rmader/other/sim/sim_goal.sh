@@ -33,17 +33,17 @@ sleep 1
 
 # send goals (randomly generated or position exchange)
 if [ "$1" == "pos" ]; then
-	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=SQ01s" C-m
+	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=SQ01s" #C-m
 	# sleep 1
-	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=2 quad:=SQ02s" C-m
+	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=2 quad:=SQ02s" #C-m
 	# sleep 1
-	tmux send-keys -t $SESSION:$w.2 "roslaunch rmader position_exchange.launch mode:=3 quad:=SQ03s" C-m
+	tmux send-keys -t $SESSION:$w.2 "roslaunch rmader position_exchange.launch mode:=3 quad:=SQ03s" #C-m
 	# sleep 1
-	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=4 quad:=SQ04s" C-m
+	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=4 quad:=SQ04s" #C-m
 	# sleep 1
 	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader position_exchange.launch mode:=5 quad:=SQ05s" C-m
 	# sleep 1
-	tmux send-keys -t $SESSION:$w.5 "roslaunch rmader position_exchange.launch mode:=6 quad:=SQ06s" C-m
+	tmux send-keys -t $SESSION:$w.5 "roslaunch rmader position_exchange.launch mode:=6 quad:=SQ06s" #C-m
 elif [ "$1" == "ran" ]; then
 	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader random_goal.launch quad:=SQ01s" C-m
 	sleep 1
