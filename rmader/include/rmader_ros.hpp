@@ -84,7 +84,7 @@ private:
 
   // parameters
   // indicating if this is simulations or not
-  bool sim_;
+  bool is_sim_;
   bool is_artificial_comm_delay_;
   bool is_delaycheck_ = true;
   double headsup_time_ = 0.0;

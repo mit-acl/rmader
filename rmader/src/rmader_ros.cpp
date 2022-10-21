@@ -29,7 +29,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 {
   // Parameters from rmader.yaml
   // if this is simulation or hardware
-  mu::safeGetParam(nh1_, "is_sim", sim_);
+  mu::safeGetParam(nh1_, "is_sim", is_sim_);
 
   // use highbay space size?
   bool is_highbay;
@@ -224,7 +224,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   }
   else
   {
-    if (sim_)
+    if (is_sim_)
     {
       for (int id : agents_ids)
       {
