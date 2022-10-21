@@ -419,6 +419,7 @@ void RmaderRos::findAdaptiveDelayCheck(const mt::dynTraj tmp)
 
   comm_delay_sum_ = comm_delay_sum_ + supposedly_simulated_comm_delay;
   rmader_msgs::CommDelay msg;
+  msg.header.stamp = ros::Time::now();
   msg.id = tmp.id;
   msg.comm_delay = supposedly_simulated_comm_delay;
   if (msgs_cnt_ > adpt_freq_msgs_)
@@ -445,6 +446,7 @@ void RmaderRos::publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_commi
   s.push_back("");
 
   rmader_msgs::DynTraj msg;
+  msg.header.stamp = ros::Time::now();
   msg.function = s;
   msg.bbox.push_back(par_.drone_bbox[0]);
   msg.bbox.push_back(par_.drone_bbox[1]);

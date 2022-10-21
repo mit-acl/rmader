@@ -33,8 +33,8 @@ agents_ids: [2, 3, 4, 5, 6, 8]
 is_sequencial_start: false
 
 # who's the camera man? (if you are camera man is_camera_yawing will be true in rmader_ros.cpp)
-camera1: "05"
-camera2: "07"
+camera1: "20"
+camera2: "20"
 
 # introduce artificial comm delay?
 is_artificial_comm_delay: false
@@ -55,7 +55,7 @@ adpt:
 ###############################################################
 
 yaw:
-  w_max: 0.6           # [rd/s] Maximum angular velocity. 0.4 for Hardware
+  w_max: 1.0           # [rd/s] Maximum angular velocity. 0.4 for Hardware
   alpha_filter_dyaw: 0.99 # Filter parameter for dyaw, \in [0,1]. Higher--> More aggressive filtering
 
 visual:
