@@ -111,12 +111,15 @@ if [[ $ifDELETE == 'true' ]]; then
 fi
 
 
+
+
 for i in 5 7 11 # RUNNING MESH WITH NETWORK MANAGER NX04, 05, 08
 do
+
 	tmux send-keys -t $SESSION:$w.$i "cd && ./ad_hoc_without_NM.sh" C-m
 done
 
-sleep 10
+sleep 5
 
 # hw_onboard
 # tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc1/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX01) 2>&1 | tee ~/Research/bags/nx01_rrmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m #by using /home/nuc1/ instead of ~/, we can stop record data on sikorsky when we are not using the vehicle.

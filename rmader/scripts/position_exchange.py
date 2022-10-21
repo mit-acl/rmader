@@ -187,18 +187,26 @@ class TermGoalSender:
                     self.term_goal.pose.position.y = self.wp12[1]
             elif self.mode == 2:
                 if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp2[0]
-                    self.term_goal.pose.position.y = self.wp2[1]
+                    # self.term_goal.pose.position.y = self.wp2[1]
+                    # self.term_goal.pose.position.x = self.wp2[0]
+                    self.term_goal.pose.position.y = 3
+                    self.term_goal.pose.position.x = -3
                 else:
-                    self.term_goal.pose.position.x = self.wp10[0]
-                    self.term_goal.pose.position.y = self.wp10[1]
+                    # self.term_goal.pose.position.x = self.wp10[0]
+                    # self.term_goal.pose.position.y = self.wp10[1]
+                    self.term_goal.pose.position.y = 3
+                    self.term_goal.pose.position.x = 3
             elif self.mode == 3:
                 if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp6[0]
-                    self.term_goal.pose.position.y = self.wp6[1]
+                    # self.term_goal.pose.position.x = self.wp6[0]
+                    # self.term_goal.pose.position.y = self.wp6[1]
+                    self.term_goal.pose.position.y = -3
+                    self.term_goal.pose.position.x = 3
                 else:
-                    self.term_goal.pose.position.x = self.wp5[0]
-                    self.term_goal.pose.position.y = self.wp5[1]
+                    # self.term_goal.pose.position.x = self.wp5[0]
+                    # self.term_goal.pose.position.y = self.wp5[1]
+                    self.term_goal.pose.position.y = -3
+                    self.term_goal.pose.position.x = -3
             elif self.mode == 4:
                 if self.if_arrived:
                     self.term_goal.pose.position.x = self.wp9[0]
