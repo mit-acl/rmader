@@ -94,10 +94,10 @@ if __name__ == '__main__':
             else:
                 str_dc = str(dc)
 
-            # mader.yaml modification. comment out delay_check param and is_delaycheck param
-            os.system("sed -i '/delay_check/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
-            os.system("sed -i '/is_delaycheck/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
-            os.system("sed -i '/simulated_comm_delay/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
+            # rmader.yaml modification. comment out delay_check param and is_delaycheck param
+            os.system("sed -i '/delay_check/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
+            os.system("sed -i '/is_delaycheck/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
+            os.system("sed -i '/simulated_comm_delay/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
 
             if is_oldmader:
                 folder_bags="/home/kota/data/bags/oldmader/cd"+str(cd)+"ms"
