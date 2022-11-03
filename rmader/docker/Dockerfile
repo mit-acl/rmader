@@ -33,11 +33,11 @@ RUN apt-get update && apt-get install make && \
 # # install MADER
 RUN mkdir -p /home/rmader_ws/src
 WORKDIR /home/rmader_ws/src
-# RUN git clone https://github.com/mit-acl/rmader.git && \
+# # RUN git clone https://github.com/mit-acl/rmader.git && \
+# #       apt-get install python-is-python3 -y
+# RUN git clone git@github.com:mit-acl/rmader.git && \
 #       apt-get install python-is-python3 -y
-RUN git clone git@github.com:mit-acl/rmader.git && \
-      apt-get install python-is-python3 -y
-# ADD rmader /home/rmader_ws/src/
+ADD rmader /home/kkondo/rmader_project/rmader_ws/src/
 RUN apt-get install python-is-python3 -y
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
