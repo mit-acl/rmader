@@ -75,11 +75,11 @@ RUN export GUROBI_HOME="/opt/gurobi952/linux64" && \
     . /opt/ros/noetic/setup.sh && catkin build
 RUN echo source /home/rmader_ws/devel/setup.bash >> ~/.bashrc
 
-RUN echo alias cb="catkin build" >> ~/.bashrc
-RUN echo alias gs="git status" >> ~/.bashrc
-RUN echo alias gp="git push" >> ~/.bashrc
-RUN echo alias kr="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & pkill -f panther & pkill -f gazebo_ros & pkill -f spawn_model & pkill -f gzserver & pkill -f gzclient  & pkill -f static_transform_publisher &  killall -9 multi_robot_node & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f tracker_predictor & pkill -f swarm_traj_planner & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands & pkill -f dynamic_corridor & tmux kill-server & pkill -f perfect_controller & pkill -f publish_in_gazebo" >> ~/.bashrc
-RUN echo alias py="python" >> ~/.bashrc
-RUN echo alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader.rviz" >> ~/.bashrc
-RUN echo alias tks="tmux kill-server" >> ~/.bashrc
+RUN echo 'alias cb="catkin build"' >> ~/.bashrc
+RUN echo 'alias gs="git status"' >> ~/.bashrc
+RUN echo 'alias gp="git push"' >> ~/.bashrc
+RUN echo 'alias kr="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & pkill -f panther & pkill -f gazebo_ros & pkill -f spawn_model & pkill -f gzserver & pkill -f gzclient  & pkill -f static_transform_publisher &  killall -9 multi_robot_node & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f tracker_predictor & pkill -f swarm_traj_planner & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands & pkill -f dynamic_corridor & tmux kill-server & pkill -f perfect_controller & pkill -f publish_in_gazebo"' >> ~/.bashrc
+RUN echo 'alias py="python"' >> ~/.bashrc
+RUN echo 'alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader.rviz"' >> ~/.bashrc
+RUN echo 'alias tks="tmux kill-server"' >> ~/.bashrc
 RUN apt-get install psmisc
