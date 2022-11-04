@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="veh" default="$(optenv VEHTYPE SQ)" />
+  <arg name="num" default="$(optenv VEHNUM 01)" />
+
+  <group ns="$(arg veh)$(arg num)">
+    <!-- Launch ROS Trajectory Generator Node -->
+    <node pkg="rmader" type="trajectory_generator" name="trajectory_generator" output="screen" clear_params="true">
+      <rosparam command="load" file="$(find rmader)/param/hw_obs.yaml"/>
+    </node>
+  </group>
+
+</launch>
