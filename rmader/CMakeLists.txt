@@ -2,22 +2,27 @@ cmake_minimum_required(VERSION 2.8.3)
 project(rmader)
 
 ## Add support for C++11, supported in ROS Kinetic and newer
-# add_definitions(-std=c++11)
-add_definitions(-std=c++14) # for trajectory generator
+add_definitions(-std=c++11)
 #add_definitions(-std=c99)
+
 
 find_package( Eigen3 REQUIRED )
 include_directories(${EIGEN3_INCLUDE_DIR})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_finders")
 
+
 find_package(CGAL REQUIRED)
 
+
 option(USE_GUROBI "Use GUROBI as the solver" ON) #if OFF, then it will use NLOPT as the solver
+
 
 include(${CGAL_USE_FILE})
 
 set(CMAKE_BUILD_TYPE Release) #From terminal: catkin config -DCMAKE_BUILD_TYPE=Release (or RelWithDebInfo) or Debug
+
+
 
 find_package(catkin REQUIRED COMPONENTS 
 	roscpp
@@ -52,10 +57,6 @@ target_link_libraries(utils PUBLIC ${catkin_LIBRARIES})
 add_library(octopus_search STATIC src/octopus_search.cpp src/bspline_utils.cpp src/utils.cpp) 
 target_include_directories (octopus_search PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(octopus_search PUBLIC ${catkin_LIBRARIES}) 
-
-add_library(trajectory_generator_core STATIC src/TrajectoryGenerator.cpp src/trajectories/Circle.cpp src/trajectories/Line.cpp)
-target_include_directories (trajectory_generator_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(trajectory_generator_core PUBLIC ${catkin_LIBRARIES}) 
 
 if(USE_GUROBI)
 
@@ -114,9 +115,5 @@ target_link_libraries(test_bspline_utils ${catkin_LIBRARIES})
 add_executable(test_stuck_exam_octopus_search src/examples/test_stuck_exam_octopus_search.cpp src/octopus_search.cpp src/bspline_utils.cpp) 
 add_dependencies(test_stuck_exam_octopus_search ${catkin_EXPORTED_TARGETS} )
 target_link_libraries(test_stuck_exam_octopus_search ${catkin_LIBRARIES} utils cgal_utils) 
-
-add_executable(trajectory_generator src/trajectory_generator_node.cpp)
-add_dependencies(trajectory_generator ${catkin_EXPORTED_TARGETS})
-target_link_libraries(trajectory_generator trajectory_generator_core ${catkin_LIBRARIES})
 
 unset(USE_GUROBI CACHE) # To avoid https://stackoverflow.com/questions/22481647/cmake-if-else-with-option

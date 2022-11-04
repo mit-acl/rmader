@@ -348,7 +348,7 @@ void OctopusSearch::computeLimitsVoxelSize(double& min_voxel_size, double& max_v
 
 // compute constraints so that it satisfies interval i-1
 // axis=0 (x), 1(y) or 2(z)
-void OctopusSearch::computeAxisForNextInterval(const int i, const Eigen::Vector3d& viM1, int axis, double& constraint_L,
+bool OctopusSearch::computeAxisForNextInterval(const int i, const Eigen::Vector3d& viM1, int axis, double& constraint_L,
                                                double& constraint_U)
 {
   Eigen::Matrix<double, 3, 3> M_interv_next = M_vel_bs2basis_[i - 1];
