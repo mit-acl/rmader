@@ -328,7 +328,7 @@ if __name__ == '__main__':
 
     # print("sys.argv[1]= ", sys.argv[1])
     # total_num_obs=50 #70 for sphere sim
-    total_num_obs=70 #70 for sphere sim
+    total_num_obs=0 #70 for sphere sim
     ns = rospy.get_namespace()
     try:
         rospy.init_node('dynamic_obstacles')
