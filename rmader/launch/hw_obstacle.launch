@@ -8,7 +8,7 @@
 
     <node ns="$(arg quad)" name="rmader_obs_commands" pkg="rmader" type="rmader_obs_commands.py" output="screen"/>
 
-    <node ns="$(arg quad)" pkg="rqt_gui" type="rqt_gui" name="obs_rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/demo_interface.perspective"/>
+    <node ns="$(arg quad)" pkg="rqt_gui" type="rqt_gui" name="obs_rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/obs_demo_interface.perspective"/>
 
     <node ns="$(arg quad)" pkg="behavior_selector" type="behavior_selector_node.py" name="obs_behavior_selector" output="screen" />
 

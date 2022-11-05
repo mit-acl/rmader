@@ -20,7 +20,7 @@ is_highbay: true
 is_take_off: true
 
 # use centralized or decentralized trajs?
-is_centralized: false
+is_centralized: true
 
 # use delay check or not? (this has to be true if we wanna use RMADER)
 is_delaycheck: true
