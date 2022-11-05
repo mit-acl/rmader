@@ -800,7 +800,7 @@ void RmaderRos::publishPoly(const vec_E<Polyhedron<3>>& poly)
 
 void RmaderRos::whoPlansCB(const rmader_msgs::WhoPlans& msg)
 {
-  if (msg.value != msg.MADER)
+  if (msg.value != msg.RMADER)
   {  // MADER does nothing
     sub_state_.shutdown();
     sub_term_goal_.shutdown();

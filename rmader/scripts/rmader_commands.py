@@ -70,7 +70,7 @@ class Rmader_Commands:
             print ("Starting taking off")
             self.takeOff()
             # print ("Take off done")
-            self.whoplans.value=self.whoplans.MADER
+            self.whoplans.value=self.whoplans.RMADER
 
         if req.mode == req.KILL:
             self.timer_take_off.shutdown()
@@ -78,7 +78,7 @@ class Rmader_Commands:
             self.kill()
             print ("Killed done")
 
-        if req.mode == req.LAND and self.whoplans.value==self.whoplans.MADER:
+        if req.mode == req.LAND and self.whoplans.value==self.whoplans.RMADER:
             self.timer_take_off.shutdown()
             print ("Landing")
             self.land()
@@ -119,7 +119,7 @@ class Rmader_Commands:
 
         if(abs(self.pose.position.z-alt_taken_off)<0.1 ):
             self.timer_take_off.shutdown()
-            self.whoplans.value=self.whoplans.MADER
+            self.whoplans.value=self.whoplans.RMADER
             self.sendWhoPlans();
 
         ######## 

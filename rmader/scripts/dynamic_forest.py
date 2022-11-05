@@ -187,9 +187,6 @@ class FakeSim:
               else:
                 [x_string, y_string, z_string] = self.wave_in_z(self.x_all[i], self.y_all[i], self.z_all[i], 2.0, self.offset_all[i], 1.0)
 
-
-
-
             x = eval(x_string)
             y = eval(y_string)
             z = eval(z_string)
