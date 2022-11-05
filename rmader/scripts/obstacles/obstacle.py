@@ -47,8 +47,6 @@ class Obstacle_Planner:
         self.traj_y_string = self.safeGetParam('~traj_y')
         self.traj_z_string = self.safeGetParam('~traj_z')
 
-
-
         self.bbox = self.safeGetParam('~bbox')
 
         self.traj=np.array([self.traj_x, self.traj_y, self.traj_z])
@@ -74,7 +72,8 @@ class Obstacle_Planner:
         self.pubGoalTimer.shutdown()
 
         self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
-        self.pubTrajTimer=rospy.Timer(rospy.Duration(0.05), self.pubTrajCB)
+        self.pubTrajTimer=rospy.Timer(rospy.Duration(0.01), self.pubTrajCB)
+        self.pubTrajTimer.shutdown()
 
 
     def generateMarker(self, bbox, i):
@@ -156,7 +155,7 @@ class Obstacle_Planner:
 
     def initializePlanner(self):
 
-        upper_bound_time_s = 2.0; #This simply takes into account the time spent on this function (so tha)
+        upper_bound_time_s = 5.0; #This simply takes into account the time spent on this function (so tha)
 
         t_init_function=rospy.get_time();
 
@@ -209,6 +208,7 @@ class Obstacle_Planner:
         self.t0=t0;
 
         self.pubGoalTimer=rospy.Timer(rospy.Duration(0.01), self.pubCB)
+        self.pubTrajTimer=rospy.Timer(rospy.Duration(0.01), self.pubTrajCB)
 
         print("End of initializePlanner")
 
@@ -270,6 +270,9 @@ class Obstacle_Planner:
         self.dyn_traj_msg.pos.x=self.position[0]
         self.dyn_traj_msg.pos.y=self.position[1]
         self.dyn_traj_msg.pos.z=self.position[2]
+        # self.dyn_traj_msg.pos.x=eval(x_string)
+        # self.dyn_traj_msg.pos.y=eval(y_string)
+        # self.dyn_traj_msg.pos.z=eval(z_string)
         self.dyn_traj_msg.id = 4000
         self.pubTraj.publish(self.dyn_traj_msg)
 

@@ -229,45 +229,45 @@ Visualization Manager:
       Queue Size: 100
       Value: false
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ02s/rmader/obstacles
       Name: Obstacle
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ03s/rmader/obstacles
       Name: Obstacle
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ04s/rmader/obstacles
       Name: Obstacle
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ05s/rmader/obstacles
       Name: Obstacle
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/Marker
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ06s/rmader/obstacles
       Name: Obstacles
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/Marker
       Enabled: false
       Marker Topic: /SQ07s/rmader/obstacles
@@ -2174,7 +2174,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 38.06025695800781
+      Distance: 37.51219177246094
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -2190,9 +2190,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 0.6547973155975342
       Target Frame: <Fixed Frame>
-      Yaw: 0
+      Yaw: 4.763184547424316
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 16.45623207092285
@@ -2312,5 +2312,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1884
-  X: 72
+  X: 1956
   Y: 27
