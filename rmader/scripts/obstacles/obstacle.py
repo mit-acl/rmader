@@ -42,11 +42,12 @@ class Obstacle_Planner:
         self.traj_y = parse_expr(self.safeGetParam('~traj_y'))
         self.traj_z = parse_expr(self.safeGetParam('~traj_z'))
 
+        self.pubTrajCB_initialized = False
+
         # for rmader trajs publish
         self.traj_x_string = self.safeGetParam('~traj_x')
         self.traj_y_string = self.safeGetParam('~traj_y')
         self.traj_z_string = self.safeGetParam('~traj_z')
-
         self.bbox = self.safeGetParam('~bbox')
 
         self.traj=np.array([self.traj_x, self.traj_y, self.traj_z])
@@ -71,7 +72,12 @@ class Obstacle_Planner:
         self.pubGoalTimer=rospy.Timer(rospy.Duration(0.01), self.pubCB)
         self.pubGoalTimer.shutdown()
 
-        self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
+        self.is_centralized = False
+        if self.is_centralized:
+            self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
+        else:
+            self.pubTraj = rospy.Publisher('rmader/trajs', DynTraj, queue_size=1, latch=True)
+
         self.pubTrajTimer=rospy.Timer(rospy.Duration(0.01), self.pubTrajCB)
         self.pubTrajTimer.shutdown()
 
@@ -155,7 +161,7 @@ class Obstacle_Planner:
 
     def initializePlanner(self):
 
-        upper_bound_time_s = 5.0; #This simply takes into account the time spent on this function (so tha)
+        upper_bound_time_s = 2.0; #This simply takes into account the time spent on this function (so tha)
 
         t_init_function=rospy.get_time();
 
@@ -191,11 +197,14 @@ class Obstacle_Planner:
 
         my_poly=np.array([self.fit3rdDegPol(t1,t2,x1[i],x2[i],v1[i],v2[i]) for i in range(len(self.traj))])
 
+        # print(my_poly)
+
         cond0=(t-t0)<=delta01
         cond1=((t-t0)>delta01) & ((t-t0)<(delta01+delta12))
         cond2= True #rest of the cases   
 
         self.whole_traj =      np.array([ Piecewise( (my_line[i], cond0) ,                ( my_poly[i], cond1 ),                 ( self.traj[i], cond2 )  )  for i in range(len(self.traj))])
+        # print(self.whole_traj)
         self.whole_traj_dot =  np.array([ Piecewise( (sp.diff(my_line[i],t), cond0) ,     ( sp.diff(my_poly[i],t), cond1 ) ,     ( sp.diff(self.traj[i],t), cond2 )   )  for i in range(len(self.traj))])
         self.whole_traj_dot2 = np.array([ Piecewise( (sp.diff(my_line[i],t,t), cond0) ,   ( sp.diff(my_poly[i],t,t), cond1 ) ,   ( sp.diff(self.traj[i],t,t), cond2 )   )  for i in range(len(self.traj))])
         self.whole_traj_dot3 = np.array([ Piecewise( (sp.diff(my_line[i],t,t,t), cond0) , ( sp.diff(my_poly[i],t,t,t), cond1 ) , ( sp.diff(self.traj[i],t,t,t), cond2 )   )  for i in range(len(self.traj))])
@@ -263,6 +272,15 @@ class Obstacle_Planner:
             pass 
 
     def pubTrajCB(self, timer):
+
+        if not self.pubTrajCB_initialized:
+            new_t = '('+str(self.t0)+'+(t-'+str(self.time_end_init)+'))'
+            print(new_t)
+            self.traj_x_string = self.traj_x_string.replace('t', new_t)
+            self.traj_y_string = self.traj_y_string.replace('t', new_t)
+            self.traj_z_string = self.traj_z_string.replace('t', new_t)
+            self.pubTrajCB_initialized = True
+
         self.dyn_traj_msg.bbox = self.bbox
         self.dyn_traj_msg.is_agent = False
         self.dyn_traj_msg.header.stamp = rospy.Time.now()

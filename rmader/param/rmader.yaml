@@ -20,14 +20,14 @@ is_highbay: true
 is_take_off: true
 
 # use centralized or decentralized trajs?
-is_centralized: true
+is_centralized: false
 
 # use delay check or not? (this has to be true if we wanna use RMADER)
 is_delaycheck: true
 
 # agents' ids
-# agents_ids: [1, 2, 3, 4, 5, 6]
-agents_ids: [2, 3, 4, 5, 6, 8]
+agents_ids: [1, 2, 3, 4, 5]
+# agents_ids: [2, 3, 4, 5, 6, 8]
 
 # introduce roughly sequential start?
 is_sequencial_start: false
