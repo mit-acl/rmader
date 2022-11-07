@@ -11,7 +11,7 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-is_sim: true
+is_sim: false
 
 # use highbay space?
 is_highbay: true
@@ -26,7 +26,7 @@ is_centralized: false
 is_delaycheck: true
 
 # agents' ids
-agents_ids: [1, 2, 3, 4, 5]
+agents_ids: [1, 2, 3, 4, 5, 6]
 # agents_ids: [2, 3, 4, 5, 6, 8]
 
 # introduce roughly sequential start?
@@ -69,7 +69,7 @@ setting:
   goal_radius: 0.15    #(m) Drone has arrived to the goal when distance_to_goal<GOAL_RADIUS
 
 tuning_param:
-  drone_bbox: [0.7, 0.7, 0.3] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
+  drone_bbox: [0.7, 0.7, 0.5] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
   Ra: 25.0           # [m] Radius of my planning sphere (planning horizon). Should be < fov_depth
   delay_check: 0.05 # seconds
   simulated_comm_delay: 0.05 #seconds
