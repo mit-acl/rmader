@@ -1,5 +1,5 @@
 # DO NOT EDIT. RUN THE PYTHON FILE INSTEAD TO GENERATE THIS .yaml FILE 
-traj_x: 2.0*sin(0.5*t)
-traj_y: 2.0*cos(0.5*t)
-traj_z: 2.0*cos(0.0)
+traj_x: 0.666666666666667*sin(0.4*t) + 1.33333333333333*sin(0.8*t)
+traj_y: 0.666666666666667*cos(0.4*t) - 1.33333333333333*cos(0.8*t)
+traj_z: 2.0 - 1.0*sin(1.2*t)
 bbox: [0.7, 0.7, 0.7]
