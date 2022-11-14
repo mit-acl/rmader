@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-	<arg name="veh" default="SQ"/>
-    <arg name='num' default="01"/>
+	<arg name="quad" default="SQ01"/>
 
-    <node ns="$(arg veh)$(arg num)s" name="obstacle" pkg="rmader" type="obstacle.py" output="screen" clear_params="true">
+    <node ns="$(arg quad)" name="obstacle" pkg="rmader" type="obstacle.py" output="screen" clear_params="true">
         <rosparam file="$(find rmader)/param/obstacle.yaml" command="load"/>
     </node>
 
-    <node ns="$(arg veh)$(arg num)s" name="rmader_obs_commands" pkg="rmader" type="rmader_obs_commands.py" output="screen"/>
+    <node ns="$(arg quad)" name="rmader_obs_commands" pkg="rmader" type="rmader_obs_commands.py" output="screen"/>
 
-    <node ns="$(arg veh)$(arg num)s" pkg="rqt_gui" type="rqt_gui" name="obs_rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/obs_demo_interface.perspective"/>
+    <node ns="$(arg quad)" pkg="rqt_gui" type="rqt_gui" name="obs_rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/obs_demo_interface.perspective"/>
 
-    <node ns="$(arg veh)$(arg num)s" pkg="behavior_selector" type="behavior_selector_node.py" name="obs_behavior_selector" output="screen" />
+    <node ns="$(arg quad)" pkg="behavior_selector" type="behavior_selector_node.py" name="obs_behavior_selector" output="screen" />
 
 </launch>

@@ -22,10 +22,10 @@ def getTrefoil(tt,offset,slower,lim_x, lim_y, lim_z):
 Drone = collections.namedtuple('Drone', ["name","bbox", "slower", "offset", "lim_x", "lim_y", "lim_z"])
 
 zmin=1.0
-zmax=3.0
+zmax=2.5
 
 all_drones=[     #"name",     "bbox",      "slower", "offset", "lim_x",    "lim_y",    "lim_z"
-            Drone("SQ02s", [0.7, 0.7, 0.7],  2.5,   0.0,   [-2.0, 2.0], [-2.0, 2.0],   [zmin,zmax])
+            Drone("SQ02s", [0.7, 0.7, 0.7],  3.5,   0.0,   [-2.0, 2.0], [-2.0, 2.0],   [zmin,zmax])
             ]
 
 tmp = rospkg.RosPack()
