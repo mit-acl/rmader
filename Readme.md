@@ -1,7 +1,7 @@
-# MADER: Trajectory Planner in Multi-Agent and Dynamic Environments #
+# Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay #
 
 
-### **Accepted for publication in the IEEE Transactions on Robotics (T-RO)**
+### **Submitted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
 
 
 Single-Agent               |  Multi-Agent           | 
@@ -11,15 +11,15 @@ Single-Agent               |  Multi-Agent           |
 
 ## Citation
 
-When using MADER, please cite [MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](https://arxiv.org/abs/2010.11061) ([pdf](https://arxiv.org/abs/2010.11061), [video](https://www.youtube.com/watch?v=aoSoiZDfxGE)):
+Please cite [Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay](https://arxiv.org/abs/2209.13667) ([pdf](https://arxiv.org/abs/2209.13667), [video](https://youtu.be/vH09kwJOBYs)):
 
 ```bibtex
-@article{tordesillas2020mader,
-  title={{MADER}: Trajectory Planner in Multi-Agent and Dynamic Environments},
-  author={Tordesillas, Jesus and How, Jonathan P},
-  journal={IEEE Transactions on Robotics},
-  year={2021},
-  publisher={IEEE}
+@article{kondo2022rmader,
+  title={{Robust} MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay},
+  author={},
+  journal={},
+  year={},
+  publisher={}
 }
 ```
 
