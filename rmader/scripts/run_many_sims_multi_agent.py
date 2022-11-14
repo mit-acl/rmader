@@ -80,13 +80,13 @@ if __name__ == '__main__':
             os.system("sed -i '/simulated_comm_delay/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
 
             if is_oldmader:
-                folder_bags="/home/data/oldmader/bags/oldmader/cd"+str(cd)+"ms"
-                folder_txts="/home/data/oldmader/txt_files/oldmader/cd"+str(cd)+"ms"
-                folder_csv="/home/data/oldmader/csv/oldmader/cd"+str(cd)+"ms"
+                folder_bags="/home/data/oldmader/bags/cd"+str(cd)+"ms"
+                folder_txts="/home/data/oldmader/txt_files/cd"+str(cd)+"ms"
+                folder_csv="/home/data/oldmader/csv/cd"+str(cd)+"ms"
             else:
-                folder_bags="/home/data/rmader/bags/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_txts="/home/data/rmader/txt_files/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_csv="/home/data/rmader/csv/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_bags="/home/data/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_txts="/home/data/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_csv="/home/data/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
@@ -123,25 +123,25 @@ if __name__ == '__main__':
                     else:
                         agent_id = str(num)
 
-                    commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/delay_check "+str(dc_in_ms))
-                    commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/simulated_comm_delay "+str(cd_in_ms))
+                    commands.append("sleep 10.0 && rosparam set /SQ"+agent_id+"s/rmader/delay_check "+str(dc_in_ms))
+                    commands.append("sleep 10.0 && rosparam set /SQ"+agent_id+"s/rmader/simulated_comm_delay "+str(cd_in_ms))
                     if is_oldmader:
-                        commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck false")
+                        commands.append("sleep 10.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck false")
                     else:
-                        commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck true")
+                        commands.append("sleep 10.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck true")
 
-                commands.append("sleep 20.0 && roslaunch rmader many_drones.launch action:=controller")
-                commands.append("sleep 20.0 && roslaunch rmader many_drones.launch action:=rmader sim_id:="+sim_id+" folder:="+folder_txts)
-                # commands.append("sleep 20.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 20.0 && cd "+folder_bags+" && rosbag record -e '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 20.0 && roslaunch rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
-                commands.append("sleep 20.0 && roslaunch rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
+                commands.append("sleep 10.0 && roslaunch rmader many_drones.launch action:=controller")
+                commands.append("sleep 10.0 && roslaunch rmader many_drones.launch action:=rmader sim_id:="+sim_id+" folder:="+folder_txts)
+                # commands.append("sleep 10.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
+                commands.append("sleep 10.0 && cd "+folder_bags+" && rosbag record -e '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                commands.append("sleep 10.0 && roslaunch rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
+                commands.append("sleep 10.0 && roslaunch rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 20.0 && rvmd")
 
                 #publishing the goal should be the last command
-                commands.append("sleep 25.0 && roslaunch rmader many_drones.launch action:=send_goal")
-                commands.append("sleep 25.0 && roslaunch rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
-                commands.append("sleep 25.0 && tmux detach")
+                commands.append("sleep 15.0 && roslaunch rmader many_drones.launch action:=send_goal")
+                commands.append("sleep 15.0 && roslaunch rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
+                commands.append("sleep 15.0 && tmux detach")
 
                 # print("len(commands)= " , len(commands))
                 session_name="run_many_sims_multi_agent_session"

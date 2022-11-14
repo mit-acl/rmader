@@ -88,5 +88,5 @@ RUN echo 'alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader
 RUN echo 'alias tks="tmux kill-server"' >> ~/.bashrc
 RUN apt-get install psmisc
 
+RUN mkdir -p /home/data/oldmader
 RUN mkdir -p /home/data/rmader
-RUN mkdir -p /home/data/mader
