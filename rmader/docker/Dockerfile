@@ -83,3 +83,5 @@ RUN echo 'alias py="python"' >> ~/.bashrc
 RUN echo 'alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader.rviz"' >> ~/.bashrc
 RUN echo 'alias tks="tmux kill-server"' >> ~/.bashrc
 RUN apt-get install psmisc
+
+RUN mkdir -p /home/data/rmader
