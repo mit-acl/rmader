@@ -80,13 +80,13 @@ if __name__ == '__main__':
             os.system("sed -i '/simulated_comm_delay/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
 
             if is_oldmader:
-                folder_bags="/home/kota/data/bags/oldmader/cd"+str(cd)+"ms"
-                folder_txts="/home/kota/data/txt_files/oldmader/cd"+str(cd)+"ms"
-                folder_csv="/home/kota/data/csv/oldmader/cd"+str(cd)+"ms"
+                folder_bags="/home/data/mader/bags/oldmader/cd"+str(cd)+"ms"
+                folder_txts="/home/data/mader/txt_files/oldmader/cd"+str(cd)+"ms"
+                folder_csv="/home/data/mader/csv/oldmader/cd"+str(cd)+"ms"
             else:
-                folder_bags="/home/kota/data/bags/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_txts="/home/kota/data/txt_files/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_csv="/home/kota/data/csv/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_bags="/home/data/rmader/bags/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_txts="/home/data/rmader/txt_files/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                folder_csv="/home/data/rmader/csv/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):

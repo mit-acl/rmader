@@ -85,3 +85,4 @@ RUN echo 'alias tks="tmux kill-server"' >> ~/.bashrc
 RUN apt-get install psmisc
 
 RUN mkdir -p /home/data/rmader
+RUN mkdir -p /home/data/mader
