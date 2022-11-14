@@ -56,7 +56,10 @@ WORKDIR /home/rmader_ws/src
 # #       apt-get install python-is-python3 -y
 # RUN git clone git@github.com:mit-acl/rmader.git && \
 #       apt-get install python-is-python3 -y
-ADD rmader/ /home/rmader_ws/src/
+ADD rmader /home/rmader_ws/src
+ADD outer_loop /home/rmader_ws/src
+ADD snap /home/rmader_ws/src
+ADD snap_sim /home/rmader_ws/src
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
 WORKDIR /home/rmader_ws/
