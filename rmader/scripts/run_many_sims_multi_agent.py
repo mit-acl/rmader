@@ -201,26 +201,26 @@ if __name__ == '__main__':
             time.sleep(3.0)
 
 
-    # After the simulations
-    session_name="data"
-    os.system("tmux kill-session -t" + session_name)
-    os.system("tmux new-session -d -s "+str(session_name)+" -x 300 -y 300")
+    # # After the simulations
+    # session_name="data"
+    # os.system("tmux kill-session -t" + session_name)
+    # os.system("tmux new-session -d -s "+str(session_name)+" -x 300 -y 300")
 
-    commands = []
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
+    # commands = []
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py")
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py")
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 
-    # tmux splitting
-    for i in range(len(commands)):
-        # print('splitting ',i)
-        os.system('tmux new-window -t ' + str(session_name))
+    # # tmux splitting
+    # for i in range(len(commands)):
+    #     # print('splitting ',i)
+    #     os.system('tmux new-window -t ' + str(session_name))
    
-    time.sleep(3.0)
+    # time.sleep(3.0)
 
-    for i in range(len(commands)):
-        os.system('tmux send-keys -t '+str(session_name)+':'+str(i) +'.0 "'+ commands[i]+'" '+' C-m')
+    # for i in range(len(commands)):
+    #     os.system('tmux send-keys -t '+str(session_name)+':'+str(i) +'.0 "'+ commands[i]+'" '+' C-m')
 
-    print("Commands sent")
+    # print("Commands sent")

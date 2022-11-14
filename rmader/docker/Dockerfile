@@ -34,7 +34,7 @@ RUN apt-get update && apt-get install make && \
 # the code below is the replacement of "RUN bash src/rmader/install_and_compile.sh"
 #INSTALL CGAL v4.14.2
 ##########################################
-RUN apt-get update && apt-get install libgmp3-dev libmpfr-dev -y
+RUN apt-get update && apt-get install python-is-python3 libgmp3-dev libmpfr-dev -y
 RUN mkdir -p /home/installations/cgal
 WORKDIR /home/installations/cgal
 RUN wget https://github.com/CGAL/cgal/releases/download/releases%2FCGAL-4.14.2/CGAL-4.14.2.tar.xz
@@ -57,10 +57,8 @@ WORKDIR /home/rmader_ws/src
 # RUN git clone git@github.com:mit-acl/rmader.git && \
 #       apt-get install python-is-python3 -y
 ADD rmader /home/rmader_ws/src/
-RUN apt-get update && apt-get install python-is-python3 -y
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
-RUN apt-get update && apt-get install python-is-python3 -y
 WORKDIR /home/rmader_ws/
 
 #CLONE SUBMODULES, INSTALL DEPENDENCIES AND COMPILE
