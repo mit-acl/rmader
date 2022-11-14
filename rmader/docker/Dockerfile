@@ -30,19 +30,6 @@ RUN apt-get update && apt-get install make && \
       cp libgurobi_c++.a ../../lib/ && \
       . /opt/ros/noetic/setup.sh
 
-# # install MADER
-RUN mkdir -p /home/rmader_ws/src
-WORKDIR /home/rmader_ws/src
-# # RUN git clone https://github.com/mit-acl/rmader.git && \
-# #       apt-get install python-is-python3 -y
-# RUN git clone git@github.com:mit-acl/rmader.git && \
-#       apt-get install python-is-python3 -y
-ADD rmader /home/rmader_ws/src/
-RUN apt-get install python-is-python3 -y
-WORKDIR /home/rmader_ws/
-RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
-RUN apt-get install python-is-python3 -y
-WORKDIR /home/rmader_ws/
 
 # the code below is the replacement of "RUN bash src/rmader/install_and_compile.sh"
 #INSTALL CGAL v4.14.2
@@ -61,6 +48,20 @@ RUN make install
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
 RUN wget http://packages.ros.org/ros.key -O - |  apt-key add -
 RUN apt-get install python3-catkin-tools -y
+
+# install MADER
+RUN mkdir -p /home/rmader_ws/src
+WORKDIR /home/rmader_ws/src
+# # RUN git clone https://github.com/mit-acl/rmader.git && \
+# #       apt-get install python-is-python3 -y
+# RUN git clone git@github.com:mit-acl/rmader.git && \
+#       apt-get install python-is-python3 -y
+ADD rmader /home/rmader_ws/src/
+RUN apt-get install python-is-python3 -y
+WORKDIR /home/rmader_ws/
+RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
+RUN apt-get install python-is-python3 -y
+WORKDIR /home/rmader_ws/
 
 #CLONE SUBMODULES, INSTALL DEPENDENCIES AND COMPILE
 ##########################################
