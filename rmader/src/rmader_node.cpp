@@ -23,8 +23,6 @@ int main(int argc, char **argv)
   ros::CallbackQueue custom_queue1;
   ros::CallbackQueue custom_queue2;
   ros::CallbackQueue custom_queue3;
-  ros::CallbackQueue custom_queue4;
-  ros::CallbackQueue custom_queue5;
 
   nh1.setCallbackQueue(&custom_queue1);
   nh2.setCallbackQueue(&custom_queue2);

@@ -90,9 +90,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   par_.drone_bbox << drone_bbox_tmp[0], drone_bbox_tmp[1], drone_bbox_tmp[2];
   mu::safeGetParam(nh1_, "tuning_param/Ra", par_.Ra);
   // if using delay check(this has to be true if we wanna use RMADER)
-  mu::safeGetParam(nh1_, "tuning_param/delay_check", par_.delay_check);
+  mu::safeGetParam(nh1_, "tuning_param/delay_check_sec", par_.delay_check);
   delay_check_ = par_.delay_check;
-  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay", simulated_comm_delay_);
+  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay_sec", simulated_comm_delay_);
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
   std::string env_size = "";
@@ -1096,14 +1096,16 @@ void RmaderRos::terminalGoalCB(const geometry_msgs::PoseStamped& msg)
     ros::Duration(0.1).sleep();  // wait to receive other's trajs
   }
 
-  if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
-  {
-    z = 1.0;
-  }
-  else  // This happens when you publish by yourself the goal (should always be above the ground)
-  {
-    z = msg.pose.position.z;
-  }
+  // if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
+  // {
+  //   z = 1.0;
+  // }
+  // else  // This happens when you publish by yourself the goal (should always be above the ground)
+  // {
+  //   z = msg.pose.position.z;
+  // }
+  // for simulation i commented out the above lines
+  z = msg.pose.position.z;
 
   G_term.setPos(msg.pose.position.x, msg.pose.position.y, z);
   // mtx_mader_ptr_.lock();
