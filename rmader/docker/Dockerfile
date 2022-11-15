@@ -70,7 +70,7 @@ WORKDIR /home/rmader_ws
 ADD outer_loop /home/rmader_ws/src/outer_loop
 ADD snap /home/rmader_ws/src/snap
 ADD snap_sim /home/rmader_ws/src/snap_sim
-RUN apt-get update && apt-get install libncurses5-dev -y
+RUN apt-get update && apt-get install libncurses5-dev libeigen3-dev -y
 RUN catkin config -DCMAKE_BUILD_TYPE=Release
 RUN export GUROBI_HOME="/opt/gurobi952/linux64" && \
     export PATH="${PATH}:${GUROBI_HOME}/bin" && \
