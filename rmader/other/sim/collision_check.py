@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
             collision_per = 100 - collision_cnt / len(rosbag) * 100
             os.system('paste '+source_dir+'/collision_status.txt '+source_dir+'/status.txt >> '+source_dir+'/complete_status.txt')
-            os.system('echo "'+parent_source_dir+'" >> /home/kota/data/collision_count.txt')
+            os.system('echo "'+parent_source_dir+'" >> '+parent_source_dir+'/collision_count.txt')
             os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> '+parent_source_dir+'/collision_count.txt')
             os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/collision_count.txt')
 

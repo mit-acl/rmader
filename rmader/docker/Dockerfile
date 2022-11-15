@@ -90,3 +90,6 @@ RUN apt-get install psmisc
 
 RUN mkdir -p /home/data/oldmader
 RUN mkdir -p /home/data/rmader
+RUN roscd rmader && cd scripts
+RUN apt-get update && apt-get install python3-pip -y
+RUN pip3 install -U bagpy

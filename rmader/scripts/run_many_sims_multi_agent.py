@@ -72,23 +72,23 @@ if __name__ == '__main__':
             if is_docker: ## using Docker on lambda machine
                 source_dir = "/home/data"
                 if is_oldmader:
-                    folder_bags="/home/data/oldmader/bags/cd"+str(cd)+"ms"
-                    folder_txts="/home/data/oldmader/txt_files/cd"+str(cd)+"ms"
-                    folder_csv="/home/data/oldmader/csv/cd"+str(cd)+"ms"
+                    folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
+                    folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
+                    folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags="/home/data/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts="/home/data/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv="/home/data/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir +"/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir +"/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir +"/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
             else: ## on my desktop
                 source_dir = "/home/kota/test/data"
                 if is_oldmader:
-                    folder_bags="/home/kota/test/data/oldmader/bags/cd"+str(cd)+"ms"
-                    folder_txts="/home/kota/test/data/oldmader/txt_files/cd"+str(cd)+"ms"
-                    folder_csv="/home/kota/test/data/oldmader/csv/cd"+str(cd)+"ms"
+                    folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
+                    folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
+                    folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags="/home/kota/test/data/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts="/home/kota/test/data/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv="/home/kota/test/data/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir + "/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir + "/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
