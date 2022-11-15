@@ -49,28 +49,27 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" 
 RUN wget http://packages.ros.org/ros.key -O - |  apt-key add -
 RUN apt-get update && apt-get install python3-catkin-tools -y
 
-# install MADER
+#CLONE SUBMODULES, REPOS, INSTALL DEPENDENCIES AND COMPILE
+##########################################
+# prepare
 RUN mkdir -p /home/rmader_ws/src/
 WORKDIR /home/rmader_ws/src
 # # RUN git clone https://github.com/mit-acl/rmader.git && \
 # #       apt-get install python-is-python3 -y
 # RUN git clone git@github.com:mit-acl/rmader.git && \
 #       apt-get install python-is-python3 -y
-ADD rmader /home/rmader_ws/src/rmader
-ADD outer_loop /home/rmader_ws/src/outer_loop
-ADD snap /home/rmader_ws/src/snap
-ADD snap_sim /home/rmader_ws/src/snap_sim
-
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
 WORKDIR /home/rmader_ws/
 
-#CLONE SUBMODULES, INSTALL DEPENDENCIES AND COMPILE
-##########################################
+ADD rmader /home/rmader_ws/src/rmader
 WORKDIR /home/rmader_ws/src/rmader
 RUN git submodule init && git submodule update
 WORKDIR /home/rmader_ws
 RUN DEBIAN_FRONTEND=noninteractive rosdep install --from-paths /home/rmader_ws/src --ignore-src -r -y
+ADD outer_loop /home/rmader_ws/src/outer_loop
+ADD snap /home/rmader_ws/src/snap
+ADD snap_sim /home/rmader_ws/src/snap_sim
 RUN apt-get update && apt-get install libncurses5-dev -y
 RUN catkin config -DCMAKE_BUILD_TYPE=Release
 RUN export GUROBI_HOME="/opt/gurobi952/linux64" && \
@@ -90,6 +89,7 @@ RUN apt-get install psmisc
 
 RUN mkdir -p /home/data/oldmader
 RUN mkdir -p /home/data/rmader
+RUN source source ~/.bashrc
 RUN roscd rmader && cd scripts
 RUN apt-get update && apt-get install python3-pip -y
 RUN pip3 install -U bagpy
