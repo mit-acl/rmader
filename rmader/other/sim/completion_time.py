@@ -83,7 +83,11 @@ if __name__ == '__main__':
                     print("agents didn't reach goals")
 
             os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/completion_time.txt')
-            os.system('echo "ave is '+str(round(statistics.mean(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
-            os.system('echo "max is '+str(round(max(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
-            os.system('echo "min is '+str(round(min(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
+            try:
+                os.system('echo "ave is '+str(round(statistics.mean(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
+                os.system('echo "max is '+str(round(max(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
+                os.system('echo "min is '+str(round(min(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
+            except:
+                pass
             os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/completion_time.txt')
+

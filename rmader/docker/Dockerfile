@@ -63,7 +63,6 @@ ADD snap_sim /home/rmader_ws/src/snap_sim
 
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
-WORKDIR /home/rmader_ws/
 
 #CLONE SUBMODULES, INSTALL DEPENDENCIES AND COMPILE
 ##########################################
@@ -74,23 +73,23 @@ RUN DEBIAN_FRONTEND=noninteractive rosdep install --from-paths /home/rmader_ws/s
 RUN apt-get update && apt-get install libncurses5-dev -y
 RUN catkin config -DCMAKE_BUILD_TYPE=Release
 RUN export GUROBI_HOME="/opt/gurobi952/linux64" && \
-    export PATH="${PATH}:${GUROBI_HOME}/bin" && \
-    export LD_LIBRARY_PATH="${GUROBI_HOME}/lib" && \
-    . /opt/ros/noetic/setup.sh && catkin build
-RUN echo source /home/rmader_ws/devel/setup.bash >> ~/.bashrc
+      export PATH="${PATH}:${GUROBI_HOME}/bin" && \
+      export LD_LIBRARY_PATH="${GUROBI_HOME}/lib" && \
+      . /opt/ros/noetic/setup.sh && catkin build && \
+      echo source /home/rmader_ws/devel/setup.bash >> ~/.bashrc
 
-RUN echo 'alias cb="catkin build"' >> ~/.bashrc
-RUN echo 'alias gs="git status"' >> ~/.bashrc
-RUN echo 'alias gp="git push"' >> ~/.bashrc
-RUN echo 'alias kr="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & pkill -f panther & pkill -f gazebo_ros & pkill -f spawn_model & pkill -f gzserver & pkill -f gzclient  & pkill -f static_transform_publisher &  killall -9 multi_robot_node & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f tracker_predictor & pkill -f swarm_traj_planner & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands & pkill -f dynamic_corridor & tmux kill-server & pkill -f perfect_controller & pkill -f publish_in_gazebo"' >> ~/.bashrc
-RUN echo 'alias py="python"' >> ~/.bashrc
-RUN echo 'alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader.rviz"' >> ~/.bashrc
-RUN echo 'alias tks="tmux kill-server"' >> ~/.bashrc
-RUN apt-get install psmisc
+RUN echo 'alias cb="catkin build"' >> ~/.bashrc && \
+      echo 'alias gs="git status"' >> ~/.bashrc && \
+      echo 'alias gp="git push"' >> ~/.bashrc && \
+      echo 'alias kr="killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & pkill -f panther & pkill -f gazebo_ros & pkill -f spawn_model & pkill -f gzserver & pkill -f gzclient  & pkill -f static_transform_publisher &  killall -9 multi_robot_node & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f tracker_predictor & pkill -f swarm_traj_planner & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands & pkill -f dynamic_corridor & tmux kill-server & pkill -f perfect_controller & pkill -f publish_in_gazebo"' >> ~/.bashrc && \
+      echo 'alias py="python"' >> ~/.bashrc && \
+      echo 'alias rvmd="roscd rmader && cd rviz_cfgs && rosrun rviz rviz -d rmader.rviz"' >> ~/.bashrc && \
+      echo 'alias tks="tmux kill-server"' >> ~/.bashrc && \
+      apt-get install psmisc
 
-RUN mkdir -p /home/data/oldmader
-RUN mkdir -p /home/data/rmader
-RUN source ~/.bashrc
-RUN roscd rmader && cd scripts
-RUN apt-get update && apt-get install python3-pip -y
-RUN pip3 install -U bagpy
+RUN mkdir -p /home/data/oldmader && \
+      mkdir -p /home/data/rmader && \
+      . ~/.bashrc && \
+      roscd rmader && cd scripts && \
+      apt-get update && apt-get install python3-pip -y && \
+      pip3 install -U bagpy
