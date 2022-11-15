@@ -58,6 +58,9 @@ WORKDIR /home/rmader_ws/src
 # #       apt-get install python-is-python3 -y
 # RUN git clone git@github.com:mit-acl/rmader.git && \
 #       apt-get install python-is-python3 -y
+ADD outer_loop /home/rmader_ws/src/outer_loop
+ADD snap /home/rmader_ws/src/snap
+ADD snap_sim /home/rmader_ws/src/snap_sim
 WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
 WORKDIR /home/rmader_ws/
@@ -67,9 +70,6 @@ ADD rmader /home/rmader_ws/src/rmader
 WORKDIR /home/rmader_ws/src/rmader
 RUN git submodule init && git submodule update
 WORKDIR /home/rmader_ws
-ADD outer_loop /home/rmader_ws/src/outer_loop
-ADD snap /home/rmader_ws/src/snap
-ADD snap_sim /home/rmader_ws/src/snap_sim
 RUN apt-get update && apt-get install ros-noetic-rqt libncurses5-dev libeigen3-dev -y
 RUN catkin config -DCMAKE_BUILD_TYPE=Release
 RUN export GUROBI_HOME="/opt/gurobi952/linux64" && \
