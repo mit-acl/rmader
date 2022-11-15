@@ -89,7 +89,7 @@ RUN echo 'alias cb="catkin build"' >> ~/.bashrc && \
 
 RUN mkdir -p /home/data/oldmader && \
       mkdir -p /home/data/rmader && \
-      . ~/.bashrc && \
-      roscd rmader && cd scripts && \
       apt-get update && apt-get install python3-pip -y && \
       pip3 install -U bagpy
+      # . ~/.bashrc && \
+      # roscd rmader && cd scripts && \
