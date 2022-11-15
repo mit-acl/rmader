@@ -62,11 +62,11 @@ WORKDIR /home/rmader_ws/
 RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
 WORKDIR /home/rmader_ws/
 
+RUN DEBIAN_FRONTEND=noninteractive rosdep install --from-paths /home/rmader_ws/src --ignore-src -r -y
 ADD rmader /home/rmader_ws/src/rmader
 WORKDIR /home/rmader_ws/src/rmader
 RUN git submodule init && git submodule update
 WORKDIR /home/rmader_ws
-RUN DEBIAN_FRONTEND=noninteractive rosdep install --from-paths /home/rmader_ws/src --ignore-src -r -y
 ADD outer_loop /home/rmader_ws/src/outer_loop
 ADD snap /home/rmader_ws/src/snap
 ADD snap_sim /home/rmader_ws/src/snap_sim
