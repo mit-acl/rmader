@@ -94,5 +94,5 @@ RUN mkdir -p /home/data/oldmader && \
       # . ~/.bashrc && \
       # roscd rmader && cd scripts && \
 
-COPY to-be-copied/my-entrypoint.bash ~
-ENTRYPOINT ["my-entrypoint.bash"]
+# COPY to-be-copied/my-entrypoint.bash ~
+# ENTRYPOINT ["my-entrypoint.bash"]
