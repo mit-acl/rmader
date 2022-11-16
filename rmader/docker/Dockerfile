@@ -93,3 +93,6 @@ RUN mkdir -p /home/data/oldmader && \
       pip3 install -U bagpy
       # . ~/.bashrc && \
       # roscd rmader && cd scripts && \
+
+WORKDIR /home/rmader_ws/src/rmader/rmader/scripts
+ENTRYPOINT ["python", "run_many_sims_multi_agent.py"]

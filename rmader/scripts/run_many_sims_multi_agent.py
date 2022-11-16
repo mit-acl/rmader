@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=1
+    num_of_sims=10
     num_of_agents=10
     radius=10
     how_long_to_wait=30 #[s]
@@ -199,9 +199,7 @@ if __name__ == '__main__':
             # use old mader only once
             if is_oldmader:
                 is_oldmader=False
-
             time.sleep(3.0)
-
 
     # After the simulations
     session_name="data"
@@ -211,7 +209,7 @@ if __name__ == '__main__':
     commands = []
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
-    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 
