@@ -94,5 +94,5 @@ RUN mkdir -p /home/data/oldmader && \
       # . ~/.bashrc && \
       # roscd rmader && cd scripts && \
 
-WORKDIR /home/rmader_ws/src/rmader/rmader/scripts
-ENTRYPOINT ["python", "run_many_sims_multi_agent.py"]
+COPY to-be-copied/my-entrypoint.bash ~
+ENTRYPOINT ["my-entrypoint.bash"]
