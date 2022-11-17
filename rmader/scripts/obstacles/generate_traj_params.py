@@ -25,7 +25,7 @@ zmin=1.0
 zmax=2.5
 
 all_drones=[     #"name",     "bbox",      "slower", "offset", "lim_x",    "lim_y",    "lim_z"
-            Drone("SQ02s", [0.7, 0.7, 0.7],  3.5,   0.0,   [-9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
+            Drone("SQ02s", [0.7, 0.7, 0.7],  3.5,   0.0,   [9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
             ]
 
 tmp = rospkg.RosPack()
