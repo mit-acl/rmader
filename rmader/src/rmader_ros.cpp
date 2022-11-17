@@ -32,8 +32,8 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "is_sim", is_sim_);
 
   // use highbay space size?
-  bool is_highbay;
-  mu::safeGetParam(nh1_, "is_highbay", is_highbay);
+  std::string space_size;
+  mu::safeGetParam(nh1_, "space_size", space_size);
 
   // using delay check or not
   mu::safeGetParam(nh1_, "is_delaycheck", is_delaycheck_);
@@ -90,22 +90,19 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   par_.drone_bbox << drone_bbox_tmp[0], drone_bbox_tmp[1], drone_bbox_tmp[2];
   mu::safeGetParam(nh1_, "tuning_param/Ra", par_.Ra);
   // if using delay check(this has to be true if we wanna use RMADER)
-  mu::safeGetParam(nh1_, "tuning_param/delay_check", par_.delay_check);
+  mu::safeGetParam(nh1_, "tuning_param/delay_check_sec", par_.delay_check);
   delay_check_ = par_.delay_check;
-  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay", simulated_comm_delay_);
+  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay_sec", simulated_comm_delay_);
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
-  std::string env_size = "";
-  is_highbay ? env_size = "highbay_size" : env_size = "sim_size";
+  mu::safeGetParam(nh1_, space_size + "/x_min", par_.x_min);
+  mu::safeGetParam(nh1_, space_size + "/x_max", par_.x_max);
 
-  mu::safeGetParam(nh1_, env_size + "/x_min", par_.x_min);
-  mu::safeGetParam(nh1_, env_size + "/x_max", par_.x_max);
+  mu::safeGetParam(nh1_, space_size + "/y_min", par_.y_min);
+  mu::safeGetParam(nh1_, space_size + "/y_max", par_.y_max);
 
-  mu::safeGetParam(nh1_, env_size + "/y_min", par_.y_min);
-  mu::safeGetParam(nh1_, env_size + "/y_max", par_.y_max);
-
-  mu::safeGetParam(nh1_, env_size + "/z_min", par_.z_min);
-  mu::safeGetParam(nh1_, env_size + "/z_max", par_.z_max);
+  mu::safeGetParam(nh1_, space_size + "/z_min", par_.z_min);
+  mu::safeGetParam(nh1_, space_size + "/z_max", par_.z_max);
 
   std::vector<double> v_max_tmp;
   std::vector<double> a_max_tmp;
@@ -1096,14 +1093,16 @@ void RmaderRos::terminalGoalCB(const geometry_msgs::PoseStamped& msg)
     ros::Duration(0.1).sleep();  // wait to receive other's trajs
   }
 
-  if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
-  {
-    z = 1.0;
-  }
-  else  // This happens when you publish by yourself the goal (should always be above the ground)
-  {
-    z = msg.pose.position.z;
-  }
+  // if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
+  // {
+  //   z = 1.0;
+  // }
+  // else  // This happens when you publish by yourself the goal (should always be above the ground)
+  // {
+  //   z = msg.pose.position.z;
+  // }
+  // for simulation i commented out the above lines
+  z = msg.pose.position.z;
 
   G_term.setPos(msg.pose.position.x, msg.pose.position.y, z);
   // mtx_mader_ptr_.lock();

@@ -1705,7 +1705,7 @@ Visualization Manager:
       Marker Topic: /high_bay
       Name: Marker
       Namespaces:
-        "": true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -2322,5 +2322,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1884
-  X: 1956
+  X: 72
   Y: 27

@@ -52,6 +52,11 @@ class TermGoalSender:
         self.wp11 = np.array([-4.0+2.7*2, 3.6-2.3*3])
         self.wp12 = np.array([-4.0+2.7*3, 3.6-2.3*3])
 
+        self.full_wp1 = np.array([-3.8, 3.6])
+        self.full_wp2 = np.array([14.0, 3.6])
+        self.full_wp3 = np.array([-3.8, -3.2])
+        self.full_wp4 = np.array([14.0, -3.2])
+
         # waypoints
         self.wpidx = 0
         self.wps = np.array([
@@ -221,22 +226,71 @@ class TermGoalSender:
             #         self.term_goal.pose.position.x = self.wp8[0]
             #         self.term_goal.pose.position.y = self.wp8[1]
 
-            # obstacle
-            if self.mode == 1:
-                self.term_goal.pose.position.x = self.sign * 4
-                self.term_goal.pose.position.y = self.sign * -3.3
-            elif self.mode == 2:
-                self.term_goal.pose.position.x = self.sign * 4
-                self.term_goal.pose.position.y = self.sign * 3.3
-            elif self.mode == 3:
-                self.term_goal.pose.position.x = self.sign * 0
-                self.term_goal.pose.position.y = self.sign * -3.3
-            elif self.mode == 4:
-                self.term_goal.pose.position.x = self.sign * 4
-                self.term_goal.pose.position.y = self.sign * 0
-            self.term_goal.pose.position.z = 1.0 + 2.0 * random()
+            # obstacle in west
+            # if self.mode == 1:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * -3.3
+            # elif self.mode == 2:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * 3.3
+            # elif self.mode == 3:
+            #     self.term_goal.pose.position.x = self.sign * 0
+            #     self.term_goal.pose.position.y = self.sign * -3.3
+            # elif self.mode == 4:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * 0
             # self.term_goal.pose.position.z = 1.0
 
+            # full space position exchange
+            if self.mode == 1:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp1[0]
+                    self.term_goal.pose.position.y = self.full_wp1[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp4[0]
+                    self.term_goal.pose.position.y = self.full_wp4[1]
+            elif self.mode == 2:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp2[0]
+                    self.term_goal.pose.position.y = self.full_wp2[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp3[0]
+                    self.term_goal.pose.position.y = self.full_wp3[1]
+            elif self.mode == 3:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp3[0]
+                    self.term_goal.pose.position.y = self.full_wp3[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp2[0]
+                    self.term_goal.pose.position.y = self.full_wp2[1]
+            elif self.mode == 4:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp4[0]
+                    self.term_goal.pose.position.y = self.full_wp4[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp1[0]
+                    self.term_goal.pose.position.y = self.full_wp1[1]
+
+            ######################################################    
+            #                                                    #
+            #   1                                       2        #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #           obs1                   obs2              #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #    2                                       4       #
+            #                                                    #
+            ######################################################    
+
+            self.term_goal.pose.position.z = 1.0 + 2.0 * random()
             self.if_arrived = not self.if_arrived
             self.sign = self.sign * (-1)
 
