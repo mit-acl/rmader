@@ -13,7 +13,6 @@
 
     <node ns="$(arg quad1)" pkg="behavior_selector" type="behavior_selector_node.py" name="obs_behavior_selector" output="screen" />
 
-
     <node ns="$(arg quad2)" name="obstacle" pkg="rmader" type="obstacle.py" output="screen" clear_params="true">
         <rosparam file="$(find rmader)/param/obstacle2.yaml" command="load"/>
     </node>

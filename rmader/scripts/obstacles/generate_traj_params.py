@@ -25,7 +25,7 @@ zmin=1.0
 zmax=2.5
 
 all_drones=[     #"name",     "bbox",      "slower", "offset", "lim_x",    "lim_y",    "lim_z"
-            Drone("SQ02s", [0.7, 0.7, 0.7],  3.5,   0.0,   [-2.0, 2.0], [-2.0, 2.0],   [zmin,zmax])
+            Drone("SQ02s", [0.7, 0.7, 0.7],  3.5,   0.0,   [-9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
             ]
 
 tmp = rospkg.RosPack()
@@ -35,7 +35,7 @@ for i in range(len(all_drones)):
     drone_i=all_drones[i];
     traj=getTrefoil(t, drone_i.offset, drone_i.slower, drone_i.lim_x, drone_i.lim_y, drone_i.lim_z)
     # print traj
-    name_file=pwd_package+"/param/obstacle.yaml"
+    name_file=pwd_package+"/param/obstacle2.yaml"
     f = open(name_file, "w")
     f.write("# DO NOT EDIT. RUN THE PYTHON FILE INSTEAD TO GENERATE THIS .yaml FILE \n")
     f.write("traj_x: "+str(traj[0])+"\n")
