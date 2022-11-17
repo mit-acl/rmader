@@ -249,6 +249,8 @@ class TermGoalSender:
                 else:
                     self.term_goal.pose.position.x = self.full_wp4[0]
                     self.term_goal.pose.position.y = self.full_wp4[1]
+                print(self.term_goal.pose.position.x)
+                print(self.term_goal.pose.position.y)
             elif self.mode == 2:
                 if self.if_arrived:
                     self.term_goal.pose.position.x = self.full_wp2[0]
