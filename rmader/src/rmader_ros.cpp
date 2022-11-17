@@ -32,8 +32,8 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "is_sim", is_sim_);
 
   // use highbay space size?
-  bool is_highbay;
-  mu::safeGetParam(nh1_, "is_highbay", is_highbay);
+  std::string space_size;
+  mu::safeGetParam(nh1_, "space_size", space_size);
 
   // using delay check or not
   mu::safeGetParam(nh1_, "is_delaycheck", is_delaycheck_);
@@ -95,17 +95,14 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay_sec", simulated_comm_delay_);
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
-  std::string env_size = "";
-  is_highbay ? env_size = "highbay_size" : env_size = "sim_size";
+  mu::safeGetParam(nh1_, space_size + "/x_min", par_.x_min);
+  mu::safeGetParam(nh1_, space_size + "/x_max", par_.x_max);
 
-  mu::safeGetParam(nh1_, env_size + "/x_min", par_.x_min);
-  mu::safeGetParam(nh1_, env_size + "/x_max", par_.x_max);
+  mu::safeGetParam(nh1_, space_size + "/y_min", par_.y_min);
+  mu::safeGetParam(nh1_, space_size + "/y_max", par_.y_max);
 
-  mu::safeGetParam(nh1_, env_size + "/y_min", par_.y_min);
-  mu::safeGetParam(nh1_, env_size + "/y_max", par_.y_max);
-
-  mu::safeGetParam(nh1_, env_size + "/z_min", par_.z_min);
-  mu::safeGetParam(nh1_, env_size + "/z_max", par_.z_max);
+  mu::safeGetParam(nh1_, space_size + "/z_min", par_.z_min);
+  mu::safeGetParam(nh1_, space_size + "/z_max", par_.z_max);
 
   std::vector<double> v_max_tmp;
   std::vector<double> a_max_tmp;
