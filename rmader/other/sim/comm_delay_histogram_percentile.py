@@ -54,7 +54,7 @@ if __name__ == '__main__':
             str_dc = str(dc)
 
             if is_docker:
-                source_dir = "/home/data/" # change the source dir accordingly #10 agents 
+                source_dir = "/home/data" # change the source dir accordingly #10 agents 
             else:
                 source_dir = "/home/kota/test/data" # change the source dir accordingly #10 agents 
 
@@ -73,19 +73,16 @@ if __name__ == '__main__':
 
             for i in range(len(rosbag)):
             # for i in range(10):
-
                 b = bagreader(rosbag[i], verbose=False);
                 
                 for i in range(1,num_of_agents+1):
-                    if i < 10:
-                        log_data = b.message_by_topic("/SQ0" + str(i) + "s/rmader/comm_delay")
-                        print("log_data", log_data)
-                    else:
-                        log_data = b.message_by_topic("/SQ" + str(i) + "s/rmader/comm_delay")
-
                     try:
+                        if i < 10:
+                            log_data = b.message_by_topic("/SQ0" + str(i) + "s/rmader/comm_delay")
+                        else:
+                            log_data = b.message_by_topic("/SQ" + str(i) + "s/rmader/comm_delay")
+                            print("log_data", log_data)
                         log = pd.read_csv(log_data)
-
                         for j in range(len(log.comm_delay)):
                             comm_delay.append(log.comm_delay[j])
                     except:
