@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if cd == 0: 
             dc_list = [0, 25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [0, 56] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0, 60] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
             dc_list = [0, 200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
             collision_per = 100 - collision_cnt / len(rosbag) * 100
             os.system('paste '+source_dir+'/collision_status.txt '+source_dir+'/status.txt >> '+source_dir+'/complete_status.txt')
-            os.system('echo "'+parent_source_dir+'" >> '+parent_source_dir+'/collision_count.txt')
+            os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/collision_count.txt')
             os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> '+parent_source_dir+'/collision_count.txt')
             os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/collision_count.txt')
 
