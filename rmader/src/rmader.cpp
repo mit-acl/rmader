@@ -2358,7 +2358,7 @@ void Rmader::getDesiredYaw(mt::state& next_goal)
   if (par_.is_camera_yawing)
   {
     // looking at the center of highbay
-    double desired_yaw = atan2(state_.pos[1], state_.pos[0]) -
+    double desired_yaw = atan2(state_.pos[1], state_.pos[0]-5.5) -
                          M_PI / 2;  // - M_PI / 2 is because the camera is mounted pointing at y-axis
     double diff = desired_yaw - state_.yaw;
     mu::angle_wrap(diff);
