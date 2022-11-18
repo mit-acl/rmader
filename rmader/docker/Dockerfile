@@ -69,7 +69,7 @@ RUN echo source /opt/ros/noetic/setup.bash >> ~/.bashrc
 WORKDIR /home/rmader_ws/src/rmader
 RUN git submodule init && git submodule update
 WORKDIR /home/rmader_ws
-RUN sudo apt update
+RUN apt update
 RUN DEBIAN_FRONTEND=noninteractive rosdep install --from-paths /home/rmader_ws/src --ignore-src -r -y
 RUN apt-get update && apt-get install libncurses5-dev -y
 RUN catkin config -DCMAKE_BUILD_TYPE=Release
