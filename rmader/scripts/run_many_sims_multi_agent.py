@@ -39,7 +39,7 @@ if __name__ == '__main__':
     ##### parameters
     is_docker = True
     num_of_sims=1
-    num_of_agents=15
+    num_of_agents=16
     radius=15
     how_long_to_wait=60 #[s]
     cd_list = [0, 50, 100, 200, 300]
