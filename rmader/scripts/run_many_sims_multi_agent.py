@@ -39,8 +39,8 @@ if __name__ == '__main__':
     ##### parameters
     is_docker = True
     num_of_sims=5
-    num_of_agents=10
-    radius=10
+    num_of_agents=15
+    radius=15
     how_long_to_wait=60 #[s]
     cd_list = [0, 50, 100, 200, 300]
 
@@ -95,12 +95,12 @@ if __name__ == '__main__':
                 os.makedirs(folder_bags)
 
             # create directy if not exists
-            if (not os.path.exists(folder_txts)):
-                os.makedirs(folder_txts)
+            # if (not os.path.exists(folder_txts)):
+            #     os.makedirs(folder_txts)
 
              # create directy if not exists
-            if (not os.path.exists(folder_csv)):
-                os.makedirs(folder_csv)        
+            # if (not os.path.exists(folder_csv)):
+            #     os.makedirs(folder_csv)        
 
             # name_node_record="bag_recorder"
             kill_all="tmux kill-server & killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands"
@@ -135,9 +135,9 @@ if __name__ == '__main__':
                 commands.append("sleep 4.0 && roscd rmader && cd scripts && python launch_many_drones.py controller "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 4.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 # commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -e '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -e '(.*)state(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
                 commands.append("sleep 4.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
-                commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
+                # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")
 
                 #publishing the goal should be the last command

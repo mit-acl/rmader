@@ -47,8 +47,9 @@ def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal
         quad = veh + num + "s";
         return "rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
     if(action=="rmader"):
-        print(str(folder))
-        return "roslaunch --wait rmader onboard.launch veh:="+veh+" num:="+num+" 2>&1 | tee "+str(folder)+"/"+str(sim_id)+"_"+veh+num+"_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt"
+        # print(str(folder))
+        # return "roslaunch --wait rmader onboard.launch veh:="+veh+" num:="+num+" 2>&1 | tee "+str(folder)+"/"+str(sim_id)+"_"+veh+num+"_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt"
+        return "roslaunch --wait rmader onboard.launch veh:="+veh+" num:="+num
         # return "roslaunch rmader onboard.launch veh:="+veh+" num:="+num #+ " >> "+quad+".txt" #Kota comment: this line launches mader.launch with the argument of quad number
         # return "script -q -c 'roslaunch rmader rmader.launch quad:="+quad + "' "+quad+".txt"
         

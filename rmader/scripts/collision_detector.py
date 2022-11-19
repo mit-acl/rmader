@@ -52,8 +52,6 @@ class CollisionDetector:
         self.collision=Collision()
         self.pubIsCollided = rospy.Publisher('is_collided', Collision, queue_size=1, latch=True)
 
-        # 
-
     # collision detection
     def collisionDetect(self, timer):
         
@@ -177,6 +175,27 @@ class CollisionDetector:
         self.state_pos[9,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
         if self.initialized_mat[9] == False and LA.norm(self.state_pos[9,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
             self.initialized_mat[9] = True
+    def SQ11stateCB(self, data):
+        self.state_pos[10,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+        # print(LA.norm(self.state_pos))
+        if self.initialized_mat[10] == False and LA.norm(self.state_pos[10,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+            self.initialized_mat[10] = True
+    def SQ12stateCB(self, data):
+        self.state_pos[11,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+        if self.initialized_mat[11] == False and LA.norm(self.state_pos[11,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+            self.initialized_mat[11] = True
+    def SQ13stateCB(self, data):
+        self.state_pos[12,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+        if self.initialized_mat[12] == False and LA.norm(self.state_pos[12,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+            self.initialized_mat[12] = True
+    def SQ14stateCB(self, data):
+        self.state_pos[13,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+        if self.initialized_mat[13] == False and LA.norm(self.state_pos[13,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+            self.initialized_mat[13] = True
+    def SQ15stateCB(self, data):
+        self.state_pos[14,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+        if self.initialized_mat[14] == False and LA.norm(self.state_pos[14,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+            self.initialized_mat[14] = True
     
 
     def get_transformation(self, source_frame, target_frame):
@@ -201,11 +220,11 @@ def startNode():
     rospy.Subscriber("SQ08s/state", State, c.SQ08stateCB)
     rospy.Subscriber("SQ09s/state", State, c.SQ09stateCB)
     rospy.Subscriber("SQ10s/state", State, c.SQ10stateCB)
-    # rospy.Subscriber("SQ11s/state", State, c.SQ11stateCB)
-    # rospy.Subscriber("SQ12s/state", State, c.SQ12stateCB)
-    # rospy.Subscriber("SQ13s/state", State, c.SQ13stateCB)
-    # rospy.Subscriber("SQ14s/state", State, c.SQ14stateCB)
-    # rospy.Subscriber("SQ15s/state", State, c.SQ15stateCB)
+    rospy.Subscriber("SQ11s/state", State, c.SQ11stateCB)
+    rospy.Subscriber("SQ12s/state", State, c.SQ12stateCB)
+    rospy.Subscriber("SQ13s/state", State, c.SQ13stateCB)
+    rospy.Subscriber("SQ14s/state", State, c.SQ14stateCB)
+    rospy.Subscriber("SQ15s/state", State, c.SQ15stateCB)
     # rospy.Subscriber("SQ16s/state", State, c.SQ16stateCB)
     # rospy.Subscriber("SQ17s/state", State, c.SQ17stateCB)
     # rospy.Subscriber("SQ18s/state", State, c.SQ18stateCB)
