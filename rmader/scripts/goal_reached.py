@@ -25,7 +25,7 @@ class GoalReachedCheck:
         rospy.sleep(3)
 
         # goal radius
-        self.goal_radius = 0.15
+        self.goal_radius = 0.30
 
         # number of agents
         self.num_of_agents = 16
