@@ -118,7 +118,6 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   mu::safeGetParam(nh1_, "nlopt/num_pol", par_.num_pol);
   mu::safeGetParam(nh1_, "nlopt/deg_pol", par_.deg_pol);
-  mu::safeGetParam(nh1_, "nlopt/weight", par_.weight);
   mu::safeGetParam(nh1_, "nlopt/epsilon_tol_constraints", par_.epsilon_tol_constraints);
   mu::safeGetParam(nh1_, "nlopt/xtol_rel", par_.xtol_rel);
   mu::safeGetParam(nh1_, "nlopt/ftol_rel", par_.ftol_rel);
@@ -141,6 +140,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "opt/factor_alloc", par_.factor_alloc);
   mu::safeGetParam(nh1_, "opt/factor_alloc_close", par_.factor_alloc_close);
   mu::safeGetParam(nh1_, "opt/dist_factor_alloc_close", par_.dist_factor_alloc_close);
+  mu::safeGetParam(nh1_, "opt/weight", par_.weight);
 
   mu::safeGetParam(nh1_, "basis", par_.basis);
 
@@ -524,18 +524,18 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     replanCBTimer_.stop();  // to avoid blockage
 
     // introduce random wait time in the beginning
-    // if (!is_replanCB_called_ && is_sequencial_start_)
-    // {
-    //   // to avoid initial path search congestions add some random sleep here
-    //   // std::random_device rd;
-    //   // std::default_random_engine eng(rd());
-    //   // std::uniform_real_distribution<float> distr(0, 1);  // sleep between 0 and 1 sec
-    //   // ros::Duration(distr(eng)).sleep();
+    if (!is_replanCB_called_ && is_sequencial_start_)
+    {
+      // to avoid initial path search congestions add some random sleep here
+      // std::random_device rd;
+      // std::default_random_engine eng(rd());
+      // std::uniform_real_distribution<float> distr(0, 1);  // sleep between 0 and 1 sec
+      // ros::Duration(distr(eng)).sleep();
 
-    //   srand(time(NULL));
-    //   ros::Duration(0.25 * id_).sleep();  // random wait time between 0 to 3
-    //   is_replanCB_called_ = true;
-    // }
+      srand(time(NULL));
+      ros::Duration(0.15 * id_).sleep();
+      is_replanCB_called_ = true;
+    }
 
     // Check if reached the goal
     // if (rmader_ptr_->isGoalSeen())
