@@ -30,7 +30,7 @@ if __name__ == '__main__':
     ##### parameters
     is_docker = True
     is_oldmader = False # always False bc oldmader doesn't have comm_delay
-    num_of_agents = sys.argv[1]
+    num_of_agents = 10
     cd_list = [0, 50, 100, 200, 300]
 
     for cd in cd_list:
