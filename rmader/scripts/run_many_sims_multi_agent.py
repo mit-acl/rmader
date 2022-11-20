@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
             #### folder name
             if is_docker: ## using Docker on lambda machine
-                source_dir = "/home/data"
+                source_dir = "/home/data/mader"
                 if is_oldmader:
                     folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
