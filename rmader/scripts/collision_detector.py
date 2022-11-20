@@ -35,13 +35,13 @@ class CollisionDetector:
         # numerical tolerance
         # state is not synchronized and time difference could be up to 0.01[s] so we need tolerance
         # if max vel is 2.0m/s -> there should be 0.04m tolerance
-        self.tol = 0.01 #[m] 
+        self.tol = 0.02 #[m] 
 
         # bbox size
         self.bbox_x = rospy.get_param('~bbox_x', 0.25) - self.tol #default value is 0.15
         self.bbox_y = rospy.get_param('~bbox_y', 0.25) - self.tol #default value is 0.15
         self.bbox_z = rospy.get_param('~bbox_z', 0.25) - self.tol #default value is 0.15
-        self.num_of_agents = rospy.get_param('~num_of_agents')
+        self.num_of_agents = rospy.get_param('~num_of_agents', 10)
 
         self.initialized = False
         self.initialized_mat = [False for i in range(self.num_of_agents)]
@@ -175,30 +175,30 @@ class CollisionDetector:
         self.state_pos[9,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
         if self.initialized_mat[9] == False and LA.norm(self.state_pos[9,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
             self.initialized_mat[9] = True
-    def SQ11stateCB(self, data):
-        self.state_pos[10,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        # print(LA.norm(self.state_pos))
-        if self.initialized_mat[10] == False and LA.norm(self.state_pos[10,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
-            self.initialized_mat[10] = True
-    def SQ12stateCB(self, data):
-        self.state_pos[11,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        if self.initialized_mat[11] == False and LA.norm(self.state_pos[11,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
-            self.initialized_mat[11] = True
-    def SQ13stateCB(self, data):
-        self.state_pos[12,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        if self.initialized_mat[12] == False and LA.norm(self.state_pos[12,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
-            self.initialized_mat[12] = True
-    def SQ14stateCB(self, data):
-        self.state_pos[13,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        if self.initialized_mat[13] == False and LA.norm(self.state_pos[13,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
-            self.initialized_mat[13] = True
-    def SQ15stateCB(self, data):
-        self.state_pos[14,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        if self.initialized_mat[14] == False and LA.norm(self.state_pos[14,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
-            self.initialized_mat[14] = True
-    def SQ16stateCB(self, data):
-        self.state_pos[15,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
-        if self.initialized_mat[15] == False and LA.norm(self.state_pos[15,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    # def SQ11stateCB(self, data):
+    #     self.state_pos[10,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     # print(LA.norm(self.state_pos))
+    #     if self.initialized_mat[10] == False and LA.norm(self.state_pos[10,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    #         self.initialized_mat[10] = True
+    # def SQ12stateCB(self, data):
+    #     self.state_pos[11,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     if self.initialized_mat[11] == False and LA.norm(self.state_pos[11,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    #         self.initialized_mat[11] = True
+    # def SQ13stateCB(self, data):
+    #     self.state_pos[12,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     if self.initialized_mat[12] == False and LA.norm(self.state_pos[12,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    #         self.initialized_mat[12] = True
+    # def SQ14stateCB(self, data):
+    #     self.state_pos[13,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     if self.initialized_mat[13] == False and LA.norm(self.state_pos[13,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    #         self.initialized_mat[13] = True
+    # def SQ15stateCB(self, data):
+    #     self.state_pos[14,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     if self.initialized_mat[14] == False and LA.norm(self.state_pos[14,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
+    #         self.initialized_mat[14] = True
+    # def SQ16stateCB(self, data):
+    #     self.state_pos[15,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    #     if self.initialized_mat[15] == False and LA.norm(self.state_pos[15,0:3]) > 0.1: # make sure first [0, 0, 0] state info will not be used
             self.initialized_mat[15] = True
     
 
@@ -224,12 +224,12 @@ def startNode():
     rospy.Subscriber("SQ08s/state", State, c.SQ08stateCB)
     rospy.Subscriber("SQ09s/state", State, c.SQ09stateCB)
     rospy.Subscriber("SQ10s/state", State, c.SQ10stateCB)
-    rospy.Subscriber("SQ11s/state", State, c.SQ11stateCB)
-    rospy.Subscriber("SQ12s/state", State, c.SQ12stateCB)
-    rospy.Subscriber("SQ13s/state", State, c.SQ13stateCB)
-    rospy.Subscriber("SQ14s/state", State, c.SQ14stateCB)
-    rospy.Subscriber("SQ15s/state", State, c.SQ15stateCB)
-    rospy.Subscriber("SQ16s/state", State, c.SQ16stateCB)
+    # rospy.Subscriber("SQ11s/state", State, c.SQ11stateCB)
+    # rospy.Subscriber("SQ12s/state", State, c.SQ12stateCB)
+    # rospy.Subscriber("SQ13s/state", State, c.SQ13stateCB)
+    # rospy.Subscriber("SQ14s/state", State, c.SQ14stateCB)
+    # rospy.Subscriber("SQ15s/state", State, c.SQ15stateCB)
+    # rospy.Subscriber("SQ16s/state", State, c.SQ16stateCB)
     # rospy.Subscriber("SQ17s/state", State, c.SQ17stateCB)
     # rospy.Subscriber("SQ18s/state", State, c.SQ18stateCB)
     # rospy.Subscriber("SQ19s/state", State, c.SQ19stateCB)

@@ -38,9 +38,9 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=1
-    num_of_agents=16
-    radius=15
+    num_of_sims=5
+    num_of_agents=10
+    radius=10
     how_long_to_wait=60 #[s]
     cd_list = [0, 50, 100, 200, 300]
 
@@ -139,11 +139,11 @@ if __name__ == '__main__':
                 commands.append("sleep 4.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")
-                commands.append("sleep 10.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
+                commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 
                 #publishing the goal should be the last command
-                commands.append("sleep 15.0 && roscd rmader && cd scripts && python launch_many_drones.py send_goal "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
-                commands.append("sleep 15.0 && tmux detach")
+                commands.append("sleep 10.0 && roscd rmader && cd scripts && python launch_many_drones.py send_goal "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
+                commands.append("sleep 10.0 && tmux detach")
 
                 # print("len(commands)= " , len(commands))
                 session_name="run_many_sims_multi_agent_session"
@@ -209,7 +209,7 @@ if __name__ == '__main__':
     commands = []
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py "+num_of_agents)
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 

@@ -26,7 +26,7 @@ is_centralized: false
 is_delaycheck: true
 
 # agents' ids
-agents_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+agents_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # agents_ids: [2, 3, 4, 5, 6, 8]
 
 # introduce roughly sequential start?
@@ -74,9 +74,9 @@ tuning_param:
   delay_check_sec: 0.05 # seconds
   simulated_comm_delay_sec: 0.05 #seconds
   comm_delay_param: 1.0
-  v_max: [10.0, 10.0, 10.0]   #[m/s]  7.0
-  a_max: [20.0, 20.0, 20.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
-  j_max: [30.0, 30.0, 30.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
+  v_max: [15.0, 15.0, 15.0]   #[m/s]  7.0
+  a_max: [25.0, 25.0, 25.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
+  j_max: [35.0, 35.0, 35.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
 
 basis: "MINVO"  #MINVO OR B_SPLINE or BEZIER.  This is the basis used for collision checking
 alpha_shrink: 0.95 #\in [0,1] Only used for MINVO/Bezier
