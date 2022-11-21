@@ -153,6 +153,7 @@ private:
   visualization_msgs::MarkerArray traj_safe_colored_bef_commit_save_;
 
   bool is_sequencial_start_;
+  bool is_replan_after_goal_reached_;
   bool is_adaptive_delaycheck_;
   int adpt_freq_msgs_;
   double adpt_weight_;

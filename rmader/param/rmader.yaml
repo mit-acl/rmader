@@ -39,6 +39,9 @@ camera2: "20"
 # introduce artificial comm delay?
 is_artificial_comm_delay: true
 
+# replan after reached goal?
+is_replan_after_goal_reached: false 
+
 ###############################################################
 # adaptive delay related Parameters
 ###############################################################

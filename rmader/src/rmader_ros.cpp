@@ -53,6 +53,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // sequencial start
   mu::safeGetParam(nh1_, "is_sequencial_start", is_sequencial_start_);
 
+  // replan after reached the goal?
+  mu::safeGetParam(nh1_, "is_replan_after_goal_reached", is_replan_after_goal_reached_);
+
   // use adaptive delay check?
   mu::safeGetParam(nh1_, "adpt/is_adaptive_delaycheck", is_adaptive_delaycheck_);
   mu::safeGetParam(nh1_, "adpt/initial_adaptive_delay_check", adaptive_delay_check_);
@@ -533,22 +536,25 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       // ros::Duration(distr(eng)).sleep();
 
       srand(time(NULL));
-      ros::Duration(0.15 * id_).sleep();
+      ros::Duration(0.25 * id_).sleep();
       is_replanCB_called_ = true;
     }
 
     // Check if reached the goal
-    // if (rmader_ptr_->isGoalSeen())
-    // {
-    //   std::cout << "goal is reached so no need to replan" << std::endl;
-    //   is_rmader_running_ = false;
-    //   rmader_msgs::MissedMsgsCnt msg;
-    //   msg.missed_msgs_cnt = missed_msgs_cnt_;
-    //   msg.msgs_cnt = msgs_cnt_;
-    //   pub_missed_msgs_cnt_.publish(msg);
-    //   // mtx_mader_ptr_.unlock();
-    //   return;
-    // }
+    if (is_replan_after_goal_reached_)
+    {
+      if (rmader_ptr_->isGoalSeen())
+      {
+        std::cout << "goal is reached so no need to replan" << std::endl;
+        is_rmader_running_ = false;
+        rmader_msgs::MissedMsgsCnt msg;
+        msg.missed_msgs_cnt = missed_msgs_cnt_;
+        msg.msgs_cnt = msgs_cnt_;
+        pub_missed_msgs_cnt_.publish(msg);
+        // mtx_mader_ptr_.unlock();
+        return;
+      }
+    }
 
     // initialization
     mt::Edges edges_obstacles;
