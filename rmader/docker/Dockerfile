@@ -88,8 +88,8 @@ RUN echo 'alias cb="catkin build"' >> ~/.bashrc && \
       echo 'alias tks="tmux kill-server"' >> ~/.bashrc && \
       apt-get install psmisc
 
-RUN mkdir -p /home/data/mader/oldmader && \
-      mkdir -p /home/data/mader/rmader && \
+RUN mkdir -p /home/kota/data/mader/oldmader && \
+      mkdir -p /home/kota/data/mader/rmader && \
       apt-get update && apt-get install python3-pip -y && \
       pip3 install -U bagpy
       # . ~/.bashrc && \

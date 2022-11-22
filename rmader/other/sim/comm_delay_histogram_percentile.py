@@ -54,7 +54,7 @@ if __name__ == '__main__':
             str_dc = str(dc)
 
             if is_docker:
-                source_dir = "/home/data/mader" # change the source dir accordingly #10 agents 
+                source_dir = "/home/kota/data/mader" # change the source dir accordingly #10 agents 
             else:
                 source_dir = "/home/kota/test/data" # change the source dir accordingly #10 agents 
 

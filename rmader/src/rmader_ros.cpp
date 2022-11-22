@@ -551,7 +551,6 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         msg.missed_msgs_cnt = missed_msgs_cnt_;
         msg.msgs_cnt = msgs_cnt_;
         pub_missed_msgs_cnt_.publish(msg);
-        // mtx_mader_ptr_.unlock();
         return;
       }
     }
@@ -590,7 +589,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             {
               break;
             }
-            ros::Duration(delay_check_ / 5.0).sleep();
+            ros::Duration(adaptive_delay_check_ / 5.0).sleep();
           }
           mtx_adaptive_dc_.unlock();
           delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
