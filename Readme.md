@@ -24,8 +24,7 @@ Please cite [Robust MADER: Decentralized and Asynchronous Multiagent Trajectory 
 
 ## General Setup
 
-RMADER has been tested with 
-* Ubuntu 20.04/ROS Noetic
+RMADER has been tested with Ubuntu 20.04/ROS Noetic
 
 The backend optimizer can be either Gurobi (recommended, used by default) or NLOPT (discouraged): 
 
