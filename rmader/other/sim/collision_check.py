@@ -30,15 +30,15 @@ if __name__ == '__main__':
     for cd in cd_list:
         is_oldmader=True
         if cd == 0: 
-            dc_list = [0, 100] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        elif cd == 50:
             dc_list = [0, 150] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        elif cd == 100:
+        elif cd == 50:
             dc_list = [0, 200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+        elif cd == 100:
+            dc_list = [0, 250] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [0, 300]
+            dc_list = [0, 350]
         elif cd == 300:
-            dc_list = [0, 400]
+            dc_list = [0, 450]
 
         for dc in dc_list:
             collision_cnt = 0

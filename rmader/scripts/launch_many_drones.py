@@ -134,7 +134,7 @@ if __name__ == '__main__':
             goal_x=radius*math.cos(theta+2*math.pi)*math.sin(phi+math.pi)
             goal_y=radius*math.sin(theta+2*math.pi)*math.sin(phi+math.pi)
             # goal_z=shift_z + radius*math.cos(phi+math.pi)
-            goal_z=0.0 # should always above 0. look at terminal goal CB in mader_ros.cpp
+            goal_z=1.0 # should always above 0. look at terminal goal CB in mader_ros.cpp
                 
             # quad="SQ0" + str(id_number) + "s";
             veh="SQ";
