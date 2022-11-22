@@ -37,7 +37,7 @@ def create_session(session_name, commands):
     print("Commands sent")
 
 
-def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z,yaw):
+def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z,yaw, wait_time):
     # if(action=="base_station"):
     #     return "roslaunch rmader base_station.launch type_of_environment:=dynamic_forest";
     if(action=="controller"):
@@ -45,6 +45,8 @@ def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal
         return "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=" + quad + " x:=" + str(x) + " y:=" + str(y)
     if(action=="send_goal"):
         quad = veh + num + "s";
+        # print("sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'")
+        # return "sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
         return "rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
     if(action=="rmader"):
         # print(str(folder))
@@ -54,6 +56,10 @@ def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal
         # return "script -q -c 'roslaunch rmader rmader.launch quad:="+quad + "' "+quad+".txt"
         
 if __name__ == '__main__':
+
+    # is_sequential_start_wait_time
+    is_sequential_start_wait_time = True
+    time_separation = 0.25 #seconds
 
     # formation="sphere", "square" "circle"
     formation="circle"
@@ -139,6 +145,12 @@ if __name__ == '__main__':
 
             id_number=id_number+1
 
+            # sequential_start_wait_time
+            wait_time = 0.0
+            if (is_sequential_start_wait_time):
+                wait_time = time_separation * i
+            wait_time = str(wait_time)
+
             if(formation=="square"):
                 x=square_starts[i-1][0];
                 y=square_starts[i-1][1];
@@ -151,7 +163,7 @@ if __name__ == '__main__':
                 yaw=square_yaws_deg[i-1]*math.pi/180;
                 print("yaw= ", square_yaws_deg[i-1])
 
-            commands.append(convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z, yaw));
+            commands.append(convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z, yaw, wait_time));
 
             x_tmp="{:5.3f}".format(x);
             y_tmp="{:5.3f}".format(y);

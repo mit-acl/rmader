@@ -38,10 +38,10 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=100
+    num_of_sims=1
     num_of_agents=10
     radius=10
-    how_long_to_wait=30 #[s]
+    how_long_to_wait=60 #[s]
     cd_list = [0, 50, 100, 200, 300]
 
     ##### loop
@@ -138,7 +138,7 @@ if __name__ == '__main__':
                 commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
                 commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
-                # commands.append("sleep 4.0 && rvmd")
+                commands.append("sleep 4.0 && rvmd")
                 commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 
                 #publishing the goal should be the last command
