@@ -112,7 +112,7 @@ opt:
   factor_alloc_close: 1.5 #>=1. Used to find the total duration of a given trajectory. When an agent gets close to the goal, we see a very short traj, so allocate more time for optimization
   dist_factor_alloc_close: 2.0 #>=1. When dist to goal is < than this, the factor_alloc_close is used (instead of factor_alloc)
 
-  weight: 0.01 #The .0 is needed #1000.0 was default 
+  weight: 10.0 #The .0 is needed #1000.0 was default 
 
 ###############################################################
 # Environmental Parameters (usually no need to change)
