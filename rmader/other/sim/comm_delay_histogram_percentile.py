@@ -28,7 +28,7 @@ import numpy
 if __name__ == '__main__':
 
     ##### parameters
-    is_docker = True
+    is_docker = False
     is_oldmader = False # always False bc oldmader doesn't have comm_delay
     num_of_agents = 10
     cd_list = [0, 50, 100, 200, 300]
@@ -36,16 +36,16 @@ if __name__ == '__main__':
     for cd in cd_list:
 
         is_oldmader=False
-        if cd == 0: 
-            dc_list = [0, 150] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+      if cd == 0: 
+            dc_list = [25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [0, 200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [65] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [0, 250] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [115] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [0, 350]
+            dc_list = [215]
         elif cd == 300:
-            dc_list = [0, 450]
+            dc_list = [315]
             
         for dc in dc_list:
             
@@ -56,10 +56,11 @@ if __name__ == '__main__':
             if is_docker:
                 source_dir = "/home/kota/data/mader" # change the source dir accordingly #10 agents 
             else:
-                source_dir = "/home/kota/test/data" # change the source dir accordingly #10 agents 
+                source_dir = "/media/kota/T7/rmader_ral/mader" # change the source dir accordingly #10 agents 
 
             figname = 'cd'+str(cd)+'dc'+str_dc+'_rmader_comm_delay_histogram.png'
             source_bags = source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms/*.bag" # change the source dir accordingly #10 agents
+            print(source_bags)
 
             rosbag_list = glob.glob(source_bags)
             rosbag_list.sort() #alphabetically order
@@ -75,16 +76,19 @@ if __name__ == '__main__':
             # for i in range(10):
                 b = bagreader(rosbag[i], verbose=False);
                 
-                for i in range(1,num_of_agents+1):
+                for k in range(1,num_of_agents+1):
                     try:
-                        if i < 10:
-                            log_data = b.message_by_topic("/SQ0" + str(i) + "s/rmader/comm_delay")
+                        if k < 10:
+                            log_data = b.message_by_topic("/SQ0" + str(k) + "s/rmader/comm_delay")
                         else:
-                            log_data = b.message_by_topic("/SQ" + str(i) + "s/rmader/comm_delay")
-                            print("log_data", log_data)
+                            log_data = b.message_by_topic("/SQ" + str(k) + "s/rmader/comm_delay")
                         log = pd.read_csv(log_data)
                         for j in range(len(log.comm_delay)):
                             comm_delay.append(log.comm_delay[j])
+                            if log.comm_delay[j] > (cd+100)/1000:
+                                print(rosbag[i])
+                                print("SQ"+str(k))
+                                print(str(log.comm_delay[j]*1000)+'ms') 
                     except:
                         pass
 
@@ -130,8 +134,6 @@ if __name__ == '__main__':
 
             # in case you wanna calculate the value of q-th percentile
             # print("----------------------------------------------------------------------------------")
-            for q in range(100,0,-25):
-                try:
-                    os.system('echo "'+str(q)+'-th : '+ str(round(numpy.percentile(comm_delay_arr, q)*1000,2)) + 'ms" >> '+source_dir+'/comm_delay_percentile.txt')
-                except:
-                    pass
+            for q in range(100,0,-1):
+                # print(comm_delay_arr)
+                os.system('echo "'+str(q)+'-th : '+ str(round(numpy.percentile(comm_delay_arr, q)*1000,2)) + 'ms" >> '+source_dir+'/comm_delay_percentile.txt')
