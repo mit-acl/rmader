@@ -380,7 +380,7 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
     {
       alltrajs_.push_back(tmp);
       ros::Timer alltrajs_timer =
-          nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+          nh5_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
       alltrajsTimers_.push_back(alltrajs_timer);
     }
     else
