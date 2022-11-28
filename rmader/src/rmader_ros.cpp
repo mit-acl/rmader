@@ -25,7 +25,9 @@
 typedef RMADER_timers::Timer MyTimer;
 
 // this object is created in the rmader_ros_node
-RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3) : nh1_(nh1), nh2_(nh2), nh3_(nh3)
+RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle nh3, ros::NodeHandle nh4,
+                     ros::NodeHandle nh5)
+  : nh1_(nh1), nh2_(nh2), nh3_(nh3), nh4_(nh4), nh5_(nh5)
 {
   // Parameters from rmader.yaml
   // if this is simulation or hardware
@@ -229,7 +231,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         (id <= 9) ? agent = "SQ0" + std::to_string(id) + "s" : agent = "SQ" + std::to_string(id) + "s";
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
@@ -242,7 +244,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         (id <= 9) ? agent = "NX0" + std::to_string(id) : agent = "NX" + std::to_string(id);
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh1_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
