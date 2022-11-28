@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=10
+    num_of_sims=5
     num_of_agents=10
     radius=10
     how_long_to_wait=40 #[s]
@@ -46,17 +46,17 @@ if __name__ == '__main__':
 
     ##### loop
     for cd in cd_list:
-        is_oldmader=True
+        is_oldmader=False
         if cd == 0: 
-            dc_list = [0, 25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [0, 65] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [65] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [0, 115] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [115] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [0, 215]
+            dc_list = [215]
         elif cd == 300:
-            dc_list = [0, 315]
+            dc_list = [315]
 
         for dc in dc_list:
             dc_in_ms = dc/1000;
