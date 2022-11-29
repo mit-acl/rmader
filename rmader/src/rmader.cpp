@@ -1695,46 +1695,51 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
 
   MyTimer check_t(true);
 
-  // std::cout << "bef mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
-  mtx_trajs_.lock();
-  // std::cout << "aft mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
-
-  // first make sure none of the trajectory is checked in this optimization
-  // for (auto &traj : trajs_){
-  //   traj.is_checked = false;
-  // }
-
-  // check and recheck are done in safetyChechAfterOpt()
-  bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now, is_q0_fail);
-  headsup_time = ros::Time::now().toSec();
-
-  // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
-  mtx_trajs_.unlock();
-  // std::cout << "aft mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
-
-  // if (!is_safe_after_opt){
-  //   // std::cout << "q0_fail_count_ is " << q0_fail_count_ << std::endl;
-  //   safetycheck_fail_count_ += 1;
-  //   if (safetycheck_fail_count_ > 3 && state_.vel.norm() < 0.001){
-  //     // in this case one agent is on the bbox constraint so need to move A away
-  //     std::cout << "[safety check fail] move A out of the bbox" << std::endl;
-  //     movedA_ = moveAoutOfBbox(A);
-  //     is_movingAoutOfBbox_ = true;
-  //   }
-  // } else {
-  //   q0_fail_count_ = 0;
-  // }
-
-  if (is_safe_after_opt == false)
+  if (par_.is_check)
   {
-    // int states_last_replan = ceil(replanCB_t.ElapsedMs() / (par_.dc * 1000) +
-    //                               par_.delay_check * par_.comm_delay_param / par_.dc);  // Number of states that
-    //                                                                                     // would have been needed for
-    //                                                                                     // the last replan
-    // deltaT_ = std::max(par_.factor_alpha * states_last_replan, 1.0);
-    // deltaT_ = std::min(1.0 * deltaT_, 2.0 / par_.dc);
-    ROS_ERROR_STREAM("safetyCheckAfterOpt is not satisfied, returning");
-    return false;
+    // std::cout << "bef mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
+    mtx_trajs_.lock();
+    // std::cout << "aft mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
+
+    // first make sure none of the trajectory is checked in this optimization
+    // for (auto &traj : trajs_){
+    //   traj.is_checked = false;
+    // }
+
+    // check and recheck are done in safetyChechAfterOpt()
+
+    bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now, is_q0_fail);
+    headsup_time = ros::Time::now().toSec();
+
+    // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
+    mtx_trajs_.unlock();
+    // std::cout << "aft mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
+
+    // if (!is_safe_after_opt){
+    //   // std::cout << "q0_fail_count_ is " << q0_fail_count_ << std::endl;
+    //   safetycheck_fail_count_ += 1;
+    //   if (safetycheck_fail_count_ > 3 && state_.vel.norm() < 0.001){
+    //     // in this case one agent is on the bbox constraint so need to move A away
+    //     std::cout << "[safety check fail] move A out of the bbox" << std::endl;
+    //     movedA_ = moveAoutOfBbox(A);
+    //     is_movingAoutOfBbox_ = true;
+    //   }
+    // } else {
+    //   q0_fail_count_ = 0;
+    // }
+
+    if (is_safe_after_opt == false)
+    {
+      // int states_last_replan = ceil(replanCB_t.ElapsedMs() / (par_.dc * 1000) +
+      //                               par_.delay_check * par_.comm_delay_param / par_.dc);  // Number of states that
+      //                                                                                     // would have been needed
+      //                                                                                     for
+      //                                                                                     // the last replan
+      // deltaT_ = std::max(par_.factor_alpha * states_last_replan, 1.0);
+      // deltaT_ = std::min(1.0 * deltaT_, 2.0 / par_.dc);
+      ROS_ERROR_STREAM("safetyCheckAfterOpt is not satisfied, returning");
+      return false;
+    }
   }
 
   ///////////////////////////////////////////////////////////
@@ -2358,7 +2363,7 @@ void Rmader::getDesiredYaw(mt::state& next_goal)
   if (par_.is_camera_yawing)
   {
     // looking at the center of highbay
-    double desired_yaw = atan2(state_.pos[1], state_.pos[0]-5.5) -
+    double desired_yaw = atan2(state_.pos[1], state_.pos[0] - 5.5) -
                          M_PI / 2;  // - M_PI / 2 is because the camera is mounted pointing at y-axis
     double diff = desired_yaw - state_.yaw;
     mu::angle_wrap(diff);

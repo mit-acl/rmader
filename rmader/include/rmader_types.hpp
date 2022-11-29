@@ -578,6 +578,7 @@ struct parameters
   int n_agents;
 
   bool is_camera_yawing;
+  bool is_check;
 
   double dc;
   double goal_radius;

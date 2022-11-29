@@ -40,6 +40,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // using delay check or not
   mu::safeGetParam(nh1_, "is_delaycheck", is_delaycheck_);
 
+  // using check or not
+  mu::safeGetParam(nh1_, "is_check", par_.is_check);
+
   // max number of agents
   std::vector<int> agents_ids;
   mu::safeGetParam(nh1_, "agents_ids", agents_ids);
