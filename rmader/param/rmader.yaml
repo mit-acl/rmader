@@ -83,8 +83,8 @@ tuning_param:
 
 basis: "MINVO"  #MINVO OR B_SPLINE or BEZIER.  This is the basis used for collision checking
 alpha_shrink: 0.95 #\in [0,1] Only used for MINVO/Bezier
-alpha: 0.0 #[m] Error in position
-beta: 0.0 #[m] Deviation between the trajectory and the segment between two discretization points
+alpha: 0.1 #[m] Error in position
+beta: 0.05 #[m] Deviation between the trajectory and the segment between two discretization points
 gamma: 0.1 #[seconds] >0 Time step between discretization points
 
 ###############################################################
