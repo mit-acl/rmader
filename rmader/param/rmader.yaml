@@ -23,7 +23,7 @@ is_take_off: false
 is_centralized: false
 
 # use delay check or not? (this has to be true if we wanna use RMADER)
-#is_delaycheck: true
+is_delaycheck: true
 
 # using opt+check+delay check or opt+delay check
 is_check: true

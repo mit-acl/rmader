@@ -22,7 +22,7 @@ import statistics
 if __name__ == '__main__':
 
     ##### parameters
-    cd_list = [0, 50, 100, 200, 300]
+    cd_list = [200]
 
     for cd in cd_list:
         is_oldmader=False

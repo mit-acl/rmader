@@ -24,7 +24,7 @@ import glob
 if __name__ == '__main__':
 
     ##### parameters
-    cd_list = [0, 50, 100, 200, 300]
+    cd_list = [200]
 
     ##### loop
     for cd in cd_list:
@@ -36,9 +36,9 @@ if __name__ == '__main__':
         elif cd == 100:
             dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [250]
+            dc_list = [275]
         elif cd == 300:
-            dc_list = [350]
+            dc_list = [375]
 
         for dc in dc_list:
             collision_cnt = 0
