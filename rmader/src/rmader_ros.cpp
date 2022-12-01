@@ -632,8 +632,11 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           else  // when adding traj to plan_ failed
           {
             // int time_ms = int(ros::Time::now().toSec() * 1000);
-            publishOwnTraj(pwp_last_, true, trajs);
-            timer_stop_.Reset();
+            if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
+            {
+              publishOwnTraj(pwp_last_, true, trajs);
+              timer_stop_.Reset();
+            }
             // visualization
             visual(last_edges_obstacles_, last_traj_plan_, true);
           }
@@ -641,8 +644,11 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         else  // when DC failed
         {
           // int time_ms = int(ros::Time::now().toSec() * 1000);
-          publishOwnTraj(pwp_last_, true, trajs);
-          timer_stop_.Reset();
+          if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
+          {
+            publishOwnTraj(pwp_last_, true, trajs);
+            timer_stop_.Reset();
+          }
           // visualization
           visual(last_edges_obstacles_, last_traj_plan_, true);
         }
@@ -651,7 +657,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       {
         // int time_ms = int(ros::Time::now().toSec() * 1000);
 
-        if (timer_stop_.ElapsedMs() > 500.0 && state_.vel.norm() < 0.1)
+        if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
         {
           publishOwnTraj(pwp_last_, true,
                          trajs);  // This is needed because is drone DRONE1 stops, it needs to keep publishing
