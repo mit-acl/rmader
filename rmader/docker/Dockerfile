@@ -3,15 +3,15 @@ FROM ros:noetic
 LABEL Maintainer="Kota Kondo <kkondo@mit.edu>" \
       Description="Ubuntu 20.04, ROS Noetic for Robust MADER"
 
+RUN sudo rm -rf /var/lib/apt/lists/*
 RUN apt-get update && \
       apt-get upgrade -y && \
       apt-get install -q -y --no-install-recommends git tmux vim apt-utils && \
       apt-get install -q -y --no-install-recommends wget && \
       apt-get autoremove -y && \
-      apt-get clean && \
-      rm -rf /var/lib/apt/lists/*
+      apt-get clean
 
-ENV ROS_DIR=/opt/ros/${ROS_DISTRO}
+# ENV ROS_DIR=/opt/ros/${ROS_DISTRO}
 
 ## gurobi
 RUN wget https://packages.gurobi.com/9.5/gurobi9.5.2_linux64.tar.gz -P . && \
