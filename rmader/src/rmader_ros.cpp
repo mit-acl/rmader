@@ -377,20 +377,17 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   tmp.time_received = ros::Time::now().toSec();
 
-  if (is_term_goal_initialized_)
+  if (is_artificial_comm_delay_)
   {
-    if (is_artificial_comm_delay_)
-    {
-      alltrajs_.push_back(tmp);
-      ros::Timer alltrajs_timer =
-          nh5_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
-      alltrajsTimers_.push_back(alltrajs_timer);
-    }
-    else
-    {
-      rmader_ptr_->updateTrajObstacles(tmp);
-      findAdaptiveDelayCheck(tmp);
-    }
+    alltrajs_.push_back(tmp);
+    ros::Timer alltrajs_timer =
+        nh5_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+    alltrajsTimers_.push_back(alltrajs_timer);
+  }
+  else
+  {
+    rmader_ptr_->updateTrajObstacles(tmp);
+    findAdaptiveDelayCheck(tmp);
   }
 }
 

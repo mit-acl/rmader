@@ -210,7 +210,7 @@ if __name__ == '__main__':
     commands = []
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
-    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 
