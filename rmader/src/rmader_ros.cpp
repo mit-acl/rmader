@@ -234,7 +234,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         (id <= 9) ? agent = "SQ0" + std::to_string(id) + "s" : agent = "SQ" + std::to_string(id) + "s";
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
@@ -247,7 +247,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
         (id <= 9) ? agent = "NX0" + std::to_string(id) : agent = "NX" + std::to_string(id);
         if (myns != agent)
         {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
+          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
                                              this));  // The number is the queue size
         }
       }
