@@ -626,7 +626,6 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             // visual
             visual(edges_obstacles, traj_plan, true);
             last_traj_plan_ = traj_plan;
-            last_edges_obstacles_ = edges_obstacles;
             timer_stop_.Reset();
           }
           else  // when adding traj to plan_ failed
@@ -638,7 +637,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
               timer_stop_.Reset();
             }
             // visualization
-            visual(last_edges_obstacles_, last_traj_plan_, true);
+            visual(edges_obstacles, last_traj_plan_, true);
           }
         }
         else  // when DC failed
@@ -650,7 +649,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             timer_stop_.Reset();
           }
           // visualization
-          visual(last_edges_obstacles_, last_traj_plan_, true);
+          visual(edges_obstacles, last_traj_plan_, true);
         }
       }
       else  // when O or C failed
@@ -668,7 +667,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           timer_stop_.Reset();
         }
         // visualization
-        visual(last_edges_obstacles_, last_traj_plan_, true);
+        visual(edges_obstacles, last_traj_plan_, true);
       }
     }
     else
@@ -715,7 +714,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           timer_stop_.Reset();
         }
         // visualization
-        visual(last_edges_obstacles_, last_traj_plan_, true);
+        visual(edges_obstacles, last_traj_plan_, true);
       }
     }
 
@@ -737,7 +736,7 @@ void RmaderRos::visual(mt::Edges& edges_obstacles, std::vector<mt::state>& traj_
     // Delete markers to publish stuff
     visual_tools_->deleteAllMarkers();
     visual_tools_->enableBatchPublishing();
-    if (last_edges_obstacles_.size() > 0)
+    if (edges_obstacles.size() > 0)
     {
       pubObstacles(edges_obstacles);
     }
