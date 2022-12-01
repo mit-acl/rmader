@@ -651,7 +651,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       {
         // int time_ms = int(ros::Time::now().toSec() * 1000);
 
-        if (timer_stop_.ElapsedMs() > 500.0)
+        if (timer_stop_.ElapsedMs() > 500.0 && state_.pos.norm() > 0.1)
         {
           publishOwnTraj(pwp_last_, true,
                          trajs);  // This is needed because is drone DRONE1 stops, it needs to keep publishing
@@ -694,7 +694,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       {
         // int time_ms = int(ros::Time::now().toSec() * 1000);
 
-        if (timer_stop_.ElapsedMs() > 500.0)
+        if (timer_stop_.ElapsedMs() > 500.0 && state_.vel.norm() > 0.1)
         {
           publishOwnTraj(pwp_last_,
                          true);  // This is needed because is drone DRONE1 stops, it needs to keep
