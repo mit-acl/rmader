@@ -550,6 +550,11 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         msg.missed_msgs_cnt = missed_msgs_cnt_;
         msg.msgs_cnt = msgs_cnt_;
         pub_missed_msgs_cnt_.publish(msg);
+
+        sub_state_.shutdown();
+        sub_term_goal_.shutdown();
+        pubCBTimer_.stop();
+        replanCBTimer_.stop();
         return;
       }
     }
@@ -628,7 +633,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           else  // when adding traj to plan_ failed
           {
             // int time_ms = int(ros::Time::now().toSec() * 1000);
-            if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
+            if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
             {
               publishOwnTraj(pwp_last_, true, trajs);
               timer_stop_.Reset();
@@ -640,7 +645,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         else  // when DC failed
         {
           // int time_ms = int(ros::Time::now().toSec() * 1000);
-          if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
+          if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
           {
             publishOwnTraj(pwp_last_, true, trajs);
             timer_stop_.Reset();
@@ -653,7 +658,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       {
         // int time_ms = int(ros::Time::now().toSec() * 1000);
 
-        if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1)
+        if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
         {
           publishOwnTraj(pwp_last_, true,
                          trajs);  // This is needed because is drone DRONE1 stops, it needs to keep publishing
