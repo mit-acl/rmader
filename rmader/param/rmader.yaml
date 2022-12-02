@@ -11,13 +11,13 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-is_sim: true
+is_sim: false
 
 # use highbay space?
-space_size: "infinite_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"
+space_size: "full_highbay_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"
 
 # need take off?
-is_take_off: false
+is_take_off: true
 
 # use centralized or decentralized trajs?
 is_centralized: false
@@ -33,14 +33,14 @@ agents_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # agents_ids: [2, 3, 4, 5, 6, 8]
 
 # who's the camera man? (if you are camera man is_camera_yawing will be true in rmader_ros.cpp)
-camera1: "20"
+camera1: "07"
 camera2: "20"
 
 # introduce artificial comm delay?
-is_artificial_comm_delay: true
+is_artificial_comm_delay: false
 
 # replan after reached goal?
-is_replan_after_goal_reached: false 
+is_replan_after_goal_reached: true 
 
 ###############################################################
 # adaptive delay related Parameters
@@ -77,13 +77,13 @@ tuning_param:
   delay_check_sec: 0.05 # seconds
   simulated_comm_delay_sec: 0.05 #seconds
   comm_delay_param: 1.0
-  v_max: [10.0, 10.0, 10.0]   #[m/s]  7.0
-  a_max: [20.0, 20.0, 20.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
-  j_max: [30.0, 30.0, 30.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
+  v_max: [5.0, 5.0, 5.0]   #[m/s]  7.0
+  a_max: [6.0, 6.0, 6.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
+  j_max: [7.0, 7.0, 7.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
 
 basis: "MINVO"  #MINVO OR B_SPLINE or BEZIER.  This is the basis used for collision checking
 alpha_shrink: 0.95 #\in [0,1] Only used for MINVO/Bezier
-alpha: 0.1 #[m] Error in position
+alpha: 0.05 #[m] Error in position
 beta: 0.05 #[m] Deviation between the trajectory and the segment between two discretization points
 gamma: 0.1 #[seconds] >0 Time step between discretization points
 

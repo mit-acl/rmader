@@ -540,7 +540,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     // }
 
     // Check if reached the goal
-    if (is_replan_after_goal_reached_)
+    if (!is_replan_after_goal_reached_)
     {
       if (rmader_ptr_->isGoalSeen())
       {
