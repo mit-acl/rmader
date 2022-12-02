@@ -28,23 +28,22 @@ import numpy
 if __name__ == '__main__':
 
     ##### parameters
-    is_docker = True
-    is_oldmader = False # always False bc oldmader doesn't have comm_delay
+    is_oldmader = True # always False bc oldmader doesn't have comm_delay
     num_of_agents = 10
-    cd_list = [200]
+    cd_list = [0, 50, 100, 200, 300]
 
     for cd in cd_list:
-        is_oldmader=False
+        is_oldmader=True
         if cd == 0: 
-            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [250]
+            dc_list = [0]
         elif cd == 300:
-            dc_list = [350]
+            dc_list = [0]
             
         for dc in dc_list:
             
@@ -52,13 +51,16 @@ if __name__ == '__main__':
             input_comm_delay = dc/1000
             str_dc = str(dc)
 
-            if is_docker:
-                source_dir = "/home/kota/data/mader" # change the source dir accordingly #10 agents 
-            else:
-                source_dir = "/media/kota/T7/rmader_ral/mader" # change the source dir accordingly #10 agents 
+            parent_source_dir = sys.argv[1]
 
+            # source directory
+            if is_oldmader:
+                source_dir = parent_source_dir + "/oldmader/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
+            else:
+                source_dir = parent_source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
+            
             figname = 'cd'+str(cd)+'dc'+str_dc+'_rmader_comm_delay_histogram.png'
-            source_bags = source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms/*.bag" # change the source dir accordingly #10 agents
+            source_bags = source_dir + "/*.bag" # change the source dir accordingly #10 agents
             print(source_bags)
 
             rosbag_list = glob.glob(source_bags)
@@ -125,7 +127,7 @@ if __name__ == '__main__':
                 plt.title('Comm delay histogram \n max comm_delay is '+str(round(max_comm_delay*1000))+' [ms] and '+str(dc)+'ms delay check')
                 plt.xlabel("comm delay [ms]")
                 plt.ylabel("count")
-                plt.savefig(source_dir+'/'+figname)
+                plt.savefig(parent_source_dir+'/'+figname)
                 plt.close('all')
                 # plt.show()
             except:

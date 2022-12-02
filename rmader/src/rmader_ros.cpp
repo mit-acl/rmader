@@ -860,7 +860,7 @@ void RmaderRos::stateCB(const snapstack_msgs::State& msg)
   if (published_initial_position_ == false)
   {
     pwp_last_ = mu::createPwpFromStaticPosition(state_);
-    publishOwnTraj(pwp_last_, true);
+    // publishOwnTraj(pwp_last_, true);
     published_initial_position_ = true;
   }
   // mtx_mader_ptr_.lock();

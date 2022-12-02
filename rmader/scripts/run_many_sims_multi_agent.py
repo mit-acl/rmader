@@ -38,26 +38,25 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=10
+    num_of_sims=100
     num_of_agents=10
     radius=10
     how_long_to_wait=40 #[s]
-    cd_list = [200]
-    # cd_list = [0]
+    cd_list = [0, 50, 100, 200, 300]
 
     ##### loop
     for cd in cd_list:
-        is_oldmader=False
+        is_oldmader=True
         if cd == 0: 
-            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [250]
+            dc_list = [0]
         elif cd == 300:
-            dc_list = [350]
+            dc_list = [0]
 
         for dc in dc_list:
             dc_in_ms = dc/1000;
@@ -198,9 +197,9 @@ if __name__ == '__main__':
             os.system("sed -i '/is_delaycheck/s/^#//g' $(rospack find rmader)/param/rmader.yaml")
 
             # use old mader only once
-            if is_oldmader:
-                is_oldmader=False
-            time.sleep(3.0)
+            # if is_oldmader:
+            #     is_oldmader=False
+            # time.sleep(3.0)
 
     # After the simulations
     session_name="data"
@@ -209,8 +208,8 @@ if __name__ == '__main__':
 
     commands = []
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
-    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py "+source_dir)
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 

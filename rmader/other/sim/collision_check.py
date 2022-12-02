@@ -24,21 +24,21 @@ import glob
 if __name__ == '__main__':
 
     ##### parameters
-    cd_list = [200]
+    cd_list = [0, 50, 100, 200, 300]
 
     ##### loop
     for cd in cd_list:
-        is_oldmader=False
+        is_oldmader=True
         if cd == 0: 
-            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [0] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [250]
+            dc_list = [0]
         elif cd == 300:
-            dc_list = [350]
+            dc_list = [0]
 
         for dc in dc_list:
             collision_cnt = 0
@@ -83,4 +83,4 @@ if __name__ == '__main__':
             os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> '+parent_source_dir+'/collision_count.txt')
             os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/collision_count.txt')
 
-            is_oldmader = False
+            # is_oldmader = False
