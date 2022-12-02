@@ -60,6 +60,10 @@ class TermGoalSender:
         self.full_wp6 = np.array([-3.0, -3.0])
         self.full_wp7 = np.array([13.4, -3.0])
         self.full_wp8 = np.array([14.0, -2.4])
+        self.full_wp9 = np.array([-3.6, 2.6-1.6])
+        self.full_wp10 = np.array([14.0, 2.6-1.6])
+        self.full_wp11 = np.array([-3.6, 2.6-1.6*2])
+        self.full_wp12 = np.array([14.0, 2.6-1.6*2])
 
         # waypoints
         self.wpidx = 0
@@ -274,6 +278,20 @@ class TermGoalSender:
                 else:
                     self.term_goal.pose.position.x = self.full_wp2[0]
                     self.term_goal.pose.position.y = self.full_wp2[1]
+            elif self.mode == 5:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp9[0]
+                    self.term_goal.pose.position.y = self.full_wp9[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp12[0]
+                    self.term_goal.pose.position.y = self.full_wp12[1]
+            elif self.mode == 6:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_wp10[0]
+                    self.term_goal.pose.position.y = self.full_wp10[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_wp11[0]
+                    self.term_goal.pose.position.y = self.full_wp11[1]
 
             ######################################################    
             #mode1                                          mode2#
@@ -281,11 +299,11 @@ class TermGoalSender:
             #   1                                          4     #
             #                                                    #
             #                                                    #
+            #   9                                          10    #
             #                                                    #
+            #mode5           obs1                   obs2    mode6#
             #                                                    #
-            #           obs1                   obs2              #
-            #                                                    #
-            #                                                    #
+            #   11                                         12    #
             #                                                    #
             #                                                    #
             #   5                                          8     #
