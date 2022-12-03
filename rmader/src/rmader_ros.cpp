@@ -29,10 +29,6 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
                      ros::NodeHandle nh5)
   : nh1_(nh1), nh2_(nh2), nh3_(nh3), nh4_(nh4), nh5_(nh5)
 {
-  // Parameters from rmader.yaml
-  // if this is simulation or hardware
-  mu::safeGetParam(nh1_, "is_sim", is_sim_);
-
   // use highbay space size?
   std::string space_size;
   mu::safeGetParam(nh1_, "space_size", space_size);
@@ -182,6 +178,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   // get my namespace
   std::string myns = ros::this_node::getNamespace();
+  std::string veh = myns.substr(1, 2);
 
   // Publishers
   pub_goal_ = nh1_.advertise<snapstack_msgs::Goal>("goal", 1);
@@ -222,34 +219,18 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   if (is_centralized)
   {
-    sub_cent_traj_ = nh4_.subscribe("/trajs", 40, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh4_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
   }
   else
   {
-    if (is_sim_)
+    for (int id : agents_ids)
     {
-      for (int id : agents_ids)
-      {
-        std::string agent;
-        (id <= 9) ? agent = "SQ0" + std::to_string(id) + "s" : agent = "SQ" + std::to_string(id) + "s";
-        if (myns != agent)
-        {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
-                                             this));  // The number is the queue size
-        }
-      }
-    }
-    else
-    {  // if it's hardware
-      for (int id : agents_ids)
-      {
-        std::string agent;
-        (id <= 9) ? agent = "NX0" + std::to_string(id) : agent = "NX" + std::to_string(id);
-        if (myns != agent)
-        {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
-                                             this));  // The number is the queue size
-        }
+      std::string agent;
+      (id <= 9) ? agent = veh + "0" + std::to_string(id) + "s" : agent = veh + std::to_string(id) + "s";
+      if (myns != agent)
+      {  // if my namespace is the same as the agent, then it's you
+        sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
+                                           this));  // The number is the queue size
       }
     }
   }
