@@ -542,7 +542,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     // Check if reached the goal
     if (!is_replan_after_goal_reached_)
     {
-      if (rmader_ptr_->isGoalReached())
+      if (rmader_ptr_->isGoalSeen())
       {
         std::cout << "goal is reached so no need to replan" << std::endl;
         is_rmader_running_ = false;
@@ -551,10 +551,10 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         msg.msgs_cnt = msgs_cnt_;
         pub_missed_msgs_cnt_.publish(msg);
 
-        sub_state_.shutdown();
-        sub_term_goal_.shutdown();
-        pubCBTimer_.stop();
-        replanCBTimer_.stop();
+        // sub_state_.shutdown();
+        // sub_term_goal_.shutdown();
+        // pubCBTimer_.stop();
+        // replanCBTimer_.stop();
         return;
       }
     }

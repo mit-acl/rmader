@@ -65,6 +65,13 @@ class TermGoalSender:
         self.full_wp11 = np.array([-3.6, 2.6-1.6*2])
         self.full_wp12 = np.array([14.0, 2.6-1.6*2])
 
+        self.exact_full_wp1 = np.array([-3.6, 3.5])
+        self.exact_full_wp2 = np.array([14.0, 3.5])
+        self.exact_full_wp3 = np.array([-3.6, 0])
+        self.exact_full_wp4 = np.array([14.0, 0])
+        self.exact_full_wp5 = np.array([-3.6, -3.0])
+        self.exact_full_wp6 = np.array([14.0, -3.0])
+
         # waypoints
         self.wpidx = 0
         self.wps = np.array([
@@ -311,6 +318,45 @@ class TermGoalSender:
             #                                                    #
             #mode3                                          mode4#
             ######################################################    
+
+            # full space position exchange (exact)
+            if self.mode == 1:
+                self.term_goal.pose.position.x = self.exact_full_wp6[0]
+                self.term_goal.pose.position.y = self.exact_full_wp6[1]
+            elif self.mode == 2:
+                self.term_goal.pose.position.x = self.exact_full_wp5[0]
+                self.term_goal.pose.position.y = self.exact_full_wp5[1]
+            elif self.mode == 3:
+                self.term_goal.pose.position.x = self.exact_full_wp4[0]
+                self.term_goal.pose.position.y = self.exact_full_wp4[1]
+            elif self.mode == 4:
+                self.term_goal.pose.position.x = self.exact_full_wp3[0]
+                self.term_goal.pose.position.y = self.exact_full_wp3[1]
+            elif self.mode == 5:
+                self.term_goal.pose.position.x = self.exact_full_wp2[0]
+                self.term_goal.pose.position.y = self.exact_full_wp2[1]
+            elif self.mode == 6:
+                self.term_goal.pose.position.x = self.exact_full_wp1[0]
+                self.term_goal.pose.position.y = self.exact_full_wp1[1]
+
+            ######################################################    
+            #mode1                                          mode2#
+            #   1                                           2    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #mode3 3          obs1           obs2         4 mode4#
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #  5                                             6    #
+            #                                                    #
+            #mode5                                          mode4#
+            ###################################################### 
 
             self.term_goal.pose.position.z = 1.0 + 2.0 * random()
             self.if_arrived = not self.if_arrived

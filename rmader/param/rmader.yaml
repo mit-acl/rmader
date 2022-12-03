@@ -11,7 +11,7 @@
 ###############################################################
 
 # if simulatin(SQ) or hardware(NX)?
-is_sim: false
+is_sim: true
 
 # use highbay space?
 space_size: "full_highbay_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"

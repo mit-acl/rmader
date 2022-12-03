@@ -75,6 +75,7 @@ public:
   mt::state getGterm();
   bool isGoalSeen();
   bool isGoalReached();
+  bool initializedAllExceptPlanner();
 
   std::vector<mt::dynTrajCompiled> getTrajs();
 
@@ -128,7 +129,6 @@ private:
                     const std::vector<mt::state>& safe);
 
   bool initialized();
-  bool initializedAllExceptPlanner();
 
   void printDroneStatus();
 
