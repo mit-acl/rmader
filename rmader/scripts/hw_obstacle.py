@@ -58,7 +58,7 @@ class HwObstacle:
         self.r = 3.4
         self.type = "dynamic"
         self.meshes = available_meshes_dynamic
-        self.bbox = [1.0, 1.0, 1.5]
+        self.bbox = [0.8, 0.8, 0.5]
 
         self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
         self.pubShapes_static = rospy.Publisher('/shapes_static', Marker, queue_size=1, latch=True)
