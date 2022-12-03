@@ -358,7 +358,8 @@ class TermGoalSender:
             #mode5                                          mode4#
             ###################################################### 
 
-            self.term_goal.pose.position.z = 1.0 + 2.0 * random()
+            # self.term_goal.pose.position.z = 1.0 + 2.0 * random()
+            self.term_goal.pose.position.z = 2.0
             self.if_arrived = not self.if_arrived
             self.sign = self.sign * (-1)
 
