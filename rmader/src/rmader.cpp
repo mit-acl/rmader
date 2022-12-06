@@ -1165,13 +1165,12 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
         result = false;
       }
     }
-
-    // std::cout << "bef mtx_trajs_.unlock() in delayCheck" << std::endl;
-    mtx_trajs_.unlock();
-    // std::cout << "aft mtx_trajs_.unlock() in delayCheck" << std::endl;
-
-    return result;
   }
+  // std::cout << "bef mtx_trajs_.unlock() in delayCheck" << std::endl;
+  mtx_trajs_.unlock();
+  // std::cout << "aft mtx_trajs_.unlock() in delayCheck" << std::endl;
+
+  return result;
 }
 
 // this is just Check in case A* failed
