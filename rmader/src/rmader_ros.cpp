@@ -222,7 +222,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   if (is_centralized)
   {
-    sub_cent_traj_ = nh4_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh4_.subscribe("/trajs", 100, &RmaderRos::trajCB, this);  // The number is the queue size
   }
   else
   {

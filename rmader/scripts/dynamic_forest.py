@@ -194,6 +194,9 @@ class FakeSim:
 
             dynamic_trajectory_msg.id = 4000+ i #Current id 4000 to avoid interference with ids from agents #TODO
 
+            dynamic_trajectory_msg.time_created = rospy.get_time()
+            dynamic_trajectory_msg.is_committed = True
+
             self.pubTraj.publish(dynamic_trajectory_msg)
             # print(self.name)
             br.sendTransform((x, y, z), (0,0,0,1), t_ros, self.name+str(dynamic_trajectory_msg.id), "world")

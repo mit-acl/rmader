@@ -37,7 +37,7 @@ def myhook():
 if __name__ == '__main__':
 
     ##### parameters
-    is_docker = False
+    is_docker = True
     num_of_sims=1
     num_of_agents=10
     radius=10

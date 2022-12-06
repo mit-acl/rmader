@@ -1101,8 +1101,8 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
       {
         if (!traj_compiled.is_committed)
         {
-          std::cout << "headsup_time " << headsup_time << std::endl;
-          std::cout << "time created " << traj_compiled.time_created << std::endl;
+          // std::cout << "headsup_time " << headsup_time << std::endl;
+          // std::cout << "time created " << traj_compiled.time_created << std::endl;
           if (traj_compiled.time_created - headsup_time > 1e-2)
           {
             // Do nothing. They will change their traj.

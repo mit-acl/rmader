@@ -83,5 +83,6 @@ fi
 
 # base station
 tmux send-keys -t $SESSION:$w.0 "roslaunch --wait rmader base_station.launch" C-m
+# tmux send-keys -t $SESSION:$w.0 "roslaunch --wait rmader base_station.launch type_of_environment:=dynamic_forest" C-m
 
 tmux -2 attach-session -t $SESSION
