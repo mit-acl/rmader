@@ -37,11 +37,11 @@ def myhook():
 if __name__ == '__main__':
 
     ##### parameters
-    is_docker = True
-    num_of_sims=10
+    is_docker = False
+    num_of_sims=1
     num_of_agents=10
     radius=10
-    how_long_to_wait=40 #[s]
+    how_long_to_wait=60 #[s]
     cd_list = [0, 50, 100, 200, 300]
 
     ##### loop
@@ -76,9 +76,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir +"/opti_dc_rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir +"/opti_dc_rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir +"/opti_dc_rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir +"/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir +"/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir +"/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
             else: ## on my desktop
                 source_dir = "/home/kota/test/data"
                 if is_oldmader:
@@ -86,9 +86,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir + "/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir + "/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir + "/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir + "/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir + "/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
@@ -135,11 +135,11 @@ if __name__ == '__main__':
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py controller "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 # commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
+                commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                # commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")
-                # commands.append("sleep 4.0 && roscd rmader && cd scripts && python dynamic_forest.py")
+                commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
                 commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 
                 #publishing the goal should be the last command

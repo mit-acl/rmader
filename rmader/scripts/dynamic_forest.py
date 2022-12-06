@@ -66,12 +66,9 @@ class FakeSim:
 
     def __init__(self, total_num_obs):
         self.state=State()
-
-        name = rospy.get_namespace()
-        self.name = name[1:-1]
+        self.name = 'obs'
 
        #self.num_of_objects = 0;
-
 
         self.world=MovingForest(total_num_obs)
    
@@ -198,6 +195,7 @@ class FakeSim:
             dynamic_trajectory_msg.id = 4000+ i #Current id 4000 to avoid interference with ids from agents #TODO
 
             self.pubTraj.publish(dynamic_trajectory_msg)
+            # print(self.name)
             br.sendTransform((x, y, z), (0,0,0,1), t_ros, self.name+str(dynamic_trajectory_msg.id), "world")
 
 
@@ -320,7 +318,6 @@ if __name__ == '__main__':
     # print("sys.argv[1]= ", sys.argv[1])
     total_num_obs=50 #70 for sphere sim
     # total_num_obs=100 #70 for sphere sim
-    ns = rospy.get_namespace()
     try:
         rospy.init_node('dynamic_obstacles')
         startNode(total_num_obs)
