@@ -39,6 +39,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // using check or not
   mu::safeGetParam(nh1_, "is_check", par_.is_check);
 
+  // use optimistic dc?
+  mu::safeGetParam(nh1_, "is_optimistic_dc", par_.is_optimistic_dc);
+
   // max number of agents
   std::vector<int> agents_ids;
   mu::safeGetParam(nh1_, "agents_ids", agents_ids);

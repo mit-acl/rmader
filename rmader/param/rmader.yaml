@@ -11,19 +11,22 @@
 ###############################################################
 
 # use highbay space?
-space_size: "full_highbay_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"
+space_size: "infinite_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"
 
 # need take off?
-is_take_off: true
+is_take_off: false
 
 # use centralized or decentralized trajs?
-is_centralized: false
+is_centralized: true
 
 # use delay check or not? (this has to be true if we wanna use RMADER)
 is_delaycheck: true
 
 # using opt+check+delay check or opt+delay check
 is_check: true
+
+# use optimistic dc?
+is_optimistic_dc: true
 
 # agents' ids
 agents_ids: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]

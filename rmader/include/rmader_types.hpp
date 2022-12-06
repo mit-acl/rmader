@@ -568,6 +568,7 @@ struct dynTrajCompiled
 
 struct parameters
 {
+  bool is_optimistic_dc;
   double delay_check;
 
   double comm_delay_param;

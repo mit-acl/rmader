@@ -87,7 +87,6 @@ private:
   bool is_artificial_comm_delay_;
   bool is_delaycheck_ = true;
   double headsup_time_ = 0.0;
-  bool is_in_DC_ = false;
   bool delay_check_result_ = false;
 
   mt::PieceWisePol pwp_now_;

@@ -35,13 +35,14 @@ class CollisionDetector:
         # numerical tolerance
         # state is not synchronized and time difference could be up to 0.01[s] so we need tolerance
         # if max vel is 2.0m/s -> there should be 0.04m tolerance
-        self.tol = 0.02 #[m] 
+        self.tol = 0.01 #[m] 
 
         # bbox size
         self.bbox_x = rospy.get_param('~bbox_x', 0.25) - self.tol #default value is 0.15
         self.bbox_y = rospy.get_param('~bbox_y', 0.25) - self.tol #default value is 0.15
         self.bbox_z = rospy.get_param('~bbox_z', 0.25) - self.tol #default value is 0.15
         self.num_of_agents = rospy.get_param('~num_of_agents', 10)
+        # self.num_of_agents = 60
 
         self.initialized = False
         # self.initialized = True

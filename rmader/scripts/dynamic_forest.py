@@ -120,9 +120,6 @@ class FakeSim:
             
             self.bboxes.append(bbox_i)
 
-
-
-
         self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
         self.pubShapes_static = rospy.Publisher('/shapes_static', Marker, queue_size=1, latch=True)
         self.pubShapes_static_mesh = rospy.Publisher('/shapes_static_mesh', MarkerArray, queue_size=1, latch=True)
@@ -321,8 +318,8 @@ if __name__ == '__main__':
     #     total_num_obs=int(sys.argv[1])
 
     # print("sys.argv[1]= ", sys.argv[1])
-    # total_num_obs=50 #70 for sphere sim
-    total_num_obs=70 #70 for sphere sim
+    total_num_obs=50 #70 for sphere sim
+    # total_num_obs=100 #70 for sphere sim
     ns = rospy.get_namespace()
     try:
         rospy.init_node('dynamic_obstacles')
