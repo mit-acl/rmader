@@ -554,9 +554,9 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     if (is_delaycheck_)
     {
       std::vector<mt::dynTrajCompiled> trajs;
-
+      double headsup_time;
       replanned = rmader_ptr_->replan_with_delaycheck(edges_obstacles, traj_plan, planes, num_of_LPs_run_,
-                                                      num_of_QCQPs_run_, pwp_now_, headsup_time_);
+                                                      num_of_QCQPs_run_, pwp_now_, headsup_time);
       if (replanned)
       {
         // let others know my new trajectory
@@ -572,15 +572,15 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           mtx_adaptive_dc_.lock();
           while (delay_check_t.ElapsedMs() / 1000.0 < adaptive_delay_check_)
           {
-            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
             if (delay_check_result_ == false)
             {
               break;
             }
-            ros::Duration(adaptive_delay_check_ / 5.0).sleep();
+            ros::Duration(adaptive_delay_check_ / 10.0).sleep();
           }
           mtx_adaptive_dc_.unlock();
-          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
           // end of adaptive delay check *******************************************************
         }
         else
@@ -589,14 +589,14 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           MyTimer delay_check_t(true);
           while (delay_check_t.ElapsedMs() / 1000.0 < delay_check_)
           {
-            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
             if (delay_check_result_ == false)
             {
               break;
             }
-            ros::Duration(delay_check_ / 5.0).sleep();
+            ros::Duration(delay_check_ / 10.0).sleep();
           }
-          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
+          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
           // end of constant delay check *******************************************************
         }
 

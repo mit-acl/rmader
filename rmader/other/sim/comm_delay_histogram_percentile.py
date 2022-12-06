@@ -97,9 +97,9 @@ if __name__ == '__main__':
             comm_delay_arr = numpy.array(comm_delay)
 
             percentile = scipy.stats.percentileofscore(comm_delay_arr, input_comm_delay, kind='mean')
-            os.system('echo "----------------------------------------------------------------------------------" >> '+source_dir+'/comm_delay_percentile.txt')
-            os.system('echo "'+source_bags+'" >> '+source_dir+'/comm_delay_percentile.txt')
-            os.system('echo "cd='+str(cd)+', dc='+str(dc)+':   '+str(input_comm_delay) + ' is ' + str(round(percentile,1)) + '-th percentile" >> '+source_dir+'/comm_delay_percentile.txt')
+            os.system('echo "----------------------------------------------------------------------------------" >> '+parent_source_dir+'/comm_delay_percentile.txt')
+            os.system('echo "'+source_bags+'" >> '+parent_source_dir+'/comm_delay_percentile.txt')
+            os.system('echo "cd='+str(cd)+', dc='+str(dc)+':   '+str(input_comm_delay) + ' is ' + str(round(percentile,1)) + '-th percentile" >> '+parent_source_dir+'/comm_delay_percentile.txt')
             # print(comm_delay)
 
             try:
@@ -134,6 +134,6 @@ if __name__ == '__main__':
 
             # in case you wanna calculate the value of q-th percentile
             # print("----------------------------------------------------------------------------------")
-            for q in range(100,0,-1):
-                # print(comm_delay_arr)
-                os.system('echo "'+str(q)+'-th : '+ str(round(numpy.percentile(comm_delay_arr, q)*1000,2)) + 'ms" >> '+source_dir+'/comm_delay_percentile.txt')
+            # for q in range(100,0,-1):
+            #     # print(comm_delay_arr)
+            #     os.system('echo "'+str(q)+'-th : '+ str(round(numpy.percentile(comm_delay_arr, q)*1000,2)) + 'ms" >> '+parent_source_dir+'/comm_delay_percentile.txt')

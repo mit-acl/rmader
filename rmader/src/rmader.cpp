@@ -1090,6 +1090,7 @@ bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized)
 /// Delay check
 bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
 {
+  bool is_q0_fail = false;
   mtx_trajs_.lock();  // this function is called in mader_ros.cpp so need to lock in the function
   bool result = true;
   for (auto& traj_compiled : trajs_)
@@ -1100,13 +1101,16 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
       {
         if (!traj_compiled.is_committed)
         {
+          std::cout << "headsup_time " << headsup_time << std::endl;
+          std::cout << "time created " << traj_compiled.time_created << std::endl;
           if (traj_compiled.time_created - headsup_time > 1e-2)
           {
             // Do nothing. They will change their traj.
           }
           else if (headsup_time - traj_compiled.time_created > 1e-2)
           {
-            if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
+            if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                         pwp_now.times.back(), is_q0_fail))
             {
               ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
               result = false;  // will have to redo the optimization
@@ -1114,11 +1118,10 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
           }
           else if (abs(traj_compiled.time_created - headsup_time) < 1e-2)
           {
-            if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(),
-                                          pwp_now.times.back()))  // tie breaking:
-                                                                  // compare x, y, z and
-                                                                  // bigger one wins
+            if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                         pwp_now.times.back(), is_q0_fail))
             {
+              // tie breaking: compare x, y, z and bigger one wins
               Eigen::Vector3d center_obs;
               center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
                   traj_compiled.function[2].value();
@@ -1141,7 +1144,8 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
         }
         else
         {
-          if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
+          if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                       pwp_now.times.back(), is_q0_fail))
           {
             ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
             result = false;
@@ -1150,7 +1154,8 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
       }
       else
       {  // if traj_compiled.is_agent == false
-        if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
+        if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                     pwp_now.times.back(), is_q0_fail))
         {
           ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
           result = false;
@@ -1159,7 +1164,8 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
     }
     else
     {
-      if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
+      if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back(),
+                                                   is_q0_fail))
       {
         ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
         result = false;
@@ -1658,10 +1664,10 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
     // check and recheck are done in safetyChechAfterOpt()
 
     bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now, is_q0_fail);
-    headsup_time = ros::Time::now().toSec();
 
     // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
     mtx_trajs_.unlock();
+    headsup_time = ros::Time::now().toSec();
     // std::cout << "aft mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
 
     // if (!is_safe_after_opt){
@@ -1690,6 +1696,7 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
       return false;
     }
   }
+  headsup_time = ros::Time::now().toSec();
 
   ///////////////////////////////////////////////////////////
   ///////////////       OTHER STUFF    //////////////////////
