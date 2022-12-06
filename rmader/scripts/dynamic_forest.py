@@ -44,6 +44,7 @@ color_dynamic=ColorRGBA(r=1,g=0,b=0,a=1);
 class MovingForest:
     def __init__(self, total_num_obs):
         print(total_num_obs)
+        self.total_num_obs=total_num_obs
         self.num_of_dyn_objects=int(0.5*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
         self.x_min= -6
@@ -60,13 +61,12 @@ class MovingForest:
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
 
-
-
 class FakeSim:
 
     def __init__(self, total_num_obs):
         self.state=State()
         self.name = 'obs'
+        self.total_num_obs=total_num_obs
 
        #self.num_of_objects = 0;
 
@@ -117,7 +117,7 @@ class FakeSim:
             
             self.bboxes.append(bbox_i)
 
-        self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
+        self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=self.world.total_num_obs, latch=True)
         self.pubShapes_static = rospy.Publisher('/shapes_static', Marker, queue_size=1, latch=True)
         self.pubShapes_static_mesh = rospy.Publisher('/shapes_static_mesh', MarkerArray, queue_size=1, latch=True)
         self.pubShapes_dynamic_mesh = rospy.Publisher('/shapes_dynamic_mesh', MarkerArray, queue_size=1, latch=True)
@@ -166,13 +166,13 @@ class FakeSim:
 
               [x_string, y_string, z_string] = self.trefoil(self.x_all[i], self.y_all[i], self.z_all[i], s,s,s, self.offset_all[i], self.slower[i]) 
               # print("self.bboxes[i]= ", self.bboxes[i])
-              dynamic_trajectory_msg.bbox = bbox_i;
+              dynamic_trajectory_msg.bbox = bbox_i
               marker_dynamic.scale.x=bbox_i[0]
               marker_dynamic.scale.y=bbox_i[1]
               marker_dynamic.scale.z=bbox_i[2]
             else:
               # [x_string, y_string, z_string] = self.static(self.x_all[i], self.y_all[i], self.z_all[i]);
-              dynamic_trajectory_msg.bbox = bbox_i;
+              dynamic_trajectory_msg.bbox = bbox_i
               marker_static.scale.x=bbox_i[0]
               marker_static.scale.y=bbox_i[1]
               marker_static.scale.z=bbox_i[2]
@@ -185,8 +185,8 @@ class FakeSim:
             y = eval(y_string)
             z = eval(z_string)
 
-            dynamic_trajectory_msg.is_agent=False;
-            dynamic_trajectory_msg.header.stamp= t_ros;
+            dynamic_trajectory_msg.is_agent=False
+            dynamic_trajectory_msg.header.stamp= t_ros
             dynamic_trajectory_msg.function = [x_string, y_string, z_string]
             dynamic_trajectory_msg.pos.x=x #Current position
             dynamic_trajectory_msg.pos.y=y #Current position
