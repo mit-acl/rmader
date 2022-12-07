@@ -47,15 +47,15 @@ class MovingForest:
         self.total_num_obs=total_num_obs
         self.num_of_dyn_objects=int(0.5*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
-        self.x_min= -6
-        self.x_max= 6.0
-        self.y_min= -6.0 
-        self.y_max= 6.0
+        self.x_min= -5.5
+        self.x_max= 5.5
+        self.y_min= -5.5 
+        self.y_max= 5.5
         self.z_min= 1.0 #-6.0 for sphere sim
         self.z_max= 1.0  #6.0 for sphere sim
         self.scale=1.0;
-        self.slower_min=1.2
-        self.slower_max= 1.2
+        self.slower_min=3.2
+        self.slower_max= 5.2
         self.bbox_dynamic=[0.6, 0.6, 0.6] 
         self.bbox_static_vert=[0.4, 0.4, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
@@ -83,7 +83,8 @@ class FakeSim:
         self.slower=[];
         self.meshes=[];
         self.type=[];#"dynamic" or "static"
-        self.bboxes=[]; 
+        self.bboxes=[];
+        random.seed(0)
         for i in range(self.world.num_of_dyn_objects):          
             self.x_all.append(random.uniform(self.world.x_min, self.world.x_max));
             self.y_all.append(random.uniform(self.world.y_min, self.world.y_max));
@@ -318,7 +319,7 @@ if __name__ == '__main__':
     #     total_num_obs=int(sys.argv[1])
 
     # print("sys.argv[1]= ", sys.argv[1])
-    total_num_obs=50 #70 for sphere sim
+    total_num_obs=20 #70 for sphere sim
     # total_num_obs=100 #70 for sphere sim
     try:
         rospy.init_node('dynamic_obstacles')
