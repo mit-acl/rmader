@@ -222,7 +222,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   if (is_centralized)
   {
-    sub_cent_traj_ = nh4_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh1_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
   }
   else
   {
@@ -577,7 +577,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             {
               break;
             }
-            ros::Duration(adaptive_delay_check_ / 10.0).sleep();
+            ros::Duration(adaptive_delay_check_ / 5.0).sleep();
           }
           mtx_adaptive_dc_.unlock();
           delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
@@ -594,7 +594,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             {
               break;
             }
-            ros::Duration(delay_check_ / 10.0).sleep();
+            ros::Duration(delay_check_ / 5.0).sleep();
           }
           delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
           // end of constant delay check *******************************************************

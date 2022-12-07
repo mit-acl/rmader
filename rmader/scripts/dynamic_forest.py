@@ -304,7 +304,6 @@ def startNode(total_num_obs):
     c = FakeSim(total_num_obs)
     
     rospy.Timer(rospy.Duration(0.01), c.pubTF)
-
     rospy.spin()
 
 if __name__ == '__main__':
