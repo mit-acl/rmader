@@ -11,7 +11,7 @@
 ###############################################################
 
 # use highbay space?
-space_size: "infinite_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"/"infinite_above_ground_size"
+space_size: "infinite_above_ground_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"/"infinite_above_ground_size"
 
 # need take off?
 is_take_off: false
@@ -20,7 +20,7 @@ is_take_off: false
 is_centralized: false
 
 # use delay check or not? (this has to be true if we wanna use RMADER)
-is_delaycheck: false
+###is_delaycheck: false
 
 # using opt+check+delay check or opt+delay check
 is_check: true
@@ -37,13 +37,13 @@ camera1: "20"
 camera2: "20"
 
 # introduce artificial comm delay?
-is_artificial_comm_delay: true
+is_artificial_comm_delay: false
 
 # replan after reached goal?
 is_replan_after_goal_reached: false
 
 # for obstacles, we use /trajs without any communicatoin delays, and for agents, we introduce comm delays
-is_obs_sim: false
+is_obs_sim: true
 
 ###############################################################
 # adaptive delay related Parameters
@@ -75,10 +75,10 @@ setting:
   goal_radius: 0.15    #(m) Drone has arrived to the goal when distance_to_goal<GOAL_RADIUS
 
 tuning_param:
-  drone_bbox: [0.25, 0.25, 0.25] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
+  drone_bbox: [0.15, 0.15, 0.15] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
   Ra: 30.0           # [m] Radius of my planning sphere (planning horizon). Should be < fov_depth
-#############  delay_check_sec: 0.05 # seconds
-###############  simulated_comm_delay_sec: 0.05 #seconds
+################  delay_check_sec: 0.05 # seconds
+##################  simulated_comm_delay_sec: 0.05 #seconds
   comm_delay_param: 1.0
   v_max: [10.0, 10.0, 10.0]   #[m/s]  7.0
   a_max: [20.0, 20.0, 20.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
