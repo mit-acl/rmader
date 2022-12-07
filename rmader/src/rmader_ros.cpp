@@ -57,6 +57,10 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // replan after reached the goal?
   mu::safeGetParam(nh1_, "is_replan_after_goal_reached", is_replan_after_goal_reached_);
 
+  // for obstacles, we use /trajs without any communicatoin delays, and for agents, we introduce comm delays
+  bool is_obs_sim = false;
+  mu::safeGetParam(nh1_, "is_obs_sim", is_obs_sim);
+
   // use adaptive delay check?
   mu::safeGetParam(nh1_, "adpt/is_adaptive_delaycheck", is_adaptive_delaycheck_);
   mu::safeGetParam(nh1_, "adpt/initial_adaptive_delay_check", adaptive_delay_check_);
@@ -215,12 +219,23 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   sub_whoplans_ = nh1_.subscribe("who_plans", 1, &RmaderRos::whoPlansCB, this);
   sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);
 
-  // Subscribers for each agents
+  // Subscribers for trajs
 
-  // if it's simulation
-  // TODO:: make more general/robust
-
-  if (is_centralized)
+  if (is_obs_sim)  // if we run sims with obs and agents, we want to subscribe to both /trajs and /agent/rmader/trajs
+  {
+    sub_cent_traj_ = nh1_.subscribe("/trajs", 60, &RmaderRos::trajCB, this);  // The number is the queue size
+    for (int id : agents_ids)
+    {
+      std::string agent;
+      (id <= 9) ? agent = veh + "0" + std::to_string(id) + "s" : agent = veh + std::to_string(id) + "s";
+      if (myns != agent)
+      {  // if my namespace is the same as the agent, then it's you
+        sub_traj_.push_back(nh4_.subscribe("/" + agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
+                                           this));  // The number is the queue size
+      }
+    }
+  }
+  else if (is_centralized)  // if centralized, we only need to subscribe /trajs
   {
     sub_cent_traj_ = nh1_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
   }
@@ -361,7 +376,7 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   tmp.time_received = ros::Time::now().toSec();
 
-  if (is_artificial_comm_delay_)
+  if (is_artificial_comm_delay_ && msg.is_agent)
   {
     alltrajs_.push_back(tmp);
     ros::Timer alltrajs_timer =
