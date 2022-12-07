@@ -176,24 +176,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
 {
   // std::cout << "in updateTrajObstacles" << std::endl;
 
-  // bool delay_check_result = true;
-
   MyTimer tmp_t(true);
-
-  // if (started_check_ == true && traj.is_agent == true)
-  // {
-  //   have_received_trajectories_while_checking_ = true;
-  // }
-  // else
-  // {
-  //   have_received_trajectories_while_checking_ = false;
-  // }
-
-  // std::vector<mt::dynTrajCompiled>::iterator obs_ptr =
-  //     std::find_if(trajs_.begin(), trajs_.end(),
-  //                  [=](const mt::dynTrajCompiled& traj_compiled) { return traj_compiled.id == traj.id; });
-
-  // bool exists_in_local_map = (obs_ptr != std::end(trajs_));
 
   mt::dynTrajCompiled traj_compiled;
   dynTraj2dynTrajCompiled(traj, traj_compiled);
@@ -286,12 +269,6 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
   // std::cout << "bef mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
   mtx_trajs_.unlock();
   // std::cout << "aft mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
-
-  // std::cout << "out updateTrajObstacles" << std::endl;
-
-  // return delay_check_result;
-
-  // std::cout << bold << blue << "updateTrajObstacles took " << tmp_t << reset << std::endl;
 }
 
 void Rmader::updateTrajObstacles(mt::dynTraj traj)
@@ -1024,10 +1001,8 @@ bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePo
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
 // Check period and Recheck period is defined here
-bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
+bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
 {
-  // started_check_ = true;
-
   bool result = true;
   for (auto& traj : trajs_)
   {
@@ -1042,16 +1017,6 @@ bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fai
       }
     }
   }
-
-  // and now do another check in case I've received anything while I was checking. Note that mtx_trajs_ is locked!
-  // This is Recheck
-  // if (have_received_trajectories_while_checking_ == true)
-  // {
-  //   ROS_ERROR_STREAM("Recvd traj while checking ");
-  //   result = false;
-  // }
-
-  // started_check_ = false;
 
   return result;
 }
@@ -1663,7 +1628,7 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
 
     // check and recheck are done in safetyChechAfterOpt()
 
-    bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now, is_q0_fail);
+    bool is_safe_after_opt = safetyCheckAfterOptForRmader(pwp_now, is_q0_fail);
 
     // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
     mtx_trajs_.unlock();

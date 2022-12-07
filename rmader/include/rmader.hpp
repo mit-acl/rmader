@@ -92,7 +92,7 @@ private:
 
   bool initializedStateAndTermGoal();
 
-  bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fail);
+  bool safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail);
   bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized);
 
   bool safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev);
