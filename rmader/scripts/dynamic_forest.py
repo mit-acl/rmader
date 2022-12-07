@@ -326,21 +326,3 @@ if __name__ == '__main__':
         startNode(total_num_obs)
     except rospy.ROSInterruptException:
         pass
-
-
-            # self.x_all.append(random.random());
-            # self.y_all.append(4*random.random());
-            # self.z_all.append(2);
-            # self.x_all.append(50*random.random());
-            # self.y_all.append(1*random.random());
-            # self.z_all.append(2);
-
-        # self.state.quat.x = 0
-        # self.state.quat.y = 0
-        # self.state.quat.z = 0
-        # self.state.quat.w = 1
-
-        # self.pubGazeboState = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=1)
-
-        # self.state.header.frame_id="world"
-        # self.pubState.publish(self.state)  
