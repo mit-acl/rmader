@@ -47,7 +47,7 @@ if __name__ == '__main__':
                 source_dir = parent_source_dir + "/oldmader/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
                 # is_oldmader = False
             else:
-                source_dir = parent_source_dir + "/opti_dc_rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
+                source_dir = parent_source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
             
             source_len = len(source_dir)
             source_bags = source_dir + "/*.bag" # change the source dir accordingly
@@ -58,7 +58,7 @@ if __name__ == '__main__':
             for bag in rosbag_list:
                 rosbag.append(bag)
 
-            print("rosbag", rosbag)
+            # print("rosbag", rosbag)
 
             # read ros bags
             completion_time_per_sim_list = []
