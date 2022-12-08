@@ -223,7 +223,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   if (is_obs_sim)  // if we run sims with obs and agents, we want to subscribe to both /trajs and /agent/rmader/trajs
   {
-    sub_cent_traj_ = nh1_.subscribe("/trajs", 50, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh1_.subscribe("/trajs", 30, &RmaderRos::trajCB, this);  // The number is the queue size
     for (int id : agents_ids)
     {
       std::string agent;
@@ -523,7 +523,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
 {
   if (ros::ok() && published_initial_position_ == true && is_rmader_running_)
   {
-    replanCBTimer_.stop();  // to avoid blockage
+    // replanCBTimer_.stop();  // to avoid blockage
 
     // introduce random wait time in the beginning
     // if (!is_replanCB_called_ && is_sequencial_start_)
@@ -612,10 +612,13 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             }
             ros::Duration(delay_check_ / 5.0).sleep();
           }
-          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+
+          if (!delay_check_result_)
+          {
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+          }
           // end of constant delay check *******************************************************
         }
-
         if (delay_check_result_)
         {
           bool successful_to_add_to_plan = rmader_ptr_->addTrajToPlan_with_delaycheck(pwp_now_);
@@ -720,8 +723,8 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
       }
     }
 
-    replanCBTimer_.start();  // to avoid blockage
-  }                          // std::cout << "[Callback] Leaving replanCB" << std::endl;
+    // replanCBTimer_.start();  // to avoid blockage
+  }  // std::cout << "[Callback] Leaving replanCB" << std::endl;
 
   mt::state G;  // projected goal
   // mtx_mader_ptr_.lock();

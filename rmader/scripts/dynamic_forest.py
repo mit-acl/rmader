@@ -45,19 +45,19 @@ class MovingForest:
     def __init__(self, total_num_obs):
         print(total_num_obs)
         self.total_num_obs=total_num_obs
-        self.num_of_dyn_objects=int(0.5*total_num_obs) #int(0.65*total_num_obs);
+        self.num_of_dyn_objects=int(0.7*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
-        self.x_min= -6.0
-        self.x_max= 6.0
-        self.y_min= -6.0 
-        self.y_max= 6.0
+        self.x_min= -5.5
+        self.x_max= 5.5
+        self.y_min= -5.5 
+        self.y_max= 5.5
         self.z_min= 1.0 #-6.0 for sphere sim
         self.z_max= 1.0  #6.0 for sphere sim
         self.scale=1.0
         self.slower_min=5.2
         self.slower_max= 5.2
-        self.bbox_dynamic=[0.6, 0.6, 0.6] 
-        self.bbox_static_vert=[0.6, 0.6, 4]  #[0.4, 0.4, 6] for sphere sim
+        self.bbox_dynamic=[0.5, 0.5, 0.5] 
+        self.bbox_static_vert=[0.45, 0.45, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
 
@@ -84,7 +84,7 @@ class FakeSim:
         self.meshes=[];
         self.type=[];#"dynamic" or "static"
         self.bboxes=[];
-        random.seed(0)
+        random.seed(6)
         for i in range(self.world.num_of_dyn_objects):          
             self.x_all.append(random.uniform(self.world.x_min, self.world.x_max));
             self.y_all.append(random.uniform(self.world.y_min, self.world.y_max));
