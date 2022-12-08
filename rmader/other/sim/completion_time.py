@@ -25,7 +25,7 @@ if __name__ == '__main__':
     cd_list = [0, 50, 100, 200, 300]
 
     for cd in cd_list:
-        is_oldmader=True
+        is_oldmader=False
         if cd == 0: 
             dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
@@ -37,7 +37,6 @@ if __name__ == '__main__':
         elif cd == 300:
             dc_list = [350]
         # this gives you 2d array, row gives you each sims data in corresponding dc
-        box_plot_list = [] 
         for dc in dc_list:
             str_dc = str(dc)
             parent_source_dir = sys.argv[1]
@@ -53,33 +52,38 @@ if __name__ == '__main__':
             source_bags = source_dir + "/*.bag" # change the source dir accordingly
             rosbag_list = glob.glob(source_bags)
             rosbag_list.sort() #alphabetically order
-            rosbag = []
+            rosbags = []
 
             for bag in rosbag_list:
-                rosbag.append(bag)
+                rosbags.append(bag)
 
             # print("rosbag", rosbag)
 
             # read ros bags
             completion_time_per_sim_list = []
-            completion_time_per_sim = 0.0
-            for i in range(len(rosbag)):
-                print('rosbag ' + str(rosbag[i]))
-                b = bagreader(rosbag[i], verbose=False)
-                sim_id = rosbag[i][source_len+5:source_len+7]
-                
-                # introduced goal_reached topic so no need to check actual_traj
+            for i in range(len(rosbags)):
+                print('rosbag ' + str(rosbags[i]))
+                start_time_initialized = False
+                finish_time_initialized = False
+                start_time = 0.0
+                finish_time = 0.0
+                for topic, msg, t in  rosbag.Bag(rosbags[i]).read_messages():
+                    # if topic == '/SQ01s/goal':
+                    if topic == '/SQ01s/rmader/actual_traj': # for rmader, i didn't record goal
+                        if not start_time_initialized:
+                            start_time = t.secs + t.nsecs/1e9
+                            print("start_time", start_time)
+                            start_time_initialized = True
+                        
+                    if topic == '/goal_reached':
+                        if not finish_time_initialized:
+                            finish_time = t.secs + t.nsecs/1e9
+                            print("finish_time", finish_time)
+                            finish_time_initialized = True
 
-                try:
-                    log_data = b.message_by_topic("/goal_reached")
-                    log = pd.read_csv(log_data, usecols=["completion_time", "is_goal_reached"])
-                    completion_time = log.completion_time.iloc[0]
-                    # print('completion time ' + str(completion_time_agent))
-                    completion_time_per_sim_list.append(completion_time)
-                    box_plot_list.append(completion_time_per_sim_list)
-
-                except:
-                    print("agents didn't reach goals")
+                completion_time = finish_time - start_time
+                print("completion_time", completion_time)
+                completion_time_per_sim_list.append(completion_time)
 
             os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/completion_time.txt')
             try:
