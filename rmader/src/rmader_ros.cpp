@@ -223,7 +223,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   if (is_obs_sim)  // if we run sims with obs and agents, we want to subscribe to both /trajs and /agent/rmader/trajs
   {
-    sub_cent_traj_ = nh4_.subscribe("/trajs", 50, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh1_.subscribe("/trajs", 50, &RmaderRos::trajCB, this);  // The number is the queue size
     for (int id : agents_ids)
     {
       std::string agent;
@@ -231,7 +231,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
       std::cout << agent << std::endl;
       if (myns != agent)
       {  // if my namespace is the same as the agent, then it's you
-        sub_traj_.push_back(nh4_.subscribe(agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
+        sub_traj_.push_back(nh1_.subscribe(agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
                                            this));  // The number is the queue size
       }
     }
@@ -381,7 +381,7 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
   {
     alltrajs_.push_back(tmp);
     ros::Timer alltrajs_timer =
-        nh5_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+        nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
     alltrajsTimers_.push_back(alltrajs_timer);
   }
   else
