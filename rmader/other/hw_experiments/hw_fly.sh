@@ -70,8 +70,8 @@ sleep 3
 
 # ssh each nuc
 # tmux send-keys -t $SESSION:$w.1 "ssh nuc1@192.168.15.2" C-m
-tmux send-keys -t $SESSION:$w.1 "ssh nuc2@192.168.16.2" C-m
-tmux send-keys -t $SESSION:$w.3 "ssh nuc1@192.168.15.2" C-m
+tmux send-keys -t $SESSION:$w.1 "ssh nuc1@192.168.15.2" C-m
+tmux send-keys -t $SESSION:$w.3 "ssh nuc2@192.168.16.2" C-m
 tmux send-keys -t $SESSION:$w.5 "ssh nuc5@192.168.19.2" C-m
 tmux send-keys -t $SESSION:$w.7 "ssh nuc7@192.168.21.2" C-m
 tmux send-keys -t $SESSION:$w.9 "ssh nuc08@192.168.22.2" C-m
@@ -96,8 +96,8 @@ tmux send-keys -t $SESSION:$w.11 "sudo ntpdate time.nist.gov" C-m
 sleep 15
 
 if [[ $ifDELETE == 'true' ]]; then 
-	tmux send-keys -t $SESSION:$w.1 "cd /home/nuc2/Research/bags && rm *.txt && cd" C-m
-	tmux send-keys -t $SESSION:$w.3 "cd /home/nuc1/Research/bags && rm *.txt && cd" C-m
+	tmux send-keys -t $SESSION:$w.1 "cd /home/nuc1/Research/bags && rm *.txt && cd" C-m
+	tmux send-keys -t $SESSION:$w.3 "cd /home/nuc2/Research/bags && rm *.txt && cd" C-m
 	tmux send-keys -t $SESSION:$w.5 "cd /home/nuc5/Research/bags && rm *.txt && cd" C-m
 	tmux send-keys -t $SESSION:$w.7 "cd /home/nuc7/Research/bags && rm *.txt && cd" C-m
 	tmux send-keys -t $SESSION:$w.9 "cd /home/nuc08/Research/bags && rm *.txt && cd" C-m
