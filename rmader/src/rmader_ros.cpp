@@ -227,7 +227,11 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
     for (int id : agents_ids)
     {
       std::string agent;
-      (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      if (veh == "NX"){
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) : agent = "/" + veh + std::to_string(id);
+      } else {
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      }
       std::cout << agent << std::endl;
       if (myns != agent)
       {  // if my namespace is the same as the agent, then it's you
@@ -245,7 +249,11 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
     for (int id : agents_ids)
     {
       std::string agent;
-      (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      if (veh == "NX"){
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) : agent = "/" + veh + std::to_string(id);
+      } else {
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      }
       if (myns != agent)
       {  // if my namespace is the same as the agent, then it's you
         sub_traj_.push_back(nh4_.subscribe(agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
