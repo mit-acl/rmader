@@ -3,6 +3,9 @@
 # this script creates multiple windows to send goals to drons
 # referred to fly script used for voxl setup, which is in /extras
 
+# one_time_exchange code
+ONE_TIME_EXCHANGE=$2
+
 # session name
 SESSION=goal
 WINDOW=base_station
@@ -22,7 +25,7 @@ do
 	tmux select-layout -t $SESSION:$w.$i even-vertical
 done
 
-for i in 0 2 4
+for i in 0 2 4 6
 do
 	tmux select-pane -t $SESSION:$w.$i	
 	tmux split-window -h
@@ -32,8 +35,8 @@ done
 sleep 1
 
 # ssh each nuc
-tmux send-keys -t $SESSION:$w.0 "ssh nuc2@192.168.16.2" C-m
-tmux send-keys -t $SESSION:$w.1 "ssh nuc1@192.168.15.2" C-m
+tmux send-keys -t $SESSION:$w.0 "ssh nuc1@192.168.15.2" C-m
+tmux send-keys -t $SESSION:$w.1 "ssh nuc2@192.168.16.2" C-m
 tmux send-keys -t $SESSION:$w.2 "ssh nuc5@192.168.19.2" C-m
 tmux send-keys -t $SESSION:$w.3 "ssh nuc7@192.168.21.2" C-m
 tmux send-keys -t $SESSION:$w.4 "ssh nuc08@192.168.22.2" C-m
@@ -43,12 +46,12 @@ sleep 1
 
 # send goals (randomly generated or position exchange)
 if [ "$1" == "pos" ]; then
-	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX02"
-	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=2 quad:=NX01"
-	tmux send-keys -t $SESSION:$w.2 "roslaunch rmader position_exchange.launch mode:=3 quad:=NX05"
-	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=4 quad:=NX07"
-	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader position_exchange.launch mode:=5 quad:=NX08"
-	tmux send-keys -t $SESSION:$w.5 "roslaunch rmader position_exchange.launch mode:=6 quad:=NX09"
+	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX01 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
+	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=2 quad:=NX02 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
+	tmux send-keys -t $SESSION:$w.2 "roslaunch rmader position_exchange.launch mode:=3 quad:=NX05 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
+	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=4 quad:=NX07 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
+	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader position_exchange.launch mode:=5 quad:=NX08 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
+	tmux send-keys -t $SESSION:$w.5 "roslaunch rmader position_exchange.launch mode:=6 quad:=NX09 one_time_exchange:="$ONE_TIME_EXCHANGE C-m
 
 	# with obstacles
 	# tmux send-keys -t $SESSION:$w.0 "roslaunch mader position_exchange.launch mode:=1 quad:=NX01"

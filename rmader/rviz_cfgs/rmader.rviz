@@ -1704,7 +1704,7 @@ Visualization Manager:
       Marker Topic: /high_bay
       Name: Marker
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1800,7 +1800,7 @@ Visualization Manager:
       Marker Topic: /SQ07s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ07s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1808,7 +1808,7 @@ Visualization Manager:
       Marker Topic: /SQ08s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ08s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1816,7 +1816,7 @@ Visualization Manager:
       Marker Topic: /SQ09s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ09s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1824,7 +1824,7 @@ Visualization Manager:
       Marker Topic: /SQ10s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ10s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1832,7 +1832,7 @@ Visualization Manager:
       Marker Topic: /SQ11s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ11s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1840,7 +1840,7 @@ Visualization Manager:
       Marker Topic: /SQ12s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ12s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1848,7 +1848,7 @@ Visualization Manager:
       Marker Topic: /SQ13s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ13s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1856,7 +1856,7 @@ Visualization Manager:
       Marker Topic: /SQ14s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ14s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -1864,7 +1864,7 @@ Visualization Manager:
       Marker Topic: /SQ15s/drone_marker
       Name: Marker
       Namespaces:
-        mesh_SQ15s: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -2183,7 +2183,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 92.8788070678711
+      Distance: 63.2943115234375
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -2191,17 +2191,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 5.0111517906188965
+        Y: 0.7389626502990723
+        Z: 0.6298168897628784
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6547973155975342
+      Pitch: 1.034796953201294
       Target Frame: <Fixed Frame>
-      Yaw: 4.763184547424316
+      Yaw: 4.718182563781738
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 16.45623207092285
