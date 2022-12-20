@@ -135,7 +135,7 @@ if __name__ == '__main__':
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py controller "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
-                # commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                # commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)goal(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
                 # commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")

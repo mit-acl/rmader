@@ -93,4 +93,3 @@ if __name__ == '__main__':
             except:
                 pass
             os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/completion_time.txt')
-
