@@ -42,13 +42,13 @@ if __name__ == '__main__':
     num_of_agents=10
     radius=10
     how_long_to_wait=60 #[s]
-    cd_list = [0, 50, 100, 200, 300]
+    cd_list = [0]
 
     ##### loop
     for cd in cd_list:
         is_oldmader=False
         if cd == 0:
-            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [10] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
             dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
