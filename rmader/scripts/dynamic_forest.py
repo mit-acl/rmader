@@ -45,7 +45,7 @@ class MovingForest:
     def __init__(self, total_num_obs):
         print(total_num_obs)
         self.total_num_obs=total_num_obs
-        self.num_of_dyn_objects=int(0.7*total_num_obs) #int(0.65*total_num_obs);
+        self.num_of_dyn_objects=int(1*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
         self.x_min= -5.5
         self.x_max= 5.5
