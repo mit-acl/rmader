@@ -9,7 +9,7 @@
 #  * See LICENSE file for the license information
 #  * -------------------------------------------------------------------------- */
 
-
+import rospy
 import math
 import os
 import sys
@@ -37,28 +37,45 @@ def create_session(session_name, commands):
     print("Commands sent")
 
 
-def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z,yaw):
+def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z,yaw, wait_time):
     # if(action=="base_station"):
     #     return "roslaunch rmader base_station.launch type_of_environment:=dynamic_forest";
     if(action=="controller"):
         quad = veh + num + "s"
-        return "roslaunch rmader perfect_tracker_and_sim.launch quad:=" + quad + " x:=" + str(x) + " y:=" + str(y)
+        return "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=" + quad + " x:=" + str(x) + " y:=" + str(y)
     if(action=="send_goal"):
         quad = veh + num + "s";
-        return "rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
+        # print("sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'")
+        return "sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
+        # return "rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
     if(action=="rmader"):
-        return "roslaunch rmader onboard.launch veh:="+veh+" num:="+num+" 2>&1 | tee "+folder+"/"+sim_id+"_"+veh+num+"_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt"
+        # print(str(folder))
+        # return "roslaunch --wait rmader onboard.launch veh:="+veh+" num:="+num+" 2>&1 | tee "+str(folder)+"/"+str(sim_id)+"_"+veh+num+"_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt"
+        return "roslaunch --wait rmader onboard.launch veh:="+veh+" num:="+num
         # return "roslaunch rmader onboard.launch veh:="+veh+" num:="+num #+ " >> "+quad+".txt" #Kota comment: this line launches mader.launch with the argument of quad number
         # return "script -q -c 'roslaunch rmader rmader.launch quad:="+quad + "' "+quad+".txt"
         
-
 if __name__ == '__main__':
+
+    # is_sequential_start_wait_time
+    is_sequential_start_wait_time = True
+    time_separation = 0.25 #seconds
+
     # formation="sphere", "square" "circle"
     formation="circle"
     commands = []
-    num_of_agents=50; 
-    radius=40;
+    # print("sys.argv[0]",sys.argv[0]) # reserved for file name (launch_many_drones.py)
+    action = str(sys.argv[1]) # action
+    sim_id = str(sys.argv[2]) # sim_id
+    folder = str(sys.argv[3]) # folder location
+    num_of_agents = int(sys.argv[4]) # num_of_agents
+    radius = float(sys.argv[5]) # radius
 
+    print(action)
+    print(sim_id)
+    print(folder)
+    print(num_of_agents)
+    print(radius)
 
     if(formation=="sphere"):
         # num_mer=int(math.sqrt(num_of_agents)); #Num of meridians
@@ -76,7 +93,7 @@ if __name__ == '__main__':
     print("num_mer= ", num_mer)
     print("num_of_agents_per_mer= ", num_of_agents_per_mer)
 
-    id_number=1;
+    id_number=1
     shift_z=radius;
     shift_z=1.0 # should always above 0. look at terminal goal CB in mader_ros.cpp
 
@@ -116,7 +133,8 @@ if __name__ == '__main__':
 
             goal_x=radius*math.cos(theta+2*math.pi)*math.sin(phi+math.pi)
             goal_y=radius*math.sin(theta+2*math.pi)*math.sin(phi+math.pi)
-            goal_z=shift_z + radius*math.cos(phi+math.pi)
+            # goal_z=shift_z + radius*math.cos(phi+math.pi)
+            goal_z=1.0 # should always above 0. look at terminal goal CB in mader_ros.cpp
                 
             # quad="SQ0" + str(id_number) + "s";
             veh="SQ";
@@ -126,6 +144,12 @@ if __name__ == '__main__':
                 num=str(id_number)
 
             id_number=id_number+1
+
+            # sequential_start_wait_time
+            wait_time = 0.0
+            if (is_sequential_start_wait_time):
+                wait_time = time_separation * i
+            wait_time = str(wait_time)
 
             if(formation=="square"):
                 x=square_starts[i-1][0];
@@ -139,8 +163,7 @@ if __name__ == '__main__':
                 yaw=square_yaws_deg[i-1]*math.pi/180;
                 print("yaw= ", square_yaws_deg[i-1])
 
-
-            commands.append(convertToStringCommand(sys.argv[1],sys.argv[2],sys.argv[3],veh,num,x,y,z,goal_x,goal_y,goal_z, yaw));
+            commands.append(convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal_z, yaw, wait_time));
 
             x_tmp="{:5.3f}".format(x);
             y_tmp="{:5.3f}".format(y);
@@ -152,118 +175,13 @@ if __name__ == '__main__':
  
             print (' "start": [',x_tmp,', ',y_tmp,', ',z_tmp,'], "goal": [',goal_x_tmp,', ',goal_y_tmp,', ',goal_z_tmp,']  ')
 
-
     print("len(commands)= " , len(commands))
-    session_name=sys.argv[1] + "_session"
+    session_name=action+"_session"
     os.system("tmux kill-session -t" + session_name)
     create_session(session_name, commands) #Kota commented out July 16, 2021
-    if(sys.argv[1]!="send_goal"):
-        # os.system("tmux attach") #comment if you don't want to visualize all the terminals
-        time.sleep(1); #Kota added to make this "if statement" works even when i comment out the above line
-    else: ##if send_goal, kill after some time
-        time.sleep(num_of_agents); #The more agents, the more I've to wait to make sure the goal is sent correctly
-        os.system("tmux kill-session -t" + session_name)
-
-    # half_of_agents=num_of_agents/2.0
-    # dist_bet_groups=6.0
-    # random_01=randint(0, 1)
-    # print("random_01= ", random_01)
-
-    # positions=[];
-    # thetas=[];
-
-    # z_value=0.0;
-
-
-    # for i in range(1,num_of_agents+1):
-    #     theta=(2*math.pi)*i/(1.0*num_of_agents)
-    #     thetas.append(theta)
-
-    # for i in range(1,num_of_agents+1):
-
-    #     # group = (i>half_of_agents)
-
-    #     # x= i if group == 0 else (i-half_of_agents)
-    #     # y= dist_bet_groups*group   
-    #     # z=0
-
-    #     # goal_x=half_of_agents-x
-    #     # goal_y=random_01*(dist_bet_groups-y) + (1-random_01)*y 
-    #     # goal_z=0
-
-    #     if(sphere):
-    #         x=radius*math.cos(theta)*math.sin(phi)
-    #         y=radius*math.sin(theta)*math.sin(phi)
-    #         z=radius*cos(phi)
-
-    #     theta=thetas[i-1];
-
-    #     x=radius*math.cos(theta)
-    #     y=radius*math.sin(theta)
-    #     z=1.0 #z_value
-    #     #z_value=1.0 #From now on, stay on z=1 meter
-
-    #     pitch=0.0;
-    #     roll=0.0;
-    #     yaw= theta+math.pi  
-
-    #     theta=theta+math.pi
-
-    #     goal_x=radius*math.cos(theta)
-    #     goal_y=radius*math.sin(theta)
-    #     goal_z=z
-
-    #     thetas[i-1]=theta;
-
-      
-    #     # quat = quaternion_from_euler(yaw, pitch, roll, 'szyx')
-    #     # print (quat)
-
-
-    #     quad="SQ0" + str(i) + "s";
-    #     print ("quad= ",quad)
-    #     print ("goal_y= ",goal_y)
-    #     print ("goal_x= ",goal_x)
-    #     if(sys.argv[1]=="start"):
-    #         commands.append("roslaunch rmader mader_specific.launch gazebo:=false quad:="+quad+" x:="+str(x)+" y:="+str(y)+" z:="+str(z)+" yaw:="+str(yaw))
-    #     if(sys.argv[1]=="send_goal"):
-    #         commands.append("rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'")
-    #     if(sys.argv[1]=="mader"):
-    #         commands.append("roslaunch rmader mader.launch quad:="+quad)
-
-
-
-
-
-
-#import libtmux
-    # panes=win.list_panes()
-    # print("panes.size=", len(panes))
-    # for i in range(len(panes)):
-    #     panes[i].send_keys(commands[i])
-
-
-    # logging.info(panes)
-    # logging.info(win)
-
-            #win.select_layout(layout='tiled')
-        #win.split_window()
-        #win.cmd('select-layout tiled')  
-        #win.select_layout(layout='tiled')
-        #win.cmd('split-window', '-h')    
-
-                #win.cmd('select-layout tiled')
-        #os.system("tmux attach")
-        #os.system("tmux select-layout tiled")
-
-            #os.system("tmux attach")
-
-    # win = session.new_window(attach=False, window_name="win")
-    # win.select_layout(layout='tiled')
-    #logging.info(commands)
-    # pane_NUM = 3
-    # WINDOW_NUM = int(math.ceil(len(commands)/4.0))  # in python3, we can use 4 also
-
-    # server = libtmux.Server()
-    # session = server.new_session(session_name)
-    # panes = []
+    # if(action!="send_goal"):
+    #     # os.system("tmux attach") #comment if you don't want to visualize all the terminals
+    #     time.sleep(1); #Kota added to make this "if statement" works even when i comment out the above line
+    # else: ##if send_goal, kill after some time
+    #     time.sleep(num_of_agents); #The more agents, the more I have to wait to make sure the goal is sent correctly
+    #     os.system("tmux kill-session -t" + session_name)

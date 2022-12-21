@@ -36,89 +36,71 @@ def myhook():
 
 if __name__ == '__main__':
 
-    # parameters
-    is_oldmader=False
-    num_of_sims=1
-    num_of_agents=50
-    how_long_to_wait=100 #[s]
-    if is_oldmader:
-        cd_list = [0, 50, 100, 200, 300]
-    else:
-        # cd_list = [200, 300]
-        cd_list = [100]
+    ##### parameters
+    is_docker = True
+    num_of_sims=100
+    num_of_agents=10
+    radius=10
+    how_long_to_wait=60 #[s]
+    cd_list = [50]
 
-    # folder initialization
-    folder_bags_list = []
-    folder_txts_list = []
-
+    ##### loop
     for cd in cd_list:
-
         is_oldmader=False
-
         if cd == 0:
-            dc_list = [25, 10, 3] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            # dc_list = [100] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [56, 51, 50.8, 35, 15] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            # dc_list = [130] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            # dc_list = [105, 101.3, 101, 75, 25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            dc_list = [200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [300]
+            dc_list = [250]
         elif cd == 300:
-            dc_list = [400]
-
-        # if cd == 0:
-        #     dc_list = [0, 100] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        # elif cd == 50:
-        #     dc_list = [0, 130] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        #     # dc_list = [0, 130] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        # elif cd == 100:
-        #     dc_list = [0, 200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        #     # dc_list = [0, 200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-        # elif cd == 200:
-        #     dc_list = [0, 300]
-        # elif cd == 300:
-        #     dc_list = [0, 400]
+            dc_list = [350]
 
         for dc in dc_list:
-
             dc_in_ms = dc/1000;
             cd_in_ms = cd/1000;
+            str_dc = str(dc)
 
-            if dc == 50.8:
-                str_dc = "51_8"
-            elif dc == 101.3:
-                str_dc = "101_3"
-            else:
-                str_dc = str(dc)
+            #### rmader.yaml modification. comment out delay_check param and is_delaycheck param
+            os.system("sed -i '/is_delaycheck/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
+            os.system("sed -i '/delay_check_sec/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
+            os.system("sed -i '/simulated_comm_delay_sec/s/^/#/g' $(rospack find rmader)/param/rmader.yaml")
 
-            # mader.yaml modification. comment out delay_check param and is_delaycheck param
-            os.system("sed -i '/delay_check/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
-            os.system("sed -i '/is_delaycheck/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
-            os.system("sed -i '/simulated_comm_delay/s/^/#/g' $(rospack find rmader)/param/mader.yaml")
-
-            if is_oldmader:
-                folder_bags="/home/kota/data/bags/oldmader/cd"+str(cd)+"ms"
-                folder_txts="/home/kota/data/txt_files/oldmader/cd"+str(cd)+"ms"
-                folder_csv="/home/kota/data/csv/oldmader/cd"+str(cd)+"ms"
-            else:
-                folder_bags="/home/kota/data/bags/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_txts="/home/kota/data/txt_files/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                folder_csv="/home/kota/data/csv/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+            #### folder name
+            if is_docker: ## using Docker on lambda machine
+                source_dir = "/home/kota/data/mader"
+                if is_oldmader:
+                    folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
+                    folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
+                    folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
+                else:
+                    folder_bags=source_dir +"/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir +"/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir +"/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+            else: ## on my desktop
+                source_dir = "/home/kota/test/data"
+                if is_oldmader:
+                    folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
+                    folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
+                    folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
+                else:
+                    folder_bags=source_dir + "/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir + "/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir + "/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
                 os.makedirs(folder_bags)
 
             # create directy if not exists
-            if (not os.path.exists(folder_txts)):
-                os.makedirs(folder_txts)
+            # if (not os.path.exists(folder_txts)):
+            #     os.makedirs(folder_txts)
 
              # create directy if not exists
-            if (not os.path.exists(folder_csv)):
-                os.makedirs(folder_csv)        
+            # if (not os.path.exists(folder_csv)):
+            #     os.makedirs(folder_csv)        
 
             # name_node_record="bag_recorder"
             kill_all="tmux kill-server & killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands"
@@ -143,25 +125,27 @@ if __name__ == '__main__':
                     else:
                         agent_id = str(num)
 
-                    commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/delay_check "+str(dc_in_ms))
-                    commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/simulated_comm_delay "+str(cd_in_ms))
+                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/delay_check_sec "+str(dc_in_ms))
+                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/simulated_comm_delay_sec "+str(cd_in_ms))
                     if is_oldmader:
-                        commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck false")
+                        commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck false")
                     else:
-                        commands.append("sleep 20.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck true")
+                        commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck true")
 
-                commands.append("sleep 20.0 && roslaunch rmader many_drones.launch action:=controller")
-                commands.append("sleep 20.0 && roslaunch rmader many_drones.launch action:=rmader sim_id:="+sim_id+" folder:="+folder_txts)
-                # commands.append("sleep 20.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 20.0 && cd "+folder_bags+" && rosbag record -e '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
-                commands.append("sleep 20.0 && roslaunch rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
-                commands.append("sleep 20.0 && roslaunch rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
-                # commands.append("sleep 20.0 && rvmd")
+                commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py controller "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
+                commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
+                # commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
+                # commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)goal(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                # commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
+                # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
+                commands.append("sleep 4.0 && rvmd")
+                # commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
+                commands.append("sleep 5.0 && roscd rmader && roslaunch rmader dynamic_forest_launch.launch")
+                commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 
                 #publishing the goal should be the last command
-                commands.append("sleep 25.0 && roslaunch rmader many_drones.launch action:=send_goal")
-                commands.append("sleep 25.0 && roslaunch rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
-                commands.append("sleep 25.0 && tmux detach")
+                commands.append("sleep 10.0 && roscd rmader && cd scripts && python launch_many_drones.py send_goal "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
+                commands.append("sleep 10.0 && tmux detach")
 
                 # print("len(commands)= " , len(commands))
                 session_name="run_many_sims_multi_agent_session"
@@ -215,11 +199,9 @@ if __name__ == '__main__':
             os.system("sed -i '/is_delaycheck/s/^#//g' $(rospack find rmader)/param/rmader.yaml")
 
             # use old mader only once
-            if is_oldmader:
-                is_oldmader=False
-
-            time.sleep(3.0)
-
+            # if is_oldmader:
+            #     is_oldmader=False
+            # time.sleep(3.0)
 
     # After the simulations
     session_name="data"
@@ -227,11 +209,11 @@ if __name__ == '__main__':
     os.system("tmux new-session -d -s "+str(session_name)+" -x 300 -y 300")
 
     commands = []
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
+    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py "+source_dir)
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 
     # tmux splitting
     for i in range(len(commands)):

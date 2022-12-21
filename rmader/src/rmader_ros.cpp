@@ -29,16 +29,22 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
                      ros::NodeHandle nh5)
   : nh1_(nh1), nh2_(nh2), nh3_(nh3), nh4_(nh4), nh5_(nh5)
 {
-  // Parameters from rmader.yaml
-  // if this is simulation or hardware
-  mu::safeGetParam(nh1_, "sim", sim_);
+  // use highbay space size?
+  std::string space_size;
+  mu::safeGetParam(nh1_, "space_size", space_size);
 
   // using delay check or not
   mu::safeGetParam(nh1_, "is_delaycheck", is_delaycheck_);
 
+  // using check or not
+  mu::safeGetParam(nh1_, "is_check", par_.is_check);
+
+  // use optimistic dc?
+  mu::safeGetParam(nh1_, "is_optimistic_dc", par_.is_optimistic_dc);
+
   // max number of agents
-  int max_agent_number;
-  mu::safeGetParam(nh1_, "max_agent_number", max_agent_number);
+  std::vector<int> agents_ids;
+  mu::safeGetParam(nh1_, "agents_ids", agents_ids);
 
   // using take off in the beginning
   bool is_take_off;
@@ -48,11 +54,18 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   bool is_centralized = false;
   mu::safeGetParam(nh1_, "is_centralized", is_centralized);
 
-  // determine who is the camera man
-  mu::safeGetParam(nh1_, "is_camera_yawing", par_.is_camera_yawing);
+  // replan after reached the goal?
+  mu::safeGetParam(nh1_, "is_replan_after_goal_reached", is_replan_after_goal_reached_);
 
-  // sequencial start
-  mu::safeGetParam(nh1_, "is_sequencial_start", is_sequencial_start_);
+  // for obstacles, we use /trajs without any communicatoin delays, and for agents, we introduce comm delays
+  bool is_obs_sim = false;
+  mu::safeGetParam(nh1_, "is_obs_sim", is_obs_sim);
+
+  // use adaptive delay check?
+  mu::safeGetParam(nh1_, "adpt/is_adaptive_delaycheck", is_adaptive_delaycheck_);
+  mu::safeGetParam(nh1_, "adpt/initial_adaptive_delay_check", adaptive_delay_check_);
+  mu::safeGetParam(nh1_, "adpt/adpt_freq_msgs", adpt_freq_msgs_);
+  mu::safeGetParam(nh1_, "adpt/weight", adpt_weight_);
 
   // need these lines to get id
   name_drone_ = ros::this_node::getNamespace();  // Return also the slashes (2 in Kinetic, 1 in Melodic)
@@ -63,11 +76,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   std::string camera1, camera2;
   mu::safeGetParam(nh1_, "camera1", camera1);
   mu::safeGetParam(nh1_, "camera2", camera2);
-
-  if (id == camera1 || id == camera2)
-  {
-    par_.is_camera_yawing = true;
-  }
+  (id == camera1 || id == camera2) ? par_.is_camera_yawing = true : par_.is_camera_yawing = false;
 
   // if using artificallly introduced comm delay
   mu::safeGetParam(nh1_, "is_artificial_comm_delay", is_artificial_comm_delay_);
@@ -89,22 +98,19 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   par_.drone_bbox << drone_bbox_tmp[0], drone_bbox_tmp[1], drone_bbox_tmp[2];
   mu::safeGetParam(nh1_, "tuning_param/Ra", par_.Ra);
   // if using delay check(this has to be true if we wanna use RMADER)
-  mu::safeGetParam(nh1_, "tuning_param/delay_check", par_.delay_check);
+  mu::safeGetParam(nh1_, "tuning_param/delay_check_sec", par_.delay_check);
   delay_check_ = par_.delay_check;
-  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay", simulated_comm_delay_);
+  mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay_sec", simulated_comm_delay_);
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
 
-  std::string env_size = "";
-  sim_ ? env_size = "sim_size" : env_size = "highbay_size";
+  mu::safeGetParam(nh1_, space_size + "/x_min", par_.x_min);
+  mu::safeGetParam(nh1_, space_size + "/x_max", par_.x_max);
 
-  mu::safeGetParam(nh1_, env_size + "/x_min", par_.x_min);
-  mu::safeGetParam(nh1_, env_size + "/x_max", par_.x_max);
+  mu::safeGetParam(nh1_, space_size + "/y_min", par_.y_min);
+  mu::safeGetParam(nh1_, space_size + "/y_max", par_.y_max);
 
-  mu::safeGetParam(nh1_, env_size + "/y_min", par_.y_min);
-  mu::safeGetParam(nh1_, env_size + "/y_max", par_.y_max);
-
-  mu::safeGetParam(nh1_, env_size + "/z_min", par_.z_min);
-  mu::safeGetParam(nh1_, env_size + "/z_max", par_.z_max);
+  mu::safeGetParam(nh1_, space_size + "/z_min", par_.z_min);
+  mu::safeGetParam(nh1_, space_size + "/z_max", par_.z_max);
 
   std::vector<double> v_max_tmp;
   std::vector<double> a_max_tmp;
@@ -120,7 +126,6 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   mu::safeGetParam(nh1_, "nlopt/num_pol", par_.num_pol);
   mu::safeGetParam(nh1_, "nlopt/deg_pol", par_.deg_pol);
-  mu::safeGetParam(nh1_, "nlopt/weight", par_.weight);
   mu::safeGetParam(nh1_, "nlopt/epsilon_tol_constraints", par_.epsilon_tol_constraints);
   mu::safeGetParam(nh1_, "nlopt/xtol_rel", par_.xtol_rel);
   mu::safeGetParam(nh1_, "nlopt/ftol_rel", par_.ftol_rel);
@@ -143,6 +148,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "opt/factor_alloc", par_.factor_alloc);
   mu::safeGetParam(nh1_, "opt/factor_alloc_close", par_.factor_alloc_close);
   mu::safeGetParam(nh1_, "opt/dist_factor_alloc_close", par_.dist_factor_alloc_close);
+  mu::safeGetParam(nh1_, "opt/weight", par_.weight);
 
   mu::safeGetParam(nh1_, "basis", par_.basis);
 
@@ -152,9 +158,9 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   mu::safeGetParam(nh1_, "alpha_shrink", par_.alpha_shrink);
 
-  mu::safeGetParam(nh1_, "fov_horiz_deg", par_.fov_horiz_deg);
-  mu::safeGetParam(nh1_, "fov_vert_deg", par_.fov_vert_deg);
-  mu::safeGetParam(nh1_, "fov_depth", par_.fov_depth);
+  // mu::safeGetParam(nh1_, "fov_horiz_deg", par_.fov_horiz_deg);
+  // mu::safeGetParam(nh1_, "fov_vert_deg", par_.fov_vert_deg);
+  // mu::safeGetParam(nh1_, "fov_depth", par_.fov_depth);
 
   std::cout << "Parameters obtained" << std::endl;
 
@@ -179,6 +185,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
   // get my namespace
   std::string myns = ros::this_node::getNamespace();
+  std::string veh = myns.substr(1, 2);
 
   // Publishers
   pub_goal_ = nh1_.advertise<snapstack_msgs::Goal>("goal", 1);
@@ -212,55 +219,51 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   sub_whoplans_ = nh1_.subscribe("who_plans", 1, &RmaderRos::whoPlansCB, this);
   sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);
 
-  // Subscribers for each agents
+  // Subscribers for trajs
 
-  // if it's simulation
-  // TODO:: make more general/robust
-
-  if (is_centralized)
+  if (is_obs_sim)  // if we run sims with obs and agents, we want to subscribe to both /trajs and /agent/rmader/trajs
   {
-    sub_cent_traj_ = nh1_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
+    sub_cent_traj_ = nh1_.subscribe("/trajs", 30, &RmaderRos::trajCB, this);  // The number is the queue size
+    for (int id : agents_ids)
+    {
+      std::string agent;
+      if (veh == "NX")
+      {
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) : agent = "/" + veh + std::to_string(id);
+      }
+      else
+      {
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      }
+      std::cout << agent << std::endl;
+      if (myns != agent)
+      {  // if my namespace is the same as the agent, then it's you
+        sub_traj_.push_back(nh1_.subscribe(agent + "/rmader/trajs", 3, &RmaderRos::trajCB,
+                                           this));  // The number is the queue size
+      }
+    }
+  }
+  else if (is_centralized)  // if centralized, we only need to subscribe /trajs
+  {
+    sub_cent_traj_ = nh4_.subscribe("/trajs", 20, &RmaderRos::trajCB, this);  // The number is the queue size
   }
   else
   {
-    if (sim_)
+    for (int id : agents_ids)
     {
-      for (int i = 1; i <= max_agent_number; ++i)
+      std::string agent;
+      if (veh == "NX")
       {
-        std::string agent;
-        if (i <= 9)
-        {
-          agent = "SQ0" + std::to_string(i) + "s";
-        }
-        else
-        {
-          agent = "SQ" + std::to_string(i) + "s";
-        }
-        if (myns != agent)
-        {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh5_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
-                                             this));  // The number is the queue size
-        }
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) : agent = "/" + veh + std::to_string(id);
       }
-    }
-    else
-    {  // if it's hardware
-      for (int i = 1; i <= max_agent_number; ++i)
+      else
       {
-        std::string agent;
-        if (i <= 9)
-        {
-          agent = "NX0" + std::to_string(i);
-        }
-        else
-        {
-          agent = "NX" + std::to_string(i);
-        }
-        if (myns != agent)
-        {  // if my namespace is the same as the agent, then it's you
-          sub_traj_.push_back(nh5_.subscribe("/" + agent + "/rmader/trajs", 20, &RmaderRos::trajCB,
-                                             this));  // The number is the queue size
-        }
+        (id <= 9) ? agent = "/" + veh + "0" + std::to_string(id) + "s" : agent = "/" + veh + std::to_string(id) + "s";
+      }
+      if (myns != agent)
+      {  // if my namespace is the same as the agent, then it's you
+        sub_traj_.push_back(nh4_.subscribe(agent + "/rmader/trajs", 10, &RmaderRos::trajCB,
+                                           this));  // The number is the queue size
       }
     }
   }
@@ -312,9 +315,7 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // id.erase(0, 2);  // Erase SQ or HX i.e. SQ12s --> 12s  HX8621 --> 8621 # TODO Hard-coded for this this convention
   id_ = std::stoi(id);
 
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->getID(id_);
-  // mtx_mader_ptr_.unlock();
 
   timer_stop_.Reset();
 
@@ -363,23 +364,6 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   bool can_use_its_info;
 
-  // if (par_.impose_fov == false)
-  // {  // same as 360 deg of FOV
-  //   can_use_its_info = dist <= par_.R_local_map;
-  // }
-  // else
-  // {  // impose_fov==true
-
-  //   Eigen::Vector3d B_pos = W_T_B_.inverse() * W_pos;  // position of the obstacle in body frame
-  //   // check if it's inside the field of view.
-  //   can_use_its_info =
-  //       B_pos.x() < par_.fov_depth &&                                                       //////////////////////
-  //       fabs(atan2(B_pos.y(), B_pos.x())) < ((par_.fov_horiz_deg * M_PI / 180.0) / 2.0) &&  //////////////////////
-  //       fabs(atan2(B_pos.z(), B_pos.x())) < ((par_.fov_vert_deg * M_PI / 180.0) / 2.0);     ///////////////////////
-
-  //   // std::cout << "inFOV= " << can_use_its_info << std::endl;
-  // }
-
   can_use_its_info = (dist <= 4 * par_.Ra);  // See explanation of 4*Ra in Rmader::updateTrajObstacles
 
   if (can_use_its_info == false)
@@ -393,17 +377,11 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
   tmp.function.push_back(msg.function[2]);
 
   tmp.is_committed = msg.is_committed;
-
   tmp.bbox << msg.bbox[0], msg.bbox[1], msg.bbox[2];
-
   tmp.id = msg.id;
-
   tmp.is_agent = msg.is_agent;
-
   // tmp.time_sent = msg.time_sent;
-
   tmp.time_created = msg.time_created;
-
   tmp.traj_id = msg.traj_id;
 
   if (msg.is_agent)
@@ -413,78 +391,37 @@ void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 
   tmp.time_received = ros::Time::now().toSec();
 
-  // double comm_delay = tmp.time_received - tmp.time_created;
-  // if (comm_delay > delay_check_ - simulated_comm_delay_){
-  //   std::cout << "comm delay is " << comm_delay << " [s]" << std::endl;
-  //   std::cout << "comm delay is huge!!!!" << std::endl;
-  // }
-
-  if (is_artificial_comm_delay_ && is_term_goal_initialized_)
+  if (is_artificial_comm_delay_ && msg.is_agent)
   {
-    //****** Communication delay introduced in the simulation
-    // save all the trajectories into alltrajs_ and create a timer corresponding to that
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are locked() in TrajCB" << std::endl;
-    // mtx_alltrajs_.lock();
-    // mtx_alltrajsTimers_.lock();
-    // std::cout << "aft alltrajs_ and alltrajsTimers_ are locked() in TrajCB" << std::endl;
-
     alltrajs_.push_back(tmp);
     ros::Timer alltrajs_timer =
-        nh4_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
+        nh1_.createTimer(ros::Duration(simulated_comm_delay_), &RmaderRos::allTrajsTimerCB, this, true);
     alltrajsTimers_.push_back(alltrajs_timer);
-
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in TrajCB" << std::endl;
-    // mtx_alltrajs_.unlock();
-    // mtx_alltrajsTimers_.unlock();
-    // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in TrajCB" << std::endl;
   }
   else
   {
-    // mtx_mader_ptr_.lock();
     rmader_ptr_->updateTrajObstacles(tmp);
-    // mtx_mader_ptr_.unlock();
+    findAdaptiveDelayCheck(tmp);
   }
 }
 
 void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
 {
-  // std::cout << "delayed enough" << std::endl;
-
-  // just measure how long it takes to check collisions
-
-  // if (is_in_DC_)
-  // {
-  //   // MyTimer each_collision_check_t(true);
-  //   rmader_ptr_->updateTrajObstacles(alltrajs_[0], pwp_new_, is_in_DC_, headsup_time_, delay_check_result_);
-  //   // std::cout << "each collision check takes " << each_collision_check_t.ElapsedUs() << "us" << std::endl;
-  // } else {
-  //   rmader_ptr_->updateTrajObstacles(alltrajs_[0], pwp_new_, is_in_DC_, headsup_time_, delay_check_result_);
-  // }
-  // std::cout << "bef alltrajs_ and alltrajsTimers_ are locked() in allTrajsTimerCB" << std::endl;
-  // std::cout << "aft alltrajs_ and alltrajsTimers_ are locked() in allTrajsTimerCB" << std::endl;
-
-  // mtx_alltrajs_.lock();
-  // mtx_alltrajsTimers_.lock();
-
   mt::dynTraj tmp = alltrajs_[0];
-
   alltrajs_.pop_front();
   alltrajsTimers_.pop_front();
-
-  // mtx_alltrajs_.unlock();
-  // mtx_alltrajsTimers_.unlock();
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->updateTrajObstacles_with_delaycheck(tmp);
-  // mtx_mader_ptr_.unlock();
+  findAdaptiveDelayCheck(tmp);
+}
 
+// calculate how long adaptive delay check should be
+void RmaderRos::findAdaptiveDelayCheck(const mt::dynTraj tmp)
+{
   double time_now = ros::Time::now().toSec();
   double supposedly_simulated_comm_delay = time_now - tmp.time_created;
-
   // supposedly_simulated_time_delay should be simulated_comm_delay_
   if (supposedly_simulated_comm_delay > delay_check_)
   {
-    // std::cout << "supposedly_simulated_comm_delay is too big " << supposedly_simulated_comm_delay << " s"
-    // << std::endl;
     missed_msgs_cnt_ = missed_msgs_cnt_ + 1;
     msgs_cnt_ = msgs_cnt_ + 1;
   }
@@ -493,12 +430,21 @@ void RmaderRos::allTrajsTimerCB(const ros::TimerEvent& e)
     msgs_cnt_ = msgs_cnt_ + 1;
   }
 
+  comm_delay_sum_ = comm_delay_sum_ + supposedly_simulated_comm_delay;
   rmader_msgs::CommDelay msg;
+  msg.header.stamp = ros::Time::now();
+  msg.id = tmp.id;
   msg.comm_delay = supposedly_simulated_comm_delay;
+  if (msgs_cnt_ > adpt_freq_msgs_)
+  {
+    mtx_adaptive_dc_.lock();
+    adaptive_delay_check_ = adpt_weight_ * (comm_delay_sum_ / msgs_cnt_) + (1 - adpt_weight_) * adaptive_delay_check_;
+    mtx_adaptive_dc_.unlock();
+    comm_delay_sum_ = 0.0;
+    msgs_cnt_ = 0;
+  }
+  is_adaptive_delaycheck_ ? msg.adaptive_delay_check = adaptive_delay_check_ : msg.adaptive_delay_check = 0.0;
   pub_comm_delay_.publish(msg);
-
-  // std::cout << "bef alltrajs_ and alltrajsTimers_ are unlocked() in allTrajsTimerCB" << std::endl;
-  // std::cout << "aft alltrajs_ and alltrajsTimers_ are unlocked() in allTrajsTimerCB" << std::endl;
 }
 
 // This trajectory contains all the future trajectory (current_pos --> A --> final_point_of_traj), because it's the
@@ -513,6 +459,7 @@ void RmaderRos::publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_commi
   s.push_back("");
 
   rmader_msgs::DynTraj msg;
+  msg.header.stamp = ros::Time::now();
   msg.function = s;
   msg.bbox.push_back(par_.drone_bbox[0]);
   msg.bbox.push_back(par_.drone_bbox[1]);
@@ -590,7 +537,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
 {
   if (ros::ok() && published_initial_position_ == true && is_rmader_running_)
   {
-    replanCBTimer_.stop();  // to avoid blockage
+    // replanCBTimer_.stop();  // to avoid blockage
 
     // introduce random wait time in the beginning
     // if (!is_replanCB_called_ && is_sequencial_start_)
@@ -602,22 +549,29 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     //   // ros::Duration(distr(eng)).sleep();
 
     //   srand(time(NULL));
-    //   ros::Duration(0.25 * id_).sleep();  // random wait time between 0 to 3
+    //   ros::Duration(0.25 * id_).sleep();
     //   is_replanCB_called_ = true;
     // }
 
     // Check if reached the goal
-    // if (rmader_ptr_->isGoalSeen())
-    // {
-    //   std::cout << "goal is reached so no need to replan" << std::endl;
-    //   is_rmader_running_ = false;
-    //   rmader_msgs::MissedMsgsCnt msg;
-    //   msg.missed_msgs_cnt = missed_msgs_cnt_;
-    //   msg.msgs_cnt = msgs_cnt_;
-    //   pub_missed_msgs_cnt_.publish(msg);
-    //   // mtx_mader_ptr_.unlock();
-    //   return;
-    // }
+    if (!is_replan_after_goal_reached_)
+    {
+      if (rmader_ptr_->isGoalSeen())
+      {
+        std::cout << "goal is reached so no need to replan" << std::endl;
+        is_rmader_running_ = false;
+        rmader_msgs::MissedMsgsCnt msg;
+        msg.missed_msgs_cnt = missed_msgs_cnt_;
+        msg.msgs_cnt = msgs_cnt_;
+        pub_missed_msgs_cnt_.publish(msg);
+
+        // sub_state_.shutdown();
+        // sub_term_goal_.shutdown();
+        // pubCBTimer_.stop();
+        // replanCBTimer_.stop();
+        return;
+      }
+    }
 
     // initialization
     mt::Edges edges_obstacles;
@@ -630,9 +584,9 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     if (is_delaycheck_)
     {
       std::vector<mt::dynTrajCompiled> trajs;
-
+      double headsup_time;
       replanned = rmader_ptr_->replan_with_delaycheck(edges_obstacles, traj_plan, planes, num_of_LPs_run_,
-                                                      num_of_QCQPs_run_, pwp_now_, headsup_time_);
+                                                      num_of_QCQPs_run_, pwp_now_, headsup_time);
       if (replanned)
       {
         // let others know my new trajectory
@@ -641,20 +595,44 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         // visualization
         visual(edges_obstacles, traj_plan, false);
 
-        // delay check *******************************************************
-        MyTimer delay_check_t(true);
-        while (delay_check_t.ElapsedMs() / 1000.0 < delay_check_)
+        if (is_adaptive_delaycheck_)
         {
-          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
-          if (delay_check_result_ == false)
+          // adaptive delay check *******************************************************
+          MyTimer delay_check_t(true);
+          mtx_adaptive_dc_.lock();
+          while (delay_check_t.ElapsedMs() / 1000.0 < adaptive_delay_check_)
           {
-            break;
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+            if (delay_check_result_ == false)
+            {
+              break;
+            }
+            ros::Duration(adaptive_delay_check_ / 5.0).sleep();
           }
-          ros::Duration(delay_check_ / 5.0).sleep();
+          mtx_adaptive_dc_.unlock();
+          delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+          // end of adaptive delay check *******************************************************
         }
-        delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time_);
-        // end of delay check *******************************************************
+        else
+        {
+          // constant delay check *******************************************************
+          MyTimer delay_check_t(true);
+          while (delay_check_t.ElapsedMs() / 1000.0 < delay_check_)
+          {
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+            if (delay_check_result_ == false)
+            {
+              break;
+            }
+            ros::Duration(delay_check_ / 5.0).sleep();
+          }
 
+          if (!delay_check_result_)
+          {
+            delay_check_result_ = rmader_ptr_->delayCheck(pwp_now_, headsup_time);
+          }
+          // end of constant delay check *******************************************************
+        }
         if (delay_check_result_)
         {
           bool successful_to_add_to_plan = rmader_ptr_->addTrajToPlan_with_delaycheck(pwp_now_);
@@ -667,32 +645,37 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
             // visual
             visual(edges_obstacles, traj_plan, true);
             last_traj_plan_ = traj_plan;
-            last_edges_obstacles_ = edges_obstacles;
             timer_stop_.Reset();
           }
           else  // when adding traj to plan_ failed
           {
             // int time_ms = int(ros::Time::now().toSec() * 1000);
-            publishOwnTraj(pwp_last_, true, trajs);
-            timer_stop_.Reset();
+            if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
+            {
+              publishOwnTraj(pwp_last_, true, trajs);
+              timer_stop_.Reset();
+            }
             // visualization
-            visual(last_edges_obstacles_, last_traj_plan_, true);
+            visual(edges_obstacles, last_traj_plan_, true);
           }
         }
         else  // when DC failed
         {
           // int time_ms = int(ros::Time::now().toSec() * 1000);
-          publishOwnTraj(pwp_last_, true, trajs);
-          timer_stop_.Reset();
+          if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
+          {
+            publishOwnTraj(pwp_last_, true, trajs);
+            timer_stop_.Reset();
+          }
           // visualization
-          visual(last_edges_obstacles_, last_traj_plan_, true);
+          visual(edges_obstacles, last_traj_plan_, true);
         }
       }
       else  // when O or C failed
       {
         // int time_ms = int(ros::Time::now().toSec() * 1000);
 
-        if (timer_stop_.ElapsedMs() > 500.0)
+        if (timer_stop_.ElapsedMs() > 1000.0 && state_.vel.norm() < 0.1 && is_term_goal_initialized_)
         {
           publishOwnTraj(pwp_last_, true,
                          trajs);  // This is needed because is drone DRONE1 stops, it needs to keep publishing
@@ -703,7 +686,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           timer_stop_.Reset();
         }
         // visualization
-        visual(last_edges_obstacles_, last_traj_plan_, true);
+        visual(edges_obstacles, last_traj_plan_, true);
       }
     }
     else
@@ -750,12 +733,12 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
           timer_stop_.Reset();
         }
         // visualization
-        visual(last_edges_obstacles_, last_traj_plan_, true);
+        visual(edges_obstacles, last_traj_plan_, true);
       }
     }
 
-    replanCBTimer_.start();  // to avoid blockage
-  }                          // std::cout << "[Callback] Leaving replanCB" << std::endl;
+    // replanCBTimer_.start();  // to avoid blockage
+  }  // std::cout << "[Callback] Leaving replanCB" << std::endl;
 
   mt::state G;  // projected goal
   // mtx_mader_ptr_.lock();
@@ -772,7 +755,7 @@ void RmaderRos::visual(mt::Edges& edges_obstacles, std::vector<mt::state>& traj_
     // Delete markers to publish stuff
     visual_tools_->deleteAllMarkers();
     visual_tools_->enableBatchPublishing();
-    if (last_edges_obstacles_.size() > 0)
+    if (edges_obstacles.size() > 0)
     {
       pubObstacles(edges_obstacles);
     }
@@ -845,7 +828,7 @@ void RmaderRos::publishPoly(const vec_E<Polyhedron<3>>& poly)
 
 void RmaderRos::whoPlansCB(const rmader_msgs::WhoPlans& msg)
 {
-  if (msg.value != msg.MADER)
+  if (msg.value != msg.RMADER)
   {  // MADER does nothing
     sub_state_.shutdown();
     sub_term_goal_.shutdown();
@@ -894,7 +877,7 @@ void RmaderRos::stateCB(const snapstack_msgs::State& msg)
   if (published_initial_position_ == false)
   {
     pwp_last_ = mu::createPwpFromStaticPosition(state_);
-    publishOwnTraj(pwp_last_, true);
+    // publishOwnTraj(pwp_last_, true);
     published_initial_position_ = true;
   }
   // mtx_mader_ptr_.lock();
@@ -1141,14 +1124,16 @@ void RmaderRos::terminalGoalCB(const geometry_msgs::PoseStamped& msg)
     ros::Duration(0.1).sleep();  // wait to receive other's trajs
   }
 
-  if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
-  {
-    z = 1.0;
-  }
-  else  // This happens when you publish by yourself the goal (should always be above the ground)
-  {
-    z = msg.pose.position.z;
-  }
+  // if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
+  // {
+  //   z = 1.0;
+  // }
+  // else  // This happens when you publish by yourself the goal (should always be above the ground)
+  // {
+  //   z = msg.pose.position.z;
+  // }
+  // for simulation i commented out the above lines
+  z = msg.pose.position.z;
 
   G_term.setPos(msg.pose.position.x, msg.pose.position.y, z);
   // mtx_mader_ptr_.lock();

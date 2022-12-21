@@ -38,6 +38,7 @@ Panels:
         - /Grid1
         - /TF1
         - /TF1/Frames1
+        - /Marker58
       Splitter Ratio: 0.652466356754303
     Tree Height: 1877
 Preferences:
@@ -2146,6 +2147,14 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /SQ09s/viz_mesh
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 238; 238; 236
@@ -2174,7 +2183,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 38.06025695800781
+      Distance: 63.2943115234375
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -2182,17 +2191,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 5.0111517906188965
+        Y: 0.7389626502990723
+        Z: 0.6298168897628784
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.5697963237762451
+      Pitch: 1.034796953201294
       Target Frame: <Fixed Frame>
-      Yaw: 0
+      Yaw: 4.718182563781738
     Saved:
       - Class: rviz/ThirdPersonFollower
         Distance: 16.45623207092285
@@ -2312,5 +2321,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1884
-  X: 1956
+  X: 72
   Y: 27

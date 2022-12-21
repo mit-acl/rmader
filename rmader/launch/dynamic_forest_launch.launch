@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+<!-- Environment setup -->
+  <node name="dynamic_forest" pkg="rmader" type="dynamic_forest.py" output="screen"/>
+
+</launch>

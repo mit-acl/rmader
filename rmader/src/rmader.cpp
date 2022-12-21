@@ -176,84 +176,10 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
 {
   // std::cout << "in updateTrajObstacles" << std::endl;
 
-  // bool delay_check_result = true;
-
   MyTimer tmp_t(true);
-
-  // if (started_check_ == true && traj.is_agent == true)
-  // {
-  //   have_received_trajectories_while_checking_ = true;
-  // }
-  // else
-  // {
-  //   have_received_trajectories_while_checking_ = false;
-  // }
-
-  // std::vector<mt::dynTrajCompiled>::iterator obs_ptr =
-  //     std::find_if(trajs_.begin(), trajs_.end(),
-  //                  [=](const mt::dynTrajCompiled& traj_compiled) { return traj_compiled.id == traj.id; });
-
-  // bool exists_in_local_map = (obs_ptr != std::end(trajs_));
 
   mt::dynTrajCompiled traj_compiled;
   dynTraj2dynTrajCompiled(traj, traj_compiled);
-
-  // if (is_in_DC)
-  // {
-  //   // do delay check for the new traj
-  //   if (traj_compiled.is_agent == true)
-  //   {
-  //     if (!traj_compiled.is_committed)
-  //     {
-  //       if (headsup_time < traj_compiled.time_created)
-  //       {
-  //         // Do nothing. They will change their traj.
-  //       }
-  //       else if (headsup_time > traj_compiled.time_created &&
-  //                trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
-  //       {
-  //         ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
-  //         delay_check_result = false;  // will have to redo the optimization
-  //       }
-  //       else if (traj_compiled.time_created == headsup_time &&
-  //                trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(),
-  //                                          pwp_now.times.back()))  // tie breaking: compare x, y, z and bigger one
-  //                                          wins
-  //       {
-  //         Eigen::Vector3d center_obs;
-  //         center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
-  //             traj_compiled.function[2].value();
-  //         if (center_obs[0] > state_.pos[0])
-  //         {
-  //           delay_check_result = false;
-  //         }
-  //         else if (center_obs[1] > state_.pos[1])
-  //         {
-  //           delay_check_result = false;
-  //         }
-  //         else if (center_obs[2] > state_.pos[2])
-  //         {
-  //           delay_check_result = false;
-  //         }
-  //         // center_obs[0] == state_.pos[0] &&  center_obs[1] == state_.pos[1] &&  center_obs[2] == state_.pos[2]
-  //         won't
-  //         // happen bc it's the same position and collision
-  //       }
-  //     }
-  //     else if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
-  //     {
-  //       ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
-  //       delay_check_result = false;  // will have to redo the optimization
-  //     }
-  //   }
-  //   else
-  //   {  // if traj_compiled.is_agent == false
-  //     if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
-  //     {
-  //       delay_check_result = false;
-  //     }
-  //   }
-  // }
 
   // std::cout << "bef mtx_trajs_.lock() in updateTrajObstacles" << std::endl;
   mtx_trajs_.lock();
@@ -343,12 +269,6 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
   // std::cout << "bef mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
   mtx_trajs_.unlock();
   // std::cout << "aft mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
-
-  // std::cout << "out updateTrajObstacles" << std::endl;
-
-  // return delay_check_result;
-
-  // std::cout << bold << blue << "updateTrajObstacles took " << tmp_t << reset << std::endl;
 }
 
 void Rmader::updateTrajObstacles(mt::dynTraj traj)
@@ -557,7 +477,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& tra
 
     // changeBBox(drone_boundarybox);
 
-    delta = traj.bbox / 2.0 + drone_boundarybox / 2.0;
+    delta = traj.bbox / 2.0 + drone_boundarybox / 2.0 + (par_.beta + par_.alpha) * Eigen::Vector3d::Ones();
     // std::cout << "boundary box size" << std::endl;
     // std::cout << drone_boundarybox[0] << std::endl;
     // std::cout << drone_boundarybox[1] << std::endl;
@@ -1081,10 +1001,8 @@ bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePo
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
 // Check period and Recheck period is defined here
-bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
+bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
 {
-  // started_check_ = true;
-
   bool result = true;
   for (auto& traj : trajs_)
   {
@@ -1099,16 +1017,6 @@ bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fai
       }
     }
   }
-
-  // and now do another check in case I've received anything while I was checking. Note that mtx_trajs_ is locked!
-  // This is Recheck
-  // if (have_received_trajectories_while_checking_ == true)
-  // {
-  //   ROS_ERROR_STREAM("Recvd traj while checking ");
-  //   result = false;
-  // }
-
-  // started_check_ = false;
 
   return result;
 }
@@ -1147,76 +1055,88 @@ bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized)
 /// Delay check
 bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
 {
-  bool is_q0_fail = false;  // just introduced to use trajsAndpwpAreInCollision_with_inflatoin();
-  // std::cout << "bef mtx_trajs_.lock() in delayCheck" << std::endl;
+  bool is_q0_fail = false;
   mtx_trajs_.lock();  // this function is called in mader_ros.cpp so need to lock in the function
-  // std::cout << "aft mtx_trajs_.lock() in delayCheck" << std::endl;
-
   bool result = true;
   for (auto& traj_compiled : trajs_)
   {
     if (traj_compiled.is_agent == true)
     {
-      if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back(),
-                                                   is_q0_fail))
+      if (par_.is_optimistic_dc)
       {
-        result = false;
+        if (!traj_compiled.is_committed)
+        {
+          // std::cout << "headsup_time " << headsup_time << std::endl;
+          // std::cout << "time created " << traj_compiled.time_created << std::endl;
+          if (traj_compiled.time_created - headsup_time > 1e-2)
+          {
+            // Do nothing. They will change their traj.
+          }
+          else if (headsup_time - traj_compiled.time_created > 1e-2)
+          {
+            if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                         pwp_now.times.back(), is_q0_fail))
+            {
+              ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
+              result = false;  // will have to redo the optimization
+            }
+          }
+          else if (abs(traj_compiled.time_created - headsup_time) < 1e-2)
+          {
+            if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                         pwp_now.times.back(), is_q0_fail))
+            {
+              // tie breaking: compare x, y, z and bigger one wins
+              Eigen::Vector3d center_obs;
+              center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
+                  traj_compiled.function[2].value();
+              if (center_obs[0] > state_.pos[0])
+              {
+                result = false;
+              }
+              else if (center_obs[1] > state_.pos[1])
+              {
+                result = false;
+              }
+              else if (center_obs[2] > state_.pos[2])
+              {
+                result = false;
+              }
+              // center_obs[0] == state_.pos[0] &&  center_obs[1] == state_.pos[1] &&  center_obs[2] == state_.pos[2]
+              // won't happen bc it's the same position and collision
+            }
+          }
+        }
+        else
+        {
+          if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                       pwp_now.times.back(), is_q0_fail))
+          {
+            ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
+            result = false;
+          }
+        }
       }
-
-      // if (!traj_compiled.is_committed)
-      // {
-      //   // if (headsup_time < traj_compiled.time_created)
-      //   if (traj_compiled.time_created > headsup_time)
-      //   {
-      //     // Do nothing. They will change their traj.
-      //   }
-      //   else if (headsup_time - traj_compiled.time_created > 1e-2 &&
-      //            trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
-      //   {
-      //     ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
-      //     result = false;  // will have to redo the optimization
-      //   }
-      //   else if (abs(traj_compiled.time_created - headsup_time) < 1e-2 &&
-      //            trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(),
-      //                                      pwp_now.times.back()))  // tie breaking: compare x, y, z and bigger one
-      //                                      wins
-      //   {
-      //     Eigen::Vector3d center_obs;
-      //     center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
-      //         traj_compiled.function[2].value();
-      //     if (center_obs[0] > state_.pos[0])
-      //     {
-      //       result = false;
-      //     }
-      //     else if (center_obs[1] > state_.pos[1])
-      //     {
-      //       result = false;
-      //     }
-      //     else if (center_obs[2] > state_.pos[2])
-      //     {
-      //       result = false;
-      //     }
-      //     // center_obs[0] == state_.pos[0] &&  center_obs[1] == state_.pos[1] &&  center_obs[2] == state_.pos[2]
-      //     won't
-      //     // happen bc it's the same position and collision
-      //   }
-      // }
-      // else if (trajsAndPwpAreInCollision(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back()))
-      // {
-      //   ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
-      //   result = false;  // will have to redo the optimization
-      // }
+      else
+      {  // if traj_compiled.is_agent == false
+        if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+                                                     pwp_now.times.back(), is_q0_fail))
+        {
+          ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
+          result = false;
+        }
+      }
     }
     else
-    {  // if traj_compiled.is_agent == false
+    {
       if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back(),
                                                    is_q0_fail))
       {
+        ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
         result = false;
       }
     }
   }
-
   // std::cout << "bef mtx_trajs_.unlock() in delayCheck" << std::endl;
   mtx_trajs_.unlock();
   // std::cout << "aft mtx_trajs_.unlock() in delayCheck" << std::endl;
@@ -1452,8 +1372,8 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
   // Eigen::Vector3d dist_to_goal(1e5, 1e5, 1e5);
   // Eigen::Vector3d dist_from_state__to_goal(1e5, 1e5, 1e5);
   // double unstuck_dist = 2.0; //meters
-  // double reached_goal_dist = par_.drone_bbox[0]+0.1; // avoid the detoured goal is within others bbox and cannot move
-  // at all sitution. double how_much_to_detoured_G = 0.7; //0.1 means 10% double vel_stuck_detect = 0.1; // m/s
+  // double reached_goal_dist = par_.drone_bbox[0]+0.1; // avoid the detoured goal is within others bbox and cannot
+  // move at all sitution. double how_much_to_detoured_G = 0.7; //0.1 means 10% double vel_stuck_detect = 0.1; // m/s
 
   // double detour_max_time = 5; //seconds, how long want to detour
 
@@ -1695,47 +1615,53 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
 
   MyTimer check_t(true);
 
-  // std::cout << "bef mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
-  mtx_trajs_.lock();
-  // std::cout << "aft mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
-
-  // first make sure none of the trajectory is checked in this optimization
-  // for (auto &traj : trajs_){
-  //   traj.is_checked = false;
-  // }
-
-  // check and recheck are done in safetyChechAfterOpt()
-  bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now, is_q0_fail);
-  headsup_time = ros::Time::now().toSec();
-
-  // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
-  mtx_trajs_.unlock();
-  // std::cout << "aft mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
-
-  // if (!is_safe_after_opt){
-  //   // std::cout << "q0_fail_count_ is " << q0_fail_count_ << std::endl;
-  //   safetycheck_fail_count_ += 1;
-  //   if (safetycheck_fail_count_ > 3 && state_.vel.norm() < 0.001){
-  //     // in this case one agent is on the bbox constraint so need to move A away
-  //     std::cout << "[safety check fail] move A out of the bbox" << std::endl;
-  //     movedA_ = moveAoutOfBbox(A);
-  //     is_movingAoutOfBbox_ = true;
-  //   }
-  // } else {
-  //   q0_fail_count_ = 0;
-  // }
-
-  if (is_safe_after_opt == false)
+  if (par_.is_check)
   {
-    // int states_last_replan = ceil(replanCB_t.ElapsedMs() / (par_.dc * 1000) +
-    //                               par_.delay_check * par_.comm_delay_param / par_.dc);  // Number of states that
-    //                                                                                     // would have been needed for
-    //                                                                                     // the last replan
-    // deltaT_ = std::max(par_.factor_alpha * states_last_replan, 1.0);
-    // deltaT_ = std::min(1.0 * deltaT_, 2.0 / par_.dc);
-    ROS_ERROR_STREAM("safetyCheckAfterOpt is not satisfied, returning");
-    return false;
+    // std::cout << "bef mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
+    mtx_trajs_.lock();
+    // std::cout << "aft mtx_trajs_.lock() in replan (safetyCheckAfterOpt)" << std::endl;
+
+    // first make sure none of the trajectory is checked in this optimization
+    // for (auto &traj : trajs_){
+    //   traj.is_checked = false;
+    // }
+
+    // check and recheck are done in safetyChechAfterOpt()
+
+    bool is_safe_after_opt = safetyCheckAfterOptForRmader(pwp_now, is_q0_fail);
+
+    // std::cout << "bef mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
+    mtx_trajs_.unlock();
+    headsup_time = ros::Time::now().toSec();
+    // std::cout << "aft mtx_trajs_.unlock() in replan (safetyCheckAfterOpt)" << std::endl;
+
+    // if (!is_safe_after_opt){
+    //   // std::cout << "q0_fail_count_ is " << q0_fail_count_ << std::endl;
+    //   safetycheck_fail_count_ += 1;
+    //   if (safetycheck_fail_count_ > 3 && state_.vel.norm() < 0.001){
+    //     // in this case one agent is on the bbox constraint so need to move A away
+    //     std::cout << "[safety check fail] move A out of the bbox" << std::endl;
+    //     movedA_ = moveAoutOfBbox(A);
+    //     is_movingAoutOfBbox_ = true;
+    //   }
+    // } else {
+    //   q0_fail_count_ = 0;
+    // }
+
+    if (is_safe_after_opt == false)
+    {
+      // int states_last_replan = ceil(replanCB_t.ElapsedMs() / (par_.dc * 1000) +
+      //                               par_.delay_check * par_.comm_delay_param / par_.dc);  // Number of states that
+      //                                                                                     // would have been needed
+      //                                                                                     for
+      //                                                                                     // the last replan
+      // deltaT_ = std::max(par_.factor_alpha * states_last_replan, 1.0);
+      // deltaT_ = std::min(1.0 * deltaT_, 2.0 / par_.dc);
+      ROS_ERROR_STREAM("safetyCheckAfterOpt is not satisfied, returning");
+      return false;
+    }
   }
+  headsup_time = ros::Time::now().toSec();
 
   ///////////////////////////////////////////////////////////
   ///////////////       OTHER STUFF    //////////////////////
@@ -2017,8 +1943,8 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
   // Eigen::Vector3d dist_to_goal(1e5, 1e5, 1e5);
   // Eigen::Vector3d dist_from_state__to_goal(1e5, 1e5, 1e5);
   // double unstuck_dist = 2.0; //meters
-  // double reached_goal_dist = par_.drone_bbox[0]+0.1; // avoid the detoured goal is within others bbox and cannot move
-  // at all sitution. double how_much_to_detoured_G = 0.7; //0.1 means 10% double vel_stuck_detect = 0.1; // m/s
+  // double reached_goal_dist = par_.drone_bbox[0]+0.1; // avoid the detoured goal is within others bbox and cannot
+  // move at all sitution. double how_much_to_detoured_G = 0.7; //0.1 means 10% double vel_stuck_detect = 0.1; // m/s
 
   // // double detour_max_time = 5; //seconds, how long want to detour
 
@@ -2358,7 +2284,7 @@ void Rmader::getDesiredYaw(mt::state& next_goal)
   if (par_.is_camera_yawing)
   {
     // looking at the center of highbay
-    double desired_yaw = atan2(state_.pos[1], state_.pos[0]) -
+    double desired_yaw = atan2(state_.pos[1], state_.pos[0] - 5.5) -
                          M_PI / 2;  // - M_PI / 2 is because the camera is mounted pointing at y-axis
     double diff = desired_yaw - state_.yaw;
     mu::angle_wrap(diff);
@@ -2399,7 +2325,8 @@ void Rmader::getDesiredYaw(mt::state& next_goal)
 
 bool Rmader::getNextGoal(mt::state& next_goal)
 {
-  if (initializedStateAndTermGoal() == false)  // || (drone_status_ == DroneStatus::GOAL_REACHED && plan_.size() == 1))
+  if (initializedStateAndTermGoal() == false)  // || (drone_status_ == DroneStatus::GOAL_REACHED && plan_.size() ==
+                                               // 1))
   {
     // std::cout << "Not publishing new goal!!" << std::endl;
     return false;

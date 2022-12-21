@@ -52,6 +52,7 @@ private:
   void terminalGoalCB(const geometry_msgs::PoseStamped& msg);
   void pubState(const mt::state& msg, const ros::Publisher pub);
   void stateCB(const snapstack_msgs::State& msg);
+  void findAdaptiveDelayCheck(const mt::dynTraj tmp);
   // void modeCB(const rmader_msgs::Mode& msg);
   void whoPlansCB(const rmader_msgs::WhoPlans& msg);
   void pubCB(const ros::TimerEvent& e);
@@ -83,11 +84,8 @@ private:
 
   // parameters
   // indicating if this is simulations or not
-  bool sim_;
   bool is_artificial_comm_delay_;
   bool is_delaycheck_ = true;
-  double headsup_time_ = 0.0;
-  bool is_in_DC_ = false;
   bool delay_check_result_ = false;
 
   mt::PieceWisePol pwp_now_;
@@ -151,7 +149,10 @@ private:
   visualization_msgs::MarkerArray traj_safe_colored_bef_commit_;
   visualization_msgs::MarkerArray traj_safe_colored_bef_commit_save_;
 
-  bool is_sequencial_start_;
+  bool is_replan_after_goal_reached_;
+  bool is_adaptive_delaycheck_;
+  int adpt_freq_msgs_;
+  double adpt_weight_;
 
   int actual_trajID_ = 0;
 
@@ -164,8 +165,10 @@ private:
 
   bool published_initial_position_ = false;
 
-  double simulated_comm_delay_;
+  double simulated_comm_delay_ = 0.0;
+  double comm_delay_sum_ = 0.0;
   double delay_check_;
+  double adaptive_delay_check_;
 
   bool is_term_goal_initialized_ = false;
 
@@ -175,6 +178,7 @@ private:
   std::mutex mtx_alltrajs_;
   std::mutex mtx_alltrajsTimers_;
   std::mutex mtx_rmader_ptr_;
+  std::mutex mtx_adaptive_dc_;
 
   std::deque<mt::dynTraj> alltrajs_;
   std::deque<ros::Timer> alltrajsTimers_;

@@ -16,6 +16,10 @@ class TermGoalSender:
 
         # mode
         self.mode = rospy.get_param('mode', 0) #default value is 0
+        # for one time exchange
+        # 0 means "the first exchange"
+        # 1 means "the second exchange"
+        self.one_time_exchange = rospy.get_param('one_time_exchange', 0)
 
         # home yet?
         self.is_home = False
@@ -39,18 +43,38 @@ class TermGoalSender:
 
         # define waypoints in highbay
 
-        self.wp1 = np.array([-2.7+1.9*0, 3.6-2.06*0])
-        self.wp2 = np.array([-2.7+1.9*1, 3.6-2.06*0])
-        self.wp3 = np.array([-2.7+1.9*2, 3.6-2.06*0])
-        self.wp4 = np.array([-2.7+1.9*3, 3.6-2.06*0])
-        self.wp5 = np.array([-2.7+1.9*0, 3.6-2.06*1])
-        self.wp6 = np.array([-2.7+1.9*3, 3.6-2.06*1])
-        self.wp7 = np.array([-2.7+1.9*0, 3.6-2.06*2])
-        self.wp8 = np.array([-2.7+1.9*3, 3.6-2.06*2])
-        self.wp9 = np.array([-2.7+1.9*0, 3.6-2.06*3])
-        self.wp10 = np.array([-2.7+1.9*1, 3.6-2.06*3])
-        self.wp11 = np.array([-2.7+1.9*2, 3.6-2.06*3])
-        self.wp12 = np.array([-2.7+1.9*3, 3.6-2.06*3])
+        self.wp1 = np.array([-3.8+2.7*0, 3.6-2.3*0])
+        self.wp2 = np.array([-3.8+2.7*1, 3.6-2.3*0])
+        self.wp3 = np.array([-3.8+2.7*2, 3.6-2.3*0])
+        self.wp4 = np.array([-3.8+2.7*3, 3.6-2.3*0])
+        self.wp5 = np.array([-3.8+2.7*0, 3.6-2.3*1])
+        self.wp6 = np.array([-3.8+2.7*3, 3.6-2.3*1])
+        self.wp7 = np.array([-3.8+2.7*0, 3.6-2.3*2])
+        self.wp8 = np.array([-3.8+2.7*3, 3.6-2.3*2])
+        self.wp9 = np.array([-3.8+2.7*0, 3.6-2.3*3])
+        self.wp10 = np.array([-4.0+2.7*1, 3.6-2.3*3])
+        self.wp11 = np.array([-4.0+2.7*2, 3.6-2.3*3])
+        self.wp12 = np.array([-4.0+2.7*3, 3.6-2.3*3])
+
+        self.full_wp1 = np.array([-3.6, 2.6])
+        self.full_wp2 = np.array([-3.0, 3.4])
+        self.full_wp3 = np.array([13.4, 3.4])
+        self.full_wp4 = np.array([14.0, 2.6])
+        self.full_wp5 = np.array([-3.6, -2.4])
+        self.full_wp6 = np.array([-3.0, -3.0])
+        self.full_wp7 = np.array([13.4, -3.0])
+        self.full_wp8 = np.array([14.0, -2.4])
+        self.full_wp9 = np.array([-3.6, 2.6-1.6])
+        self.full_wp10 = np.array([14.0, 2.6-1.6])
+        self.full_wp11 = np.array([-3.6, 2.6-1.6*2])
+        self.full_wp12 = np.array([14.0, 2.6-1.6*2])
+
+        self.full_exact_wp1 = np.array([-3.6, 2.6])
+        self.full_exact_wp2 = np.array([15.0, 2.6])
+        self.full_exact_wp3 = np.array([-3.6, -0.2])
+        self.full_exact_wp4 = np.array([15.0, -0.2])
+        self.full_exact_wp5 = np.array([-3.6, -3.0])
+        self.full_exact_wp6 = np.array([15.0, -3.0])
 
         # waypoints
         self.wpidx = 0
@@ -119,30 +143,30 @@ class TermGoalSender:
 
         else: 
 
-            # set random goals (exact position exchange, this could lead to drones going to exact same locations)
+            # set goals (exact position exchange, this could lead to drones going to exact same locations)
             # if self.mode == 6:
-            #     self.term_goal.pose.position.x = self.sign * -3
-            #     self.term_goal.pose.position.y = self.sign * 3
+            #     self.term_goal.pose.position.x = self.sign * -4
+            #     self.term_goal.pose.position.y = self.sign * 3.3
             # elif self.mode == 5:
             #     self.term_goal.pose.position.x = self.sign * 0
-            #     self.term_goal.pose.position.y = self.sign * 3
+            #     self.term_goal.pose.position.y = self.sign * 3.3
             # elif self.mode == 4:
-            #     self.term_goal.pose.position.x = self.sign * 3
-            #     self.term_goal.pose.position.y = self.sign * 3
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * 3.3
             # elif self.mode == 3:
-            #     self.term_goal.pose.position.x = self.sign * -3
-            #     self.term_goal.pose.position.y = self.sign * -3
+            #     self.term_goal.pose.position.x = self.sign * -4
+            #     self.term_goal.pose.position.y = self.sign * -3.3
             # elif self.mode == 2:
             #     self.term_goal.pose.position.x = self.sign * 0
-            #     self.term_goal.pose.position.y = self.sign * -3
+            #     self.term_goal.pose.position.y = self.sign * -3.3
             # elif self.mode == 1:
-            #     self.term_goal.pose.position.x = self.sign * 3
-            #     self.term_goal.pose.position.y = self.sign * -3
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * -3.3
             # elif self.mode == 7:
-            #     self.term_goal.pose.position.x = self.sign * 3
+            #     self.term_goal.pose.position.x = self.sign * 4
             #     self.term_goal.pose.position.y = self.sign * 0
             # elif self.mode == 8:
-            #     self.term_goal.pose.position.x = self.sign * -3
+            #     self.term_goal.pose.position.x = self.sign * -3.3
             #     self.term_goal.pose.position.y = self.sign * 0
 
 
@@ -178,52 +202,192 @@ class TermGoalSender:
             #     self.wpidx = (self.wpidx + 1) % len(self.wps)
 
             # for demos
-            if self.mode == 1:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp1[0]
-                    self.term_goal.pose.position.y = self.wp1[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp12[0]
-                    self.term_goal.pose.position.y = self.wp12[1]
-            elif self.mode == 2:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp2[0]
-                    self.term_goal.pose.position.y = self.wp2[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp10[0]
-                    self.term_goal.pose.position.y = self.wp10[1]
-            elif self.mode == 3:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp6[0]
-                    self.term_goal.pose.position.y = self.wp6[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp5[0]
-                    self.term_goal.pose.position.y = self.wp5[1]
-            elif self.mode == 4:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp9[0]
-                    self.term_goal.pose.position.y = self.wp9[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp4[0]
-                    self.term_goal.pose.position.y = self.wp4[1]
-            elif self.mode == 5:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp11[0]
-                    self.term_goal.pose.position.y = self.wp11[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp3[0]
-                    self.term_goal.pose.position.y = self.wp3[1]
-            elif self.mode == 6:
-                if self.if_arrived:
-                    self.term_goal.pose.position.x = self.wp7[0]
-                    self.term_goal.pose.position.y = self.wp7[1]
-                else:
-                    self.term_goal.pose.position.x = self.wp8[0]
-                    self.term_goal.pose.position.y = self.wp8[1]
+            # if self.mode == 1:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp1[0]
+            #         self.term_goal.pose.position.y = self.wp1[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp12[0]
+            #         self.term_goal.pose.position.y = self.wp12[1]
+            # elif self.mode == 2:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp2[0]
+            #         self.term_goal.pose.position.y = self.wp2[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp10[0]
+            #         self.term_goal.pose.position.y = self.wp10[1]
+            # elif self.mode == 3:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp6[0]
+            #         self.term_goal.pose.position.y = self.wp6[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp5[0]
+            #         self.term_goal.pose.position.y = self.wp5[1]
+            # elif self.mode == 4:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp9[0]
+            #         self.term_goal.pose.position.y = self.wp9[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp4[0]
+            #         self.term_goal.pose.position.y = self.wp4[1]
+            # elif self.mode == 5:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp11[0]
+            #         self.term_goal.pose.position.y = self.wp11[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp3[0]
+            #         self.term_goal.pose.position.y = self.wp3[1]
+            # elif self.mode == 6:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.wp7[0]
+            #         self.term_goal.pose.position.y = self.wp7[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.wp8[0]
+            #         self.term_goal.pose.position.y = self.wp8[1]
 
-            self.term_goal.pose.position.z = 1.0 + 2.5 * random()
+            # obstacle in west
+            # if self.mode == 1:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * -3.3
+            # elif self.mode == 2:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * 3.3
+            # elif self.mode == 3:
+            #     self.term_goal.pose.position.x = self.sign * 0
+            #     self.term_goal.pose.position.y = self.sign * -3.3
+            # elif self.mode == 4:
+            #     self.term_goal.pose.position.x = self.sign * 4
+            #     self.term_goal.pose.position.y = self.sign * 0
             # self.term_goal.pose.position.z = 1.0
 
+            # # full space position exchange
+            # if self.mode == 1:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp1[0]
+            #         self.term_goal.pose.position.y = self.full_wp1[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp8[0]
+            #         self.term_goal.pose.position.y = self.full_wp8[1]
+            # elif self.mode == 2:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp4[0]
+            #         self.term_goal.pose.position.y = self.full_wp4[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp5[0]
+            #         self.term_goal.pose.position.y = self.full_wp5[1]
+            # elif self.mode == 3:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp6[0]
+            #         self.term_goal.pose.position.y = self.full_wp6[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp3[0]
+            #         self.term_goal.pose.position.y = self.full_wp3[1]
+            # elif self.mode == 4:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp7[0]
+            #         self.term_goal.pose.position.y = self.full_wp7[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp2[0]
+            #         self.term_goal.pose.position.y = self.full_wp2[1]
+            # elif self.mode == 5:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp9[0]
+            #         self.term_goal.pose.position.y = self.full_wp9[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp12[0]
+            #         self.term_goal.pose.position.y = self.full_wp12[1]
+            # elif self.mode == 6:
+            #     if self.if_arrived:
+            #         self.term_goal.pose.position.x = self.full_wp10[0]
+            #         self.term_goal.pose.position.y = self.full_wp10[1]
+            #     else:
+            #         self.term_goal.pose.position.x = self.full_wp11[0]
+            #         self.term_goal.pose.position.y = self.full_wp11[1]
+
+            ######################################################    
+            #mode1                                          mode2#
+            #      2                                    3        #
+            #   1                                          4     #
+            #                                                    #
+            #                                                    #
+            #   9                                          10    #
+            #                                                    #
+            #mode5           obs1                   obs2    mode6#
+            #                                                    #
+            #   11                                         12    #
+            #                                                    #
+            #                                                    #
+            #   5                                          8     #
+            #      6                                    7        #
+            #                                                    #
+            #mode3                                          mode4#
+            ######################################################
+
+            # full space exact position exchange
+            if self.mode == 1:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
+            elif self.mode == 2:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
+            elif self.mode == 3:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
+            elif self.mode == 4:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
+            elif self.mode == 5:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
+            elif self.mode == 6:
+                if self.one_time_exchange:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
+
+            ######################################################    
+            #mode1                                          mode2#
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #mode3       obs1                   obs2        mode4#
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #                                                    #
+            #mode5                                          mode6#
+            ######################################################    
+
+            # self.term_goal.pose.position.z = 1.0 + 2.0 * random()
+            self.term_goal.pose.position.z = 2.0
             self.if_arrived = not self.if_arrived
             self.sign = self.sign * (-1)
 

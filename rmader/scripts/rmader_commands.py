@@ -70,7 +70,7 @@ class Rmader_Commands:
             print ("Starting taking off")
             self.takeOff()
             # print ("Take off done")
-            self.whoplans.value=self.whoplans.MADER
+            self.whoplans.value=self.whoplans.RMADER
 
         if req.mode == req.KILL:
             self.timer_take_off.shutdown()
@@ -78,7 +78,7 @@ class Rmader_Commands:
             self.kill()
             print ("Killed done")
 
-        if req.mode == req.LAND and self.whoplans.value==self.whoplans.MADER:
+        if req.mode == req.LAND and self.whoplans.value==self.whoplans.RMADER:
             self.timer_take_off.shutdown()
             print ("Landing")
             self.land()
@@ -103,7 +103,7 @@ class Rmader_Commands:
         #Note that self.pose.position is being updated in the parallel callback
 
         # self.timer_take_off.run()
-        self.timer_take_off=rospy.Timer(rospy.Duration(0.004), self.timerTakeOffCB)
+        self.timer_take_off=rospy.Timer(rospy.Duration(0.002), self.timerTakeOffCB)
 
 
     def timerTakeOffCB(self, event):
@@ -113,13 +113,13 @@ class Rmader_Commands:
         # while( abs(self.pose.position.z-alt_taken_off)>0.1 ): 
         alt_taken_off = 1.8; #Altitude when hovering after taking off
          
-        self.takeoff_goal.p.z = min(self.takeoff_goal.p.z+0.0035, alt_taken_off);
+        self.takeoff_goal.p.z = min(self.takeoff_goal.p.z+0.0005, alt_taken_off);
         rospy.loginfo_throttle(0.5, "Taking off..., error={}".format(self.pose.position.z-alt_taken_off) )
         self.sendGoal(self.takeoff_goal)
 
         if(abs(self.pose.position.z-alt_taken_off)<0.1 ):
             self.timer_take_off.shutdown()
-            self.whoplans.value=self.whoplans.MADER
+            self.whoplans.value=self.whoplans.RMADER
             self.sendWhoPlans();
 
         ######## 

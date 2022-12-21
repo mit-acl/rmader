@@ -75,6 +75,7 @@ public:
   mt::state getGterm();
   bool isGoalSeen();
   bool isGoalReached();
+  bool initializedAllExceptPlanner();
 
   std::vector<mt::dynTrajCompiled> getTrajs();
 
@@ -91,7 +92,7 @@ private:
 
   bool initializedStateAndTermGoal();
 
-  bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized, bool& is_q0_fail);
+  bool safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail);
   bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized);
 
   bool safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev);
@@ -128,7 +129,6 @@ private:
                     const std::vector<mt::state>& safe);
 
   bool initialized();
-  bool initializedAllExceptPlanner();
 
   void printDroneStatus();
 

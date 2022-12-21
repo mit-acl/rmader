@@ -9,7 +9,7 @@
 import bagpy
 from bagpy import bagreader
 import pandas as pd
-
+import sys
 import rosbag
 import rospy
 import math
@@ -23,48 +23,33 @@ import glob
 
 if __name__ == '__main__':
 
-    # rosbag name
+    ##### parameters
+    cd_list = [0, 50, 100, 200, 300]
 
-    is_oldmader = False
-
-    if is_oldmader:
-        cd_list = [0, 50, 100, 200, 300]
-    else:
-        cd_list = [0, 50, 100, 200, 300]
-
+    ##### loop
     for cd in cd_list:
-
         is_oldmader=False
-
-        if cd == 0:
-            dc_list = [100, 25, 10, 3] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            # dc_list = [100] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+        if cd == 0: 
+            dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [130, 56, 51, 50.8, 35, 15] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            # dc_list = [130] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
-            dc_list = [200, 105, 101.3, 101, 75, 25] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
-            # dc_list = [200] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
-            dc_list = [300]
+            dc_list = [250]
         elif cd == 300:
-            dc_list = [400]
+            dc_list = [350]
 
         for dc in dc_list:
-
             collision_cnt = 0
+            str_dc = str(dc)
 
-            if dc == 50.8:
-                str_dc = "51_8"
-            elif dc == 101.3:
-                str_dc = "101_3"
-            else:
-                str_dc = str(dc)
-
+            ##### source directory
+            parent_source_dir = sys.argv[1]
             if is_oldmader:
-                source_dir = "/home/kota/data/bags/oldmader/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
+                source_dir = parent_source_dir + "/oldmader/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
             else:
-                source_dir = "/home/kota/data/bags/rmader/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
+                source_dir = parent_source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
             
             source_len = len(source_dir)
             source_bags = source_dir + "/*.bag" # change the source dir accordingly
@@ -94,8 +79,8 @@ if __name__ == '__main__':
 
             collision_per = 100 - collision_cnt / len(rosbag) * 100
             os.system('paste '+source_dir+'/collision_status.txt '+source_dir+'/status.txt >> '+source_dir+'/complete_status.txt')
-            os.system('echo "'+source_dir+'" >> /home/kota/data/collision_count.txt')
-            os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> /home/kota/data/collision_count.txt')
-            os.system('echo "------------------------------------------------------------" >> /home/kota/data/collision_count.txt')
+            os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/collision_count.txt')
+            os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> '+parent_source_dir+'/collision_count.txt')
+            os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/collision_count.txt')
 
-            is_oldmader = False
+            # is_oldmader = False

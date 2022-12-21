@@ -15,7 +15,7 @@
 
 <!-- Behavior selector gui --> 
 <group if="$(arg gui)"> 
-  <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" args="--perspective-file $(find rmader)/rqt_cfgs/demo_interface.perspective"/>
+  <node pkg="rqt_gui" type="rqt_gui" name="rqt_gui" args="--perspective-fi $(find rmader)/rqt_cfgs/demo_interface.perspective"/>
 </group>
 
 <!-- Environment setup -->

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+	<node name="collision_detector" pkg="rmader" type="relative_dist_vel.py" output="screen">
+	</node>
+
+</launch>
+
+
+

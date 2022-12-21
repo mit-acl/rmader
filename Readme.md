@@ -1,7 +1,7 @@
-# MADER: Trajectory Planner in Multi-Agent and Dynamic Environments #
+# Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay #
 
 
-### **Accepted for publication in the IEEE Transactions on Robotics (T-RO)**
+### **Submitted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
 
 
 Single-Agent               |  Multi-Agent           | 
@@ -11,46 +11,75 @@ Single-Agent               |  Multi-Agent           |
 
 ## Citation
 
-When using MADER, please cite [MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](https://arxiv.org/abs/2010.11061) ([pdf](https://arxiv.org/abs/2010.11061), [video](https://www.youtube.com/watch?v=aoSoiZDfxGE)):
+Please cite [Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay](https://arxiv.org/abs/2209.13667) ([pdf](https://arxiv.org/abs/2209.13667), [video](https://youtu.be/vH09kwJOBYs)):
 
 ```bibtex
-@article{tordesillas2020mader,
-  title={{MADER}: Trajectory Planner in Multi-Agent and Dynamic Environments},
-  author={Tordesillas, Jesus and How, Jonathan P},
-  journal={IEEE Transactions on Robotics},
-  year={2021},
-  publisher={IEEE}
+@article{kondo2022robust,
+  title={Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay},
+  author={Kondo, Kota and Tordesillas, Jesus and Figueroa, Reinaldo and Rached, Juan and Merkel, Joseph and Lusk, Parker C and How, Jonathan P},
+  journal={arXiv preprint arXiv:2209.13667},
+  year={2022}
 }
 ```
 
 ## General Setup
 
-MADER has been tested with 
-* Ubuntu 16.04/ROS Kinetic
-* Ubuntu 18.04/ROS Melodic
+RMADER has been tested with Ubuntu 20.04/ROS Noetic
 
-The backend optimizer can be either Gurobi (recommended, used by default) or NLOPT (discouraged): 
+### Not Using Docker
 
-* To use [`Gurobi`](https://www.gurobi.com/), install the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/). You can test your installation typing `gurobi.sh` in the terminal. Have a look at [this section](#issues-when-installing-gurobi) if you have any issues.
-* To use [`NLOPT`](https://nlopt.readthedocs.io/en/latest/), set `USE_GUROBI` to `OFF` in the [CMakeList.txt](https://github.com/mit-acl/mader/blob/master/mader/CMakeLists.txt). 
+The backend optimizer is Gurobi. Please install the [Gurobi Optimizer](https://www.gurobi.com/products/gurobi-optimizer/), and test your installation typing `gurobi.sh` in the terminal. Have a look at [this section](#issues-when-installing-gurobi) if you have any issues.
 
 Then simply run this commands:
 
 ```bash
-mkdir -p ws/src && cd ws/src
-git clone https://github.com/mit-acl/mader.git
+cd ~/ && mkdir ws && cd ws && mkdir src && cd src
+git clone https://github.com/mit-acl/rmader.git
 cd ..
-#bash bash mader/install_nlopt.sh      #ONLY if you are going to use NLOPT, it'll install NLopt v2.6.2
-bash src/mader/install_and_compile.sh      
+bash src/rmader/install_and_compile.sh      
 ```
 
 The script [install_and_compile.sh](https://github.com/mit-acl/mader/blob/master/install_and_compile.sh) will install [CGAL v4.12.4](https://www.cgal.org/), [GLPK](https://www.gnu.org/software/glpk/) and other ROS packages (check the script for details). It will also compile the repo. This bash script assumes that you already have ROS installed in your machine. 
+
+### Using Docker
+
+Install Docker using [this steps](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository), and remove the need of `sudo` following [these steps](https://docs.docker.com/engine/install/linux-postinstall/). Then follow these steps:
+
+```bash
+cd ~/ && mkdir ws && cd ws && mkdir src && cd src
+git clone https://github.com/mit-acl/rmader.git
+```
+
+For Gurobi, you need to download gurobi.lic file from [Gurobi Web License Manager](https://license.gurobi.com/manager/licenses) (more info [here](https://www.gurobi.com/web-license-service/)). A gurobi.lic not obtained through WLS will **not** work on docker. Place your gurobi.lic in [docker](https://github.com/mit-acl/mader/docker) folder and execute these commands:
+
+```bash
+cd ./mader/mader/docker
+docker build -t mader . #This will probably take several minutes
+```
+Once built, ```docker run --volume=$PWD/gurobi.lic:/opt/gurobi/gurobi.lic:ro -it mader```
+
+<details>
+  <summary> <b>Useful Docker commands</b></summary>
+  
+```bash
+docker container ls -a  #Show a list of the containers
+docker rm $(docker ps -aq) #remove all the containers
+docker image ls #Show a lis of the images
+docker image rm XXX #remove a specific image
+
+### lambda machine simulation
+docker build -f rmader/rmader/docker/Dockerfile -t rmader .
+docker run --cpus=48 --volume=/home/kkondo/rmader_project/rmader_ws/src/rmader/rmader/docker/gurobi.lic:/opt/gurobi/gurobi.lic:ro --volume=/home/kkondo/data:/home/kota/data -it rmader
+```
+
+</details>
+
 
 ### Running Simulations
 
 #### Single-agent
 ```
-roslaunch mader single_agent_simulation.launch
+roslaunch rmader single_agent_simulation.launch
 ```
 Now you can press `G` (or click the option `2D Nav Goal` on the top bar of RVIZ) and click any goal for the drone. 
 

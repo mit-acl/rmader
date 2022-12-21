@@ -53,42 +53,36 @@ sleep 1
 
 # run mader hw_onboard and save termial data into txt files
 
-tmux send-keys -t $SESSION:$w.3 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=02 x:=0 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ02_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.9 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=05 x:=0 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.3 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=02 x:=0 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ02_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.9 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=05 x:=0 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 
 if [[ $howMany != 2 ]]; then
-	tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=01 x:=-3 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ01_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m 
-	tmux send-keys -t $SESSION:$w.5 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=03 x:=3 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ03_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-	tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=04 x:=-3 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ04_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-	tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch rmader onboard.launch veh:=SQ num:=06 x:=3 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ06_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+	tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=01 x:=-3 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ01_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m 
+	tmux send-keys -t $SESSION:$w.5 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=03 x:=3 y:=3) 2>&1 | tee ~/Research/data/txt_files/SQ03_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+	tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=04 x:=-3 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ04_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+	tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && roslaunch --wait rmader onboard.launch veh:=SQ num:=06 x:=3 y:=-3) 2>&1 | tee ~/Research/data/txt_files/SQ06_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 fi
 
 # snap sim or perfect tracker
 
 if [[ $snapsim_or_perfect == "snap_sim" ]]; then
-	tmux send-keys -t $SESSION:$w.4 "roslaunch snap_sim sim.launch veh:=SQ num:=02 x:=0 y:=3" C-m
-	tmux send-keys -t $SESSION:$w.10 "roslaunch snap_sim sim.launch veh:=SQ num:=05 x:=0 y:=-3" C-m
-
-	if [[ $howMany != 2 ]]; then
-		tmux send-keys -t $SESSION:$w.2 "roslaunch snap_sim sim.launch veh:=SQ num:=01 x:=-3 y:=3" C-m
-		tmux send-keys -t $SESSION:$w.6 "roslaunch snap_sim sim.launch veh:=SQ num:=03 x:=3 y:=3" C-m
-		tmux send-keys -t $SESSION:$w.8 "roslaunch snap_sim sim.launch veh:=SQ num:=04 x:=-3 y:=-3" C-m
-		tmux send-keys -t $SESSION:$w.12 "roslaunch snap_sim sim.launch veh:=SQ num:=06 x:=3 y:=-3" C-m
-	fi
-
+	tmux send-keys -t $SESSION:$w.2 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=01 x:=-3 y:=3" C-m
+	tmux send-keys -t $SESSION:$w.4 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=02 x:=14 y:=3" C-m
+	tmux send-keys -t $SESSION:$w.6 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=03 x:=-3 y:=0" C-m
+	tmux send-keys -t $SESSION:$w.8 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=04 x:=14 y:=0" C-m
+	tmux send-keys -t $SESSION:$w.10 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=05 x:=-3 y:=-3" C-m
+	tmux send-keys -t $SESSION:$w.12 "roslaunch --wait snap_sim sim.launch veh:=SQ num:=06 x:=14 y:=-3" C-m
 else
-	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ02s x:=0 y:=3" C-m
-	tmux send-keys -t $SESSION:$w.10 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ05s x:=0 y:=-3" C-m
-
-	if [[ $howMany != 2 ]]; then
-		tmux send-keys -t $SESSION:$w.2 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ01s x:=-3 y:=3" C-m
-		tmux send-keys -t $SESSION:$w.6 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ03s x:=3 y:=3" C-m
-		tmux send-keys -t $SESSION:$w.8 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ04s x:=-3 y:=-3" C-m
-		tmux send-keys -t $SESSION:$w.12 "roslaunch rmader perfect_tracker_and_sim.launch quad:=SQ06s x:=3 y:=-3" C-m
-	fi
+	tmux send-keys -t $SESSION:$w.2 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ01s x:=-3 y:=3" C-m
+	tmux send-keys -t $SESSION:$w.4 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ02s x:=14 y:=3" C-m
+	tmux send-keys -t $SESSION:$w.6 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ03s x:=-3 y:=0" C-m
+	tmux send-keys -t $SESSION:$w.8 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ04s x:=14 y:=0" C-m
+	tmux send-keys -t $SESSION:$w.10 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ05s x:=-3 y:=-3" C-m
+	tmux send-keys -t $SESSION:$w.12 "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=SQ06s x:=14 y:=-3" C-m
 fi
 
 # base station
-tmux send-keys -t $SESSION:$w.0 "roslaunch rmader base_station.launch" C-m
+tmux send-keys -t $SESSION:$w.0 "roslaunch --wait rmader base_station.launch" C-m
+# tmux send-keys -t $SESSION:$w.0 "roslaunch --wait rmader base_station.launch type_of_environment:=dynamic_forest" C-m
 
 tmux -2 attach-session -t $SESSION

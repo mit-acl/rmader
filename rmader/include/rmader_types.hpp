@@ -568,6 +568,7 @@ struct dynTrajCompiled
 
 struct parameters
 {
+  bool is_optimistic_dc;
   double delay_check;
 
   double comm_delay_param;
@@ -578,6 +579,7 @@ struct parameters
   int n_agents;
 
   bool is_camera_yawing;
+  bool is_check;
 
   double dc;
   double goal_radius;

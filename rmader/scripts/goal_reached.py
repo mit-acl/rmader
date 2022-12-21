@@ -22,14 +22,13 @@ class GoalReachedCheck:
 
     def __init__(self):
 
-
         rospy.sleep(3)
 
         # goal radius
-        self.goal_radius = 0.15
+        self.goal_radius = 0.30
 
         # number of agents
-        self.num_of_agents = 25
+        self.num_of_agents = 10
 
         # is initialized?
         self.initialized = False
@@ -100,6 +99,19 @@ class GoalReachedCheck:
         self.state_pos[8,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
     def SQ10stateCB(self, data):
         self.state_pos[9,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ11stateCB(self, data):
+    #     self.state_pos[10,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ12stateCB(self, data):
+    #     self.state_pos[11,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ13stateCB(self, data):
+    #     self.state_pos[12,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ14stateCB(self, data):
+    #     self.state_pos[13,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ15stateCB(self, data):
+    #     self.state_pos[14,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+    # def SQ16stateCB(self, data):
+    #     self.state_pos[15,0:3] = np.array([data.pos.x, data.pos.y, data.pos.z])
+
 
     def SQ01term_goalCB(self, data):
         self.term_goal_pos[0,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
@@ -122,6 +134,18 @@ class GoalReachedCheck:
         self.term_goal_pos[8,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
     def SQ10term_goalCB(self, data):
         self.term_goal_pos[9,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ11term_goalCB(self, data):
+    #     self.term_goal_pos[10,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ12term_goalCB(self, data):
+    #     self.term_goal_pos[11,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ13term_goalCB(self, data):
+    #     self.term_goal_pos[12,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ14term_goalCB(self, data):
+    #     self.term_goal_pos[13,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ15term_goalCB(self, data):
+    #     self.term_goal_pos[14,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
+    # def SQ16term_goalCB(self, data):
+    #     self.term_goal_pos[15,0:3] = np.array([data.pose.position.x, data.pose.position.y, data.pose.position.z])
 
 def startNode():
     c = GoalReachedCheck()
@@ -135,6 +159,13 @@ def startNode():
     rospy.Subscriber("SQ08s/state", State, c.SQ08stateCB)
     rospy.Subscriber("SQ09s/state", State, c.SQ09stateCB)
     rospy.Subscriber("SQ10s/state", State, c.SQ10stateCB)
+    # rospy.Subscriber("SQ11s/state", State, c.SQ11stateCB)
+    # rospy.Subscriber("SQ12s/state", State, c.SQ12stateCB)
+    # rospy.Subscriber("SQ13s/state", State, c.SQ13stateCB)
+    # rospy.Subscriber("SQ14s/state", State, c.SQ14stateCB)
+    # rospy.Subscriber("SQ15s/state", State, c.SQ15stateCB)
+    # rospy.Subscriber("SQ16s/state", State, c.SQ16stateCB)
+
     rospy.Subscriber("SQ01s/term_goal", PoseStamped, c.SQ01term_goalCB)
     rospy.Subscriber("SQ02s/term_goal", PoseStamped, c.SQ02term_goalCB)
     rospy.Subscriber("SQ03s/term_goal", PoseStamped, c.SQ03term_goalCB)
@@ -145,6 +176,12 @@ def startNode():
     rospy.Subscriber("SQ08s/term_goal", PoseStamped, c.SQ08term_goalCB)
     rospy.Subscriber("SQ09s/term_goal", PoseStamped, c.SQ09term_goalCB)
     rospy.Subscriber("SQ10s/term_goal", PoseStamped, c.SQ10term_goalCB)
+    # rospy.Subscriber("SQ11s/term_goal", PoseStamped, c.SQ11term_goalCB)
+    # rospy.Subscriber("SQ12s/term_goal", PoseStamped, c.SQ12term_goalCB)
+    # rospy.Subscriber("SQ13s/term_goal", PoseStamped, c.SQ13term_goalCB)
+    # rospy.Subscriber("SQ14s/term_goal", PoseStamped, c.SQ14term_goalCB)
+    # rospy.Subscriber("SQ15s/term_goal", PoseStamped, c.SQ15term_goalCB)
+    # rospy.Subscriber("SQ16s/term_goal", PoseStamped, c.SQ16term_goalCB)
     rospy.Timer(rospy.Duration(0.01), c.goalReachedCheck)
     rospy.spin()
 

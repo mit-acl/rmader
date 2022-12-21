@@ -44,34 +44,31 @@ color_dynamic=ColorRGBA(r=1,g=0,b=0,a=1);
 class MovingForest:
     def __init__(self, total_num_obs):
         print(total_num_obs)
-        self.num_of_dyn_objects=int(0.5*total_num_obs) #int(0.65*total_num_obs);
+        self.total_num_obs=total_num_obs
+        self.num_of_dyn_objects=int(1*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
-        self.x_min= -6
-        self.x_max= 6.0
-        self.y_min= -6.0 
-        self.y_max= 6.0
+        self.x_min= -5.5
+        self.x_max= 5.5
+        self.y_min= -5.5 
+        self.y_max= 5.5
         self.z_min= 1.0 #-6.0 for sphere sim
         self.z_max= 1.0  #6.0 for sphere sim
-        self.scale=1.0;
-        self.slower_min=1.2
-        self.slower_max= 1.2
-        self.bbox_dynamic=[0.6, 0.6, 0.6] 
-        self.bbox_static_vert=[0.4, 0.4, 4]  #[0.4, 0.4, 6] for sphere sim
+        self.scale=1.0
+        self.slower_min=5.2
+        self.slower_max= 5.2
+        self.bbox_dynamic=[0.5, 0.5, 0.5] 
+        self.bbox_static_vert=[0.45, 0.45, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
-
-
 
 class FakeSim:
 
     def __init__(self, total_num_obs):
         self.state=State()
-
-        name = rospy.get_namespace()
-        self.name = name[1:-1]
+        self.name = 'obs'
+        self.total_num_obs=total_num_obs
 
        #self.num_of_objects = 0;
-
 
         self.world=MovingForest(total_num_obs)
    
@@ -86,7 +83,8 @@ class FakeSim:
         self.slower=[];
         self.meshes=[];
         self.type=[];#"dynamic" or "static"
-        self.bboxes=[]; 
+        self.bboxes=[];
+        random.seed(6)
         for i in range(self.world.num_of_dyn_objects):          
             self.x_all.append(random.uniform(self.world.x_min, self.world.x_max));
             self.y_all.append(random.uniform(self.world.y_min, self.world.y_max));
@@ -120,10 +118,7 @@ class FakeSim:
             
             self.bboxes.append(bbox_i)
 
-
-
-
-        self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
+        self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=self.world.total_num_obs)
         self.pubShapes_static = rospy.Publisher('/shapes_static', Marker, queue_size=1, latch=True)
         self.pubShapes_static_mesh = rospy.Publisher('/shapes_static_mesh', MarkerArray, queue_size=1, latch=True)
         self.pubShapes_dynamic_mesh = rospy.Publisher('/shapes_dynamic_mesh', MarkerArray, queue_size=1, latch=True)
@@ -172,13 +167,13 @@ class FakeSim:
 
               [x_string, y_string, z_string] = self.trefoil(self.x_all[i], self.y_all[i], self.z_all[i], s,s,s, self.offset_all[i], self.slower[i]) 
               # print("self.bboxes[i]= ", self.bboxes[i])
-              dynamic_trajectory_msg.bbox = bbox_i;
+              dynamic_trajectory_msg.bbox = bbox_i
               marker_dynamic.scale.x=bbox_i[0]
               marker_dynamic.scale.y=bbox_i[1]
               marker_dynamic.scale.z=bbox_i[2]
             else:
               # [x_string, y_string, z_string] = self.static(self.x_all[i], self.y_all[i], self.z_all[i]);
-              dynamic_trajectory_msg.bbox = bbox_i;
+              dynamic_trajectory_msg.bbox = bbox_i
               marker_static.scale.x=bbox_i[0]
               marker_static.scale.y=bbox_i[1]
               marker_static.scale.z=bbox_i[2]
@@ -187,15 +182,12 @@ class FakeSim:
               else:
                 [x_string, y_string, z_string] = self.wave_in_z(self.x_all[i], self.y_all[i], self.z_all[i], 2.0, self.offset_all[i], 1.0)
 
-
-
-
             x = eval(x_string)
             y = eval(y_string)
             z = eval(z_string)
 
-            dynamic_trajectory_msg.is_agent=False;
-            dynamic_trajectory_msg.header.stamp= t_ros;
+            dynamic_trajectory_msg.is_agent=False
+            dynamic_trajectory_msg.header.stamp= t_ros
             dynamic_trajectory_msg.function = [x_string, y_string, z_string]
             dynamic_trajectory_msg.pos.x=x #Current position
             dynamic_trajectory_msg.pos.y=y #Current position
@@ -203,7 +195,11 @@ class FakeSim:
 
             dynamic_trajectory_msg.id = 4000+ i #Current id 4000 to avoid interference with ids from agents #TODO
 
+            dynamic_trajectory_msg.time_created = rospy.get_time()
+            dynamic_trajectory_msg.is_committed = True
+
             self.pubTraj.publish(dynamic_trajectory_msg)
+            # print(self.name)
             br.sendTransform((x, y, z), (0,0,0,1), t_ros, self.name+str(dynamic_trajectory_msg.id), "world")
 
 
@@ -305,14 +301,10 @@ class FakeSim:
 
         return [x_string, y_string, z_string]
 
-
-             
-
 def startNode(total_num_obs):
     c = FakeSim(total_num_obs)
     
-    rospy.Timer(rospy.Duration(0.01), c.pubTF)
-
+    rospy.Timer(rospy.Duration(0.1), c.pubTF)
     rospy.spin()
 
 if __name__ == '__main__':
@@ -327,29 +319,10 @@ if __name__ == '__main__':
     #     total_num_obs=int(sys.argv[1])
 
     # print("sys.argv[1]= ", sys.argv[1])
-    # total_num_obs=50 #70 for sphere sim
-    total_num_obs=0 #70 for sphere sim
-    ns = rospy.get_namespace()
+    total_num_obs=20 #70 for sphere sim
+    # total_num_obs=100 #70 for sphere sim
     try:
         rospy.init_node('dynamic_obstacles')
         startNode(total_num_obs)
     except rospy.ROSInterruptException:
         pass
-
-
-            # self.x_all.append(random.random());
-            # self.y_all.append(4*random.random());
-            # self.z_all.append(2);
-            # self.x_all.append(50*random.random());
-            # self.y_all.append(1*random.random());
-            # self.z_all.append(2);
-
-        # self.state.quat.x = 0
-        # self.state.quat.y = 0
-        # self.state.quat.z = 0
-        # self.state.quat.w = 1
-
-        # self.pubGazeboState = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=1)
-
-        # self.state.header.frame_id="world"
-        # self.pubState.publish(self.state)  
