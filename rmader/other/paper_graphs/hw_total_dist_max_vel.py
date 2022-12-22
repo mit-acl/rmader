@@ -17,22 +17,31 @@ import glob
 import statistics
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
+import sys
 
 if __name__ == '__main__':
 
     # initialization
-    num_of_agents = 6
     stop_cnt_tol = 1e-2 # stop count torelance
-    home_dir = "/media/kota/T7/rmader_ral/hw/rmader_mesh_6agents"
+    home_dir = "/media/kota/T7/rmader_ral/hw/rmader_obs"
     rmader_ave_dist = []
     rmader_stop_cnt = []
-    tests = [2, 3, 4, 5, 6] 
+    tests = []
+    tests.append("4agent2obs/test4")
+    tests.append("4agent2obs/test5")
+    tests.append("4agent2obs/test7")
+    tests.append("full_space_6_agents/test10")
+    tests.append("full_space_6_agents/test11") 
     # tests = [2] 
 
-    for test in tests:
-        source_dir = home_dir + f"/test{test}"           
+    for k, test in enumerate(tests):
+        if k <= 2:
+            num_of_agents = 4
+        else:
+            num_of_agents = 6 
+        source_dir = home_dir + f"/{test}"           
         source_dir_len = len(source_dir)
-        source_dir = home_dir + f"/test{test}/*.bag"           
+        source_dir = home_dir + f"/{test}/*.bag"           
         rosbag_list = glob.glob(source_dir)
         rosbag_list.sort() #alphabetically order
         rosbags = []
@@ -57,17 +66,22 @@ if __name__ == '__main__':
             diff_matrix = log.diff().to_numpy()
 
             # since the first row is NaN, starts 
-            for i in range(1, len(log.diff())):
-                total_dist += np.linalg.norm(log.diff().to_numpy()[i,0:2])
+            for j in range(1, len(log.diff())):
+                total_dist += np.linalg.norm(log.diff().to_numpy()[j,0:2])
 
             ###### max vel
-            for i in range(len(log.to_numpy())):
-                max_vel = max(max_vel, np.linalg.norm(log.to_numpy()[i,3:5]))
+            for j in range(len(log.to_numpy())):
+                max_vel = max(max_vel, np.linalg.norm(log.to_numpy()[j,3:5]))
+                if max_vel > 10:
+                    print(max_vel)
+                    print('rosbags ' + str(rosbags[i]))
+                    sys.exit(1)
+        ave_dist = total_dist / num_of_agents
 
-        os.system(f'echo "test{test}" >> '+home_dir+'/total_dist.txt')
-        os.system('echo "total travel dist '+str(round(total_dist,3))+'m" >> '+home_dir+'/total_dist.txt')
-        os.system('echo "------------------------------------------------------------" >> '+home_dir+'/total_dist.txt')
+        os.system(f'echo "{test}" >> '+home_dir+'/ave_dist.txt')
+        os.system('echo "ave dist '+str(round(ave_dist,3))+'m" >> '+home_dir+'/ave_dist.txt')
+        os.system('echo "------------------------------------------------------------" >> '+home_dir+'/ave_dist.txt')
 
-        os.system(f'echo "test{test}" >> '+home_dir+'/max_vel.txt')
+        os.system(f'echo "{test}" >> '+home_dir+'/max_vel.txt')
         os.system('echo "max vel '+str(max_vel)+'" >> '+home_dir+'/max_vel.txt')
         os.system('echo "------------------------------------------------------------" >> '+home_dir+'/max_vel.txt')
