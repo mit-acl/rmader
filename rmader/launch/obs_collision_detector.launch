@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<node name="obs_collision_detector" pkg="rmader" type="obs_sim_collision_check.py" output="screen">
+	</node>
+
+</launch>

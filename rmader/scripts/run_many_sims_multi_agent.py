@@ -102,7 +102,7 @@ if __name__ == '__main__':
             # if (not os.path.exists(folder_csv)):
             #     os.makedirs(folder_csv)        
 
-            # name_node_record="bag_recorder"
+            name_node_record="bag_recorder"
             kill_all="tmux kill-server & killall -9 gazebo & killall -9 gzserver  & killall -9 gzclient & killall -9 roscore & killall -9 rosmaster & pkill rmader_node & pkill -f dynamic_obstacles & pkill -f rosout & pkill -f behavior_selector_node & pkill -f rviz & pkill -f rqt_gui & pkill -f perfect_tracker & pkill -f rmader_commands"
 
             #make sure ROS (and related stuff) is not running
@@ -134,11 +134,12 @@ if __name__ == '__main__':
 
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py controller "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
-                # commands.append("sleep 4.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
+                commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
                 # commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)goal(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
                 # commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
+                commands.append("sleep 5.0 && roslaunch --wait rmader obs_collision_detector.launch")
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
-                commands.append("sleep 4.0 && rvmd")
+                # commands.append("sleep 4.0 && rvmd")
                 # commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
                 commands.append("sleep 5.0 && roscd rmader && roslaunch rmader dynamic_forest_launch.launch")
                 commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
@@ -211,7 +212,7 @@ if __name__ == '__main__':
     commands = []
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python collision_check.py "+source_dir)
     commands.append("sleep 3.0 && roscd rmader && cd other/sim && python completion_time.py "+source_dir)
-    commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py "+source_dir)
+    # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python comm_delay_histogram_percentile.py "+source_dir)
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python ave_distance_csv2txt.py")
     # commands.append("sleep 3.0 && roscd rmader && cd other/sim && python missed_msgs_count.py")
 
