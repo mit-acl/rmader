@@ -4,11 +4,11 @@
 ### **Submitted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
 
 
-|100ms Delay Check          |200ms Delay Check          |
+|100ms Delay Check (0ms artificial comm delay introduced)|200ms Delay Check (100ms artificial comm delay introduced)          |
 | ------------------------- | ------------------------- |
 <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc100ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc200ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | 
 
-|400ms Delay Check | Hardware Experiments |
+|400ms Delay Check (300ms artificial comm delay introduced)| Hardware Experiments |
 | ------------------------- | ------------------------- |
 |<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc400ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/hw.gif" width="470" height="260" style="margin:20px 20px" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a>|  
 
