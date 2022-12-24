@@ -42,7 +42,7 @@ cd ..
 bash src/rmader/install_and_compile.sh      
 ```
 
-The script [install_and_compile.sh](https://github.com/mit-acl/mader/blob/master/install_and_compile.sh) will install [CGAL v4.12.4](https://www.cgal.org/), [GLPK](https://www.gnu.org/software/glpk/) and other ROS packages (check the script for details). It will also compile the repo. This bash script assumes that you already have ROS installed in your machine. 
+The script [install_and_compile.sh](https://github.com/mit-acl/rmader/blob/master/install_and_compile.sh) will install [CGAL v4.12.4](https://www.cgal.org/), [GLPK](https://www.gnu.org/software/glpk/) and other ROS packages (check the script for details). It will also compile the repo. This bash script assumes that you already have ROS installed in your machine. 
 
 ### Using Docker
 
@@ -53,13 +53,13 @@ cd ~/ && mkdir ws && cd ws && mkdir src && cd src
 git clone https://github.com/mit-acl/rmader.git
 ```
 
-For Gurobi, you need to download gurobi.lic file from [Gurobi Web License Manager](https://license.gurobi.com/manager/licenses) (more info [here](https://www.gurobi.com/web-license-service/)). A gurobi.lic not obtained through WLS will **not** work on docker. Place your gurobi.lic in [docker](https://github.com/mit-acl/mader/docker) folder and execute these commands:
+For Gurobi, you need to download gurobi.lic file from [Gurobi Web License Manager](https://license.gurobi.com/manager/licenses) (more info [here](https://www.gurobi.com/web-license-service/)). A gurobi.lic not obtained through WLS will **not** work on docker. Place your gurobi.lic in [docker](https://github.com/mit-acl/rmader/docker) folder and execute these commands:
 
 ```bash
-cd ./mader/mader/docker
-docker build -t mader . #This will probably take several minutes
+cd ./rmader/rmader/docker
+docker build -t rmader . #This will probably take several minutes
 ```
-Once built, ```docker run --volume=$PWD/gurobi.lic:/opt/gurobi/gurobi.lic:ro -it mader```
+Once built, ```docker run --volume=$PWD/gurobi.lic:/opt/gurobi/gurobi.lic:ro -it rmader```
 
 <details>
   <summary> <b>Useful Docker commands</b></summary>
@@ -77,20 +77,9 @@ docker run --cpus=48 --volume=/home/kkondo/rmader_project/rmader_ws/src/rmader/r
 
 </details>
 
+### Running Multiagent Simulations
 
-### Running Simulations
-
-#### Single-agent
-```
-roslaunch rmader single_agent_simulation.launch
-```
-Now you can press `G` (or click the option `2D Nav Goal` on the top bar of RVIZ) and click any goal for the drone. 
-
-To run many single-agent simulations in different random environments, you can go to the `scripts` folder and execute `python run_many_sims_single_agent.py`.
-
-#### Multi-agent
-
-> **Note**: For a high number of agents, the performance of MADER improves with the number of CPUs available in your computer. 
+> **Note**: For a high number of agents, the performance of RMADER improves with the number of CPUs available in your computer. 
 
 Open four terminals and run these commands:
 
@@ -102,19 +91,6 @@ roslaunch mader many_drones.launch action:=send_goal
 ```
 
 (if you want to modify the drone radius, you can do so in `mader.yaml`). For the tables shown in the paper, the parameters (drone radius, max vel,...) used are also detailed in the corresponding section of the paper
-
-
-#### Octopus Search
-You can run the octopus search with a dynamic obstacle by simply running
-
-```
-roslaunch mader octopus_search.launch
-```
-And you should obtain this:
-
-![](./mader/imgs/octopus_search.png) 
-
-(note that the octopus search has some randomness in it, so you may obtain a different result each time you run it).
 
 ## Issues when installing Gurobi:
 
@@ -131,21 +107,7 @@ cd /opt/gurobi800/linux64/src/build  #Note that the name of the folder gurobi800
 sudo make
 sudo cp libgurobi_c++.a ../../lib/
 ```
-
 ## Credits:
 This package uses some C++ classes from the [DecompROS](https://github.com/sikang/DecompROS) repo (included in the `thirdparty` folder).
 
-## Hardware experiments procedure
-
-1. `./goal pos/ran` (argument pos: position exchange, ran: random waypoints)
-2. `./mader_fly true` (set argment to true if you wanna delete all the bags recored on voxl)
-3. check if all the mader hw_onboard is running onboard
-4. check if vicon values are appropriate
-5. in tmux windows opened by ./goal_send `setw synchronus-pane`
-6. arm drones
-7. (optional) video recording
-8. after flight, disarm drones and stop video recording
-
----------
-
-> **Approval for release**: This code was approved for release by The Boeing Company in December 2020. 
+> **Approval for release**: This code was approved for release by The Boeing Company in [NEED TO FILL]. 
