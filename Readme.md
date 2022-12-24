@@ -4,12 +4,13 @@
 ### **Submitted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
 
 
-Single-Agent               |  Multi-Agent           | 
-:-------------------------:|:-------------------------:|
-[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc100ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")      |  
-[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc200ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay") |  
-[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc400ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")       |  
-[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/hw.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")    |  
+|100ms Delay Check          |200ms Delay Check          |
+| ------------------------- | ------------------------- |
+<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc100ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc200ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | 
+
+|400ms Delay Check | Hardware Experiments |
+| ------------------------- | ------------------------- |
+|<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc400ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/hw.gif" width="470" height="260" style="margin:20px 20px" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a>|  
 
 ## Citation
 
