@@ -59,8 +59,8 @@ if __name__ == '__main__':
             dc_list = [350]
 
         for dc in dc_list:
-            dc_in_ms = dc/1000;
-            cd_in_ms = cd/1000;
+            dc_in_s = dc/1000;
+            cd_in_s = cd/1000;
             str_dc = str(dc)
 
             #### rmader.yaml modification. comment out delay_check param and is_delaycheck param
@@ -125,8 +125,8 @@ if __name__ == '__main__':
                     else:
                         agent_id = str(num)
 
-                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/delay_check_sec "+str(dc_in_ms))
-                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/simulated_comm_delay_sec "+str(cd_in_ms))
+                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/delay_check_sec "+str(dc_in_s))
+                    commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/tuning_param/simulated_comm_delay_sec "+str(cd_in_s))
                     if is_oldmader:
                         commands.append("sleep 5.0 && rosparam set /SQ"+agent_id+"s/rmader/is_delaycheck false")
                     else:
