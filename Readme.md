@@ -6,8 +6,10 @@
 
 Single-Agent               |  Multi-Agent           | 
 :-------------------------:|:-------------------------:|
-[![MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](./mader/imgs/single_agent1.gif)](https://www.youtube.com/watch?v=aoSoiZDfxGE "MADER: Trajectory Planner in Multi-Agent and Dynamic Environments")      |  [![MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](./mader/imgs/circle.gif)](https://www.youtube.com/watch?v=aoSoiZDfxGE "MADER: Trajectory Planner in Multi-Agent and Dynamic Environments") |  
-[![MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](./mader/imgs/single_agent2.gif)](https://www.youtube.com/watch?v=aoSoiZDfxGE "MADER: Trajectory Planner in Multi-Agent and Dynamic Environments")       |  [![MADER: Trajectory Planner in Multi-Agent and Dynamic Environments](./mader/imgs/sphere.gif)](https://www.youtube.com/watch?v=aoSoiZDfxGE "MADER: Trajectory Planner in Multi-Agent and Dynamic Environments")    |  
+[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc100ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")      |  
+[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc200ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay") |  
+[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/sim_dc400ms.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")       |  
+[![Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay](./rmader/imgs/hw.gif)](https://youtu.be/vH09kwJOBYs "Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay")    |  
 
 ## Citation
 
