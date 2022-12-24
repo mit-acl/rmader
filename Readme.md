@@ -59,7 +59,10 @@ For Gurobi, you need to download gurobi.lic file from [Gurobi Web License Manage
 cd ./rmader/rmader/docker
 docker build -t rmader . #This will probably take several minutes
 ```
-Once built, ```docker run --volume=$PWD/gurobi.lic:/opt/gurobi/gurobi.lic:ro -it rmader```
+Once built, 
+```
+docker run --volume=$PWD/gurobi.lic:/opt/gurobi/gurobi.lic:ro -it rmader
+```
 
 <details>
   <summary> <b>Useful Docker commands</b></summary>
@@ -77,20 +80,15 @@ docker run --cpus=48 --volume=/home/kkondo/rmader_project/rmader_ws/src/rmader/r
 
 </details>
 
-### Running Multiagent Simulations
+### Running Multiagent Simulations with 10 agents
 
 > **Note**: For a high number of agents, the performance of RMADER improves with the number of CPUs available in your computer. 
 
-Open four terminals and run these commands:
-
 ```
-roslaunch mader mader_general.launch type_of_environment:="dynamic_forest"
-roslaunch mader many_drones.launch action:=start
-roslaunch mader many_drones.launch action:=mader
-roslaunch mader many_drones.launch action:=send_goal
+roscd rmader && cd script && python run_rmader.py
 ```
 
-(if you want to modify the drone radius, you can do so in `mader.yaml`). For the tables shown in the paper, the parameters (drone radius, max vel,...) used are also detailed in the corresponding section of the paper
+(if you want to modify the parameters, you can do so in `rmader.yaml`).
 
 ## Issues when installing Gurobi:
 
