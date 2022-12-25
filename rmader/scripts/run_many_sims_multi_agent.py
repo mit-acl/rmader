@@ -145,8 +145,8 @@ if __name__ == '__main__':
                 commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 
                 #publishing the goal should be the last command
-                commands.append("sleep 10.0 && roscd rmader && cd scripts && python launch_many_drones.py send_goal "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
-                commands.append("sleep 10.0 && tmux detach")
+                commands.append("sleep 20.0 && roscd rmader && cd scripts && python launch_many_drones.py send_goal "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
+                commands.append("sleep 20.0 && tmux detach")
 
                 # print("len(commands)= " , len(commands))
                 session_name="run_many_sims_multi_agent_session"

@@ -56,7 +56,7 @@ class MovingForest:
         self.scale=1.0
         self.slower_min=5.2
         self.slower_max= 5.2
-        self.bbox_dynamic=[0.5, 0.5, 0.5] 
+        self.bbox_dynamic=[0.4, 0.4, 0.4] 
         self.bbox_static_vert=[0.45, 0.45, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
