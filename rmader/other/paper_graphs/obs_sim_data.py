@@ -94,7 +94,6 @@ if __name__ == '__main__':
                     translation1, quaternion = bag_transformer.lookupTransform(parent_frame1, agent1, rospy.Time.from_sec(time))
                     translation2, quaternion = bag_transformer.lookupTransform(parent_frame2, agent2, rospy.Time.from_sec(time))
                     dist=np.linalg.norm(np.array(translation1)-np.array(translation2), ord=np.inf)
-                    print(dist)
 
                     if (dist < 0.05):
                         collision_cnt += 1
