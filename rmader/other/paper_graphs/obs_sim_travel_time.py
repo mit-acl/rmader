@@ -30,7 +30,7 @@ if __name__ == '__main__':
         if cd == 0: 
             dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [80] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
             dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                 source_dir = parent_source_dir + "/oldmader/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
                 # is_oldmader = False
             else:
-                source_dir = parent_source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
+                source_dir = parent_source_dir + "/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
             
             source_len = len(source_dir)
             source_bags = source_dir + "/*.bag" # change the source dir accordingly

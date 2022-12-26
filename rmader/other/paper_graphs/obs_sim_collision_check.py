@@ -28,10 +28,9 @@ if __name__ == '__main__':
     # initialization
     home_dir = "/media/kota/T7/rmader_ral/mader/rmader_obs"
     num_of_agents = 10
-    source_dir = home_dir+"/bags/cd50ms/dc125ms"           
+    source_dir = home_dir+"/bags/cd50ms/dc80ms"           
     source_len = len(source_dir)
-    source_dir = home_dir+"/bags/cd50ms/dc125ms/*.bag"           
-    rosbag_list = glob.glob(source_dir)
+    rosbag_list = glob.glob(source_dir+"/*.bag")
     rosbag_list.sort() #alphabetically order
     rosbags = []
     bbox_limit = 0.05
@@ -73,10 +72,14 @@ if __name__ == '__main__':
         total_time_bag=final_time_bag-t_go_bag;
         times_discret = np.linspace(t_go_bag, final_time_bag, 2000)
 
-        for agent1 in agent_obs_list:
-            for agent2 in agent_obs_list: 
-                if agent1 == agent2:
+        for i_agent1 in range(len(agent_obs_list)):
+            for i_agent2 in range(i_agent1+1, len(agent_obs_list)): 
+                agent1 = agent_obs_list[i_agent1]
+                agent2 = agent_obs_list[i_agent2]
+                if agent1 == agent2 or (agent1[:3] == "obs" and agent2[:3] == "obs"):
                     break
+                print("agent1", agent1)
+                print("agent2", agent2)
 
                 for ii in range(len(times_discret)-1):
                     time=times_discret[ii];

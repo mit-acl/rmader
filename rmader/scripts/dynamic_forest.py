@@ -45,7 +45,7 @@ class MovingForest:
     def __init__(self, total_num_obs):
         print(total_num_obs)
         self.total_num_obs=total_num_obs
-        self.num_of_dyn_objects=int(1*total_num_obs) #int(0.65*total_num_obs);
+        self.num_of_dyn_objects=int(0.5*total_num_obs) #int(0.65*total_num_obs);
         self.num_of_stat_objects=total_num_obs-self.num_of_dyn_objects; 
         self.x_min= -5.5
         self.x_max= 5.5
@@ -56,7 +56,7 @@ class MovingForest:
         self.scale=1.0
         self.slower_min=5.2
         self.slower_max= 5.2
-        self.bbox_dynamic=[0.4, 0.4, 0.4] 
+        self.bbox_dynamic=[0.5, 0.5, 0.5] 
         self.bbox_static_vert=[0.45, 0.45, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
@@ -319,7 +319,7 @@ if __name__ == '__main__':
     #     total_num_obs=int(sys.argv[1])
 
     # print("sys.argv[1]= ", sys.argv[1])
-    total_num_obs=10 #70 for sphere sim
+    total_num_obs=20 #70 for sphere sim
     # total_num_obs=100 #70 for sphere sim
     try:
         rospy.init_node('dynamic_obstacles')
