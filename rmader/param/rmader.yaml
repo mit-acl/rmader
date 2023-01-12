@@ -11,7 +11,7 @@
 ###############################################################
 
 # use highbay space?
-space_size: "infinite_above_ground_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"/"infinite_above_ground_size"
+space_size: "infinite_size" # "infinite_size"/"west_highbay_size"/"full_highbay_size"/"infinite_above_ground_size"
 
 # need take off?
 is_take_off: false
