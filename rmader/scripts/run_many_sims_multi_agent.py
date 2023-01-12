@@ -42,7 +42,7 @@ if __name__ == '__main__':
     num_of_agents=10
     radius=10
     how_long_to_wait=40 #[s]
-    cd_list = [50]
+    cd_list = [50, 100]
 
     ##### loop
     for cd in cd_list:
@@ -50,7 +50,7 @@ if __name__ == '__main__':
         if cd == 0:
             dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
-            dc_list = [80] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
+            dc_list = [125] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 100:
             dc_list = [175] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 200:
@@ -76,9 +76,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir +"/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir +"/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir +"/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir +"/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir +"/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir +"/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
             else: ## on my desktop
                 source_dir = "/home/kota/test/data"
                 if is_oldmader:
@@ -86,9 +86,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir + "/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir + "/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir + "/rmader_obs/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir + "/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir + "/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
@@ -136,8 +136,12 @@ if __name__ == '__main__':
                 commands.append("sleep 5.0 && roscd rmader && cd scripts && python launch_many_drones.py rmader "+sim_id+" "+folder_txts+" "+str(num_of_agents)+" "+str(radius))
                 commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -a -o sim_" + sim_id + " __name:="+name_node_record)
                 # commands.append("sleep 5.0 && cd "+folder_bags+" && rosbag record -e '/tf' '/goal_reached' '/is_collided' '(.*)comm_delay(.*)' '(.*)state(.*)' '(.*)goal(.*)' '(.*)drone_marker(.*)' '(.*)actual_traj(.*)' '(.*)traj_safe_colored(.*)' '(.*)traj_safe_colored_bef_commit(.*)' '(.*)obstacles(.*)' -o sim_" + sim_id + " __name:="+name_node_record)
+                
+                ################### real time collision detector might be too late and therefore we don't use it anymore
                 # commands.append("sleep 5.0 && roslaunch --wait rmader collision_detector.launch num_of_agents:=" + str(num_of_agents))
-                commands.append("sleep 5.0 && roslaunch --wait rmader obs_collision_detector.launch")
+                # commands.append("sleep 5.0 && roslaunch --wait rmader obs_collision_detector.launch")
+                ###################
+
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")
                 # commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
