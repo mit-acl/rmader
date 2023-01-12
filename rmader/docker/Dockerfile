@@ -1,7 +1,7 @@
 FROM ros:noetic
 
 LABEL Maintainer="Kota Kondo <kkondo@mit.edu>" \
-      Description="Ubuntu 20.04, ROS Noetic for Robust MADER"
+      Description="Ubuntu 20.04, ROS Noetic for RMADER"
 
 RUN sudo rm -rf /var/lib/apt/lists/*
 RUN apt-get update && \
