@@ -49,7 +49,7 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" 
 RUN wget http://packages.ros.org/ros.key -O - |  apt-key add -
 RUN apt-get update && apt-get install python3-catkin-tools -y
 
-# install MADER
+# install RMADER
 RUN mkdir -p /home/kota/rmader_ws/src/
 WORKDIR /home/kota/rmader_ws/src
 # # RUN git clone https://github.com/mit-acl/rmader.git && \
