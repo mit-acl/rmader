@@ -31,7 +31,7 @@ if __name__ == '__main__':
     methods = ["rmader"]
 
     for method in methods: 
-        cd_list = [50, 100]
+        cd_list = [100]
         for cd in cd_list:
             if cd == 0:
                 dc = 75 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             rosbag_list = glob.glob(source_dir+"/*.bag")
             rosbag_list.sort() #alphabetically order
             rosbags = []
-            bbox_limit = 0.25
+            bbox_limit = 0.25 - 0.001
 
             for bag in rosbag_list:
                 rosbags.append(bag)

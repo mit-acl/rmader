@@ -34,13 +34,13 @@ class CollisionDetector:
 
         # numerical tolerance
         # state is not synchronized and time difference could be up to 0.01[s] so we need tolerance
-        # if max vel is 2.0m/s -> there should be 0.04m tolerance
+        # (if max vel is 2.0m/s -> there should be 0.04m tolerance)
         self.tol = 0.02 #[m] 
 
         # bbox size
-        self.bbox_x = rospy.get_param('~bbox_x', 0.25) - self.tol #default value is 0.15
-        self.bbox_y = rospy.get_param('~bbox_y', 0.25) - self.tol #default value is 0.15
-        self.bbox_z = rospy.get_param('~bbox_z', 0.25) - self.tol #default value is 0.15
+        self.bbox_x = rospy.get_param('~bbox_x', 0.25) - self.tol 
+        self.bbox_y = rospy.get_param('~bbox_y', 0.25) - self.tol 
+        self.bbox_z = rospy.get_param('~bbox_z', 0.25) - self.tol 
         self.num_of_agents = rospy.get_param('~num_of_agents', 10)
         # self.num_of_agents = 60
 
@@ -65,41 +65,45 @@ class CollisionDetector:
                     break
             self.initialized = initialized
 
-        if self.initialized:
-            for i in range(1,self.num_of_agents):
-                for j in range(i+1,self.num_of_agents+1):
 
-                    if i<=9:
-                        agent1 = "SQ0" + str(i) + "s" 
-                    else:
-                        agent1 = "SQ" + str(i) + "s" 
+        # if self.initialized:
+        for i in range(1,self.num_of_agents):
+            tic = time.perf_counter()
+            print(tic - tic_prev)
+            tic_prev = tic
+            for j in range(i+1,self.num_of_agents+1):
 
-                    if j<=9:
-                        agent2 = "SQ0" + str(j) + "s" 
-                    else:
-                        agent2 = "SQ" + str(j) + "s" 
-                    
-                    ### using tf
+                if i<=9:
+                    agent1 = "SQ0" + str(i) + "s" 
+                else:
+                    agent1 = "SQ" + str(i) + "s" 
 
-                    trans = self.get_transformation(agent1, agent2)
-                    if trans is not None:
+                if j<=9:
+                    agent2 = "SQ0" + str(j) + "s" 
+                else:
+                    agent2 = "SQ" + str(j) + "s" 
+                
+                ### using tf
 
-                        if (abs(trans.transform.translation.x) < self.bbox_x 
-                            and abs(trans.transform.translation.y) < self.bbox_y
-                            and abs(trans.transform.translation.z) < self.bbox_z):
-                            
-                            self.collision.is_collided = True
-                            self.collision.agent1 = trans.header.frame_id
-                            self.collision.agent2 = trans.child_frame_id
+                trans = self.get_transformation(agent1, agent2)
+                if trans is not None:
 
-                            print("collision btwn " + trans.header.frame_id + " and " + trans.child_frame_id)
+                    if (abs(trans.transform.translation.x) < self.bbox_x 
+                        and abs(trans.transform.translation.y) < self.bbox_y
+                        and abs(trans.transform.translation.z) < self.bbox_z):
+                        
+                        self.collision.is_collided = True
+                        self.collision.agent1 = trans.header.frame_id
+                        self.collision.agent2 = trans.child_frame_id
 
-                            max_dist = max(abs(trans.transform.translation.x), abs(trans.transform.translation.y), abs(trans.transform.translation.z))
+                        print("collision btwn " + trans.header.frame_id + " and " + trans.child_frame_id)
 
-                            print("violation dist is " + str(max_dist))
+                        max_dist = max(abs(trans.transform.translation.x), abs(trans.transform.translation.y), abs(trans.transform.translation.z))
 
-                            self.collision.dist = max_dist 
-                            self.pubIsCollided.publish(self.collision)
+                        print("violation dist is " + str(max_dist))
+
+                        self.collision.dist = max_dist 
+                        self.pubIsCollided.publish(self.collision)
 
                     ### using state 
 
