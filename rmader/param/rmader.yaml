@@ -154,13 +154,13 @@ west_highbay_size:
 
 full_highbay_size:
   x_min: -4.3  # [m] don't forget the .0
-  x_max: 15.2  # [m] don't forget the .0
+  x_max: 15.4  # [m] don't forget the .0
 
   y_min: -3.5  # [m] don't forget the .0
   y_max: 4.1   # [m] don't forget the .0
 
   z_min: 0.9  # [m] don't forget the .0
-  z_max: 3.2  # [m] don't forget the .0
+  z_max: 3.5  # [m] don't forget the .0
 
 ###############################################################
 # NLOPT Parameters (usually no need to change)
