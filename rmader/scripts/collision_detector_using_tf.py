@@ -65,50 +65,54 @@ class CollisionDetector:
         #             break
         #     self.initialized = initialized
 
-        if self.initialized:
-            for i in range(1,self.num_of_agents):
-                for j in range(i+1,self.num_of_agents+1):
+        # if self.initialized:
+        tic_prev = time.perf_counter()
+        for i in range(1,self.num_of_agents):
+            tic = time.perf_counter()
+            print(tic-tic_prev)
+            tic_prev = tic
+            for j in range(i+1,self.num_of_agents+1):
 
-                    if i<=9:
-                        agent1 = "SQ0" + str(i) + "s" 
-                    else:
-                        agent1 = "SQ" + str(i) + "s" 
+                if i<=9:
+                    agent1 = "SQ0" + str(i) + "s" 
+                else:
+                    agent1 = "SQ" + str(i) + "s" 
 
-                    if j<=9:
-                        agent2 = "SQ0" + str(j) + "s" 
-                    else:
-                        agent2 = "SQ" + str(j) + "s" 
+                if j<=9:
+                    agent2 = "SQ0" + str(j) + "s" 
+                else:
+                    agent2 = "SQ" + str(j) + "s" 
+                
+                trans = self.get_transformation(agent1, agent2)
+                if trans is not None:
+
+                    if (abs(trans.transform.translation.x) < self.bbox_x
+                        and abs(trans.transform.translation.y) < self.bbox_y
+                        and abs(trans.transform.translation.z) < self.bbox_z):
                     
-                    trans = self.get_transformation(agent1, agent2)
-                    if trans is not None:
+                        print("collision btwn " + agent1 + " and " + agent2)
+                        # print("agent" + str(i+1) + " and " + str(j+1) + " collide")
 
-                        if (abs(trans.transform.translation.x) < self.bbox_x
-                            and abs(trans.transform.translation.y) < self.bbox_y
-                            and abs(trans.transform.translation.z) < self.bbox_z):
-                        
-                            print("collision btwn " + agent1 + " and " + agent2)
-                            # print("agent" + str(i+1) + " and " + str(j+1) + " collide")
+                        x_diff = abs(trans.transform.translation.x)
+                        y_diff = abs(trans.transform.translation.y)
+                        z_diff = abs(trans.transform.translation.z)
 
-                            x_diff = abs(trans.transform.translation.x)
-                            y_diff = abs(trans.transform.translation.y)
-                            z_diff = abs(trans.transform.translation.z)
+                        # print("difference in x is " + str(x_diff))
+                        # print("difference in y is " + str(y_diff))
+                        # print("difference in z is " + str(z_diff))
 
-                            # print("difference in x is " + str(x_diff))
-                            # print("difference in y is " + str(y_diff))
-                            # print("difference in z is " + str(z_diff))
+                        # max_dist = max(abs(trans.transform.translation.x), abs(trans.transform.translation.y), abs(trans.transform.translation.z))
+                        max_dist = max(x_diff, y_diff, z_diff)
 
-                            # max_dist = max(abs(trans.transform.translation.x), abs(trans.transform.translation.y), abs(trans.transform.translation.z))
-                            max_dist = max(x_diff, y_diff, z_diff)
+                        self.collision.is_collided = True
+                        self.collision.agent1 = agent1
+                        self.collision.agent2 = agent2
 
-                            self.collision.is_collided = True
-                            self.collision.agent1 = agent1
-                            self.collision.agent2 = agent2
+                        print("violation dist is " + str(max_dist))
+                        print("\n")
 
-                            print("violation dist is " + str(max_dist))
-                            print("\n")
-
-                            self.collision.dist = max_dist 
-                            self.pubIsCollided.publish(self.collision)
+                        self.collision.dist = max_dist 
+                        self.pubIsCollided.publish(self.collision)
 
                     #     # print(str(agent1) + " and " + str(agent2) + ": " + str(trans.transform.translation.x))
                     

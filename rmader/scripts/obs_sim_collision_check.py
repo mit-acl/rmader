@@ -56,7 +56,7 @@ class CollisionDetector:
             else:
                 agent = "SQ" + str(i) + "s"
             self.agent_obs_list.append(agent)
-        for j in range(4000, 4020):
+        for j in range(4000, 4010):
             self.agent_obs_list.append(f"obs{j}")
 
     # collision detection
