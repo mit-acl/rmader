@@ -69,12 +69,12 @@ class TermGoalSender:
         self.full_wp11 = np.array([-3.6, 2.6-1.6*2])
         self.full_wp12 = np.array([14.0, 2.6-1.6*2])
 
-        self.full_exact_wp1 = np.array([-3.6, 2.6])
-        self.full_exact_wp2 = np.array([15.0, 2.6])
-        self.full_exact_wp3 = np.array([-3.6, -0.2])
-        self.full_exact_wp4 = np.array([15.0, -0.2])
-        self.full_exact_wp5 = np.array([-3.6, -3.0])
-        self.full_exact_wp6 = np.array([15.0, -3.0])
+        self.full_exact_wp1 = np.array([-3.2, 2.6])
+        self.full_exact_wp2 = np.array([14.5, 2.6])
+        self.full_exact_wp3 = np.array([-3.2, 0.0])
+        self.full_exact_wp4 = np.array([14.5, 0.0])
+        self.full_exact_wp5 = np.array([-3.2, -2.8])
+        self.full_exact_wp6 = np.array([14.5, -2.8])
 
         # waypoints
         self.wpidx = 0
