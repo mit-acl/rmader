@@ -23,7 +23,7 @@ is_centralized: false
 is_delaycheck: true
 
 # using opt+check+delay check or opt+delay check
-is_check: false
+is_check: true
 
 # use optimistic dc?
 is_optimistic_dc: false
