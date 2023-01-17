@@ -42,7 +42,7 @@ if __name__ == '__main__':
     num_of_agents=10
     radius=10
     how_long_to_wait=40 #[s]
-    cd_list = [0, 50, 100, 200, 300]
+    cd_list = [100]
 
     ##### loop
     for cd in cd_list:
@@ -76,9 +76,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir +"/wo_check_rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir +"/wo_check_rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir +"/wo_check_rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir +"/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir +"/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir +"/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
             else: ## on my desktop
                 source_dir = "/home/kota/test/data"
                 if is_oldmader:
@@ -86,9 +86,9 @@ if __name__ == '__main__':
                     folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
                     folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
                 else:
-                    folder_bags=source_dir + "/wo_check_rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_txts=source_dir + "/wo_check_rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
-                    folder_csv=source_dir + "/wo_check_rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_bags=source_dir + "/rmader/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_txts=source_dir + "/rmader/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
+                    folder_csv=source_dir + "/rmader/csv/cd"+str(cd)+"ms/dc"+str_dc+"ms"
 
             # create directy if not exists
             if (not os.path.exists(folder_bags)):
