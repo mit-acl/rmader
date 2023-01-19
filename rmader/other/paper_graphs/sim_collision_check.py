@@ -28,10 +28,10 @@ if __name__ == '__main__':
     # initialization
     home_dir = "/media/kota/T7/rmader_ral"
     num_of_agents = 10
-    methods = ["rmader"]
+    methods = ["wo_check_rmader"]
 
     for method in methods: 
-        cd_list = [100]
+        cd_list = [300]
         for cd in cd_list:
             if cd == 0:
                 dc = 75 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             rosbag_list = glob.glob(source_dir+"/*.bag")
             rosbag_list.sort() #alphabetically order
             rosbags = []
-            bbox_limit = 0.25 - 0.001
+            bbox_limit = 0.25
 
             for bag in rosbag_list:
                 rosbags.append(bag)

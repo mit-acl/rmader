@@ -27,18 +27,16 @@ if __name__ == '__main__':
     rmader_ave_dist = []
     rmader_stop_cnt = []
     tests = []
-    tests.append("4agent2obs/test4")
-    tests.append("4agent2obs/test5")
-    tests.append("4agent2obs/test7")
-    tests.append("full_space_6_agents/test10")
-    tests.append("full_space_6_agents/test11") 
+    # tests.append("4agent2obs/test4")
+    # tests.append("4agent2obs/test5")
+    # tests.append("4agent2obs/test7")
+    # tests.append("full_space_6_agents/test10")
+    # tests.append("full_space_6_agents/test11") 
+    tests.append("full_space_6_agents/test3") 
     # tests = [2] 
 
     for k, test in enumerate(tests):
-        if k <= 2:
-            num_of_agents = 4
-        else:
-            num_of_agents = 6 
+        num_of_agents = 6 
         source_dir = home_dir + f"/{test}"           
         source_dir_len = len(source_dir)
         source_dir = home_dir + f"/{test}/*.bag"           
@@ -73,7 +71,7 @@ if __name__ == '__main__':
             for j in range(len(log.to_numpy())):
                 max_vel = max(max_vel, np.linalg.norm(log.to_numpy()[j,3:5]))
                 if max_vel > 10:
-                    print(max_vel)
+                    print("max velocity is too large: ", max_vel, "abort")
                     print('rosbags ' + str(rosbags[i]))
                     sys.exit(1)
         ave_dist = total_dist / num_of_agents
