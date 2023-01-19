@@ -19,7 +19,7 @@ class TermGoalSender:
         # for one time exchange
         # 0 means "the first exchange"
         # 1 means "the second exchange"
-        self.one_time_exchange = rospy.get_param('one_time_exchange', 0)
+        # self.one_time_exchange = rospy.get_param('one_time_exchange', 0)
 
         # home yet?
         self.is_home = False
@@ -31,7 +31,7 @@ class TermGoalSender:
         self.is_init_pos = False
 
         # reached goal?
-        self.if_arrived = False
+        self.if_arrived = True
 
         # term_goal init
         self.term_goal=PoseStamped()
@@ -325,23 +325,47 @@ class TermGoalSender:
 
             # full space exact position exchange
             if self.mode == 1:
-                self.term_goal.pose.position.x = self.full_exact_wp6[0]
-                self.term_goal.pose.position.y = self.full_exact_wp6[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
             elif self.mode == 2:
-                self.term_goal.pose.position.x = self.full_exact_wp5[0]
-                self.term_goal.pose.position.y = self.full_exact_wp5[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
             elif self.mode == 3:
-                self.term_goal.pose.position.x = self.full_exact_wp4[0]
-                self.term_goal.pose.position.y = self.full_exact_wp4[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
             elif self.mode == 4:
-                self.term_goal.pose.position.x = self.full_exact_wp3[0]
-                self.term_goal.pose.position.y = self.full_exact_wp3[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
             elif self.mode == 5:
-                self.term_goal.pose.position.x = self.full_exact_wp2[0]
-                self.term_goal.pose.position.y = self.full_exact_wp2[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
             elif self.mode == 6:
-                self.term_goal.pose.position.x = self.full_exact_wp1[0]
-                self.term_goal.pose.position.y = self.full_exact_wp1[1]
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
 
             ######################################################    
             #mode1                                          mode2#
