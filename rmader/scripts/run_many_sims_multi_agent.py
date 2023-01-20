@@ -38,11 +38,11 @@ if __name__ == '__main__':
 
     ##### parameters
     is_docker = True
-    num_of_sims=100
+    num_of_sims=105
     num_of_agents=10
     radius=10
     how_long_to_wait=40 #[s]
-    cd_list = [100]
+    cd_list = [0, 50, 100, 200, 300]
 
     ##### loop
     for cd in cd_list:
