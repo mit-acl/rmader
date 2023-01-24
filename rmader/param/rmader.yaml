@@ -43,7 +43,7 @@ is_artificial_comm_delay: true
 is_replan_after_goal_reached: false
 
 # for obstacles, we use /trajs without any communicatoin delays, and for agents, we introduce comm delays
-is_obs_sim: false
+is_obs_sim: true
 
 ###############################################################
 # adaptive delay related Parameters
