@@ -23,11 +23,11 @@ if __name__ == '__main__':
     ##### collision-free trajectory percentage
 
     # collision-free rate 
-    oldmader = [97, 92, 89, 79, 77] 
+    oldmader = [95, 92, 87, 72, 70] 
     rmader = [100, 100, 100, 100, 100]
     wo_check_rmader = [100, 100, 100, 100, 100]
-    ego_swarm = [38, 42, 46, 53, 45]
-    edg_team = [99, 99, 100, 96, 100]
+    ego_swarm = [34, 27, 27, 48, 29]
+    edg_team = [100, 100, 99, 99, 99]
     
     # x axis
     x = [0, 50, 100, 200, 300]

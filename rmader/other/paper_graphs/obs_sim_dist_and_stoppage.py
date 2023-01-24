@@ -32,7 +32,7 @@ if __name__ == '__main__':
         dc = 80 
         source_dir = f"/media/kota/T7/rmader_ral/mader/rmader_obs/bags/cd{cd}ms/dc{dc}ms/*.bag"
         first_agent_idx = 1
-        dt = 0.01 #[s] MADERm EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
+        dt = 0.01 #[s] MADER EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
 
         rosbag_list = glob.glob(source_dir)
         rosbag_list.sort() #alphabetically order

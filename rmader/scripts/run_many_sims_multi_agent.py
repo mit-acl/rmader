@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
                 # commands.append("sleep 4.0 && roslaunch --wait rmader ave_distance.launch num_of_agents:="+str(num_of_agents)+" folder_loc:="+folder_csv+" sim:="+sim_id)
                 # commands.append("sleep 4.0 && rvmd")
-                # commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
+                commands.append("sleep 5.0 && roscd rmader && cd scripts && python dynamic_forest.py")
                 # commands.append("sleep 5.0 && roscd rmader && roslaunch rmader dynamic_forest_launch.launch")
                 commands.append("sleep 8.0 && roslaunch --wait rmader goal_reached.launch") #we are calculating completion time here so sleep time needs to be the same as send_goal
 

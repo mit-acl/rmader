@@ -27,12 +27,16 @@ if __name__ == '__main__':
     rmader_ave_dist = []
     rmader_stop_cnt = []
     tests = []
+    # tests_num = [2, 3, 4, 5, 6] 
+    # for test_num in tests_num:
+    #     tests.append(f"test{test_num}")
+    # print(tests)
     # tests.append("4agent2obs/test4")
     # tests.append("4agent2obs/test5")
     # tests.append("4agent2obs/test7")
-    # tests.append("full_space_6_agents/test10")
-    # tests.append("full_space_6_agents/test11") 
-    tests.append("full_space_6_agents/test3") 
+    tests.append("6agent2obs/test10")
+    tests.append("6agent2obs/test11") 
+    tests.append("6agent2obs/test3") 
     # tests = [2] 
 
     for k, test in enumerate(tests):
@@ -42,6 +46,7 @@ if __name__ == '__main__':
         source_dir = home_dir + f"/{test}/*.bag"           
         rosbag_list = glob.glob(source_dir)
         rosbag_list.sort() #alphabetically order
+        print(rosbag_list)
         rosbags = []
 
         for bag in rosbag_list:
@@ -55,25 +60,34 @@ if __name__ == '__main__':
             b = bagreader(rosbags[i], verbose=False)
             # introduced goal_reached topic so no need to check actual_traj
             agent = rosbags[i][source_dir_len+1:source_dir_len+5]
-            log_data = b.message_by_topic(f'/{agent}/state')
-            log = pd.read_csv(log_data, usecols=["pos.x", "pos.y", "pos.z", "vel.x", "vel.y", "vel.z"])
-            log.columns = ["px", "py", "pz", "vx", "vy", "vz"]  
-            
+            try:
+                log_data_twist = b.message_by_topic(f'/{agent}/mocap/twist')
+                log_twist = pd.read_csv(log_data_twist, usecols=["twist.linear.x", "twist.linear.y", "twist.linear.z"])
+                log_twist.columns = ["vx", "vy", "vz"]  
+            except:
+                log_data_twist = b.message_by_topic(f'/{agent}/state')
+                log_twist = pd.read_csv(log_data_twist, usecols=["vel.x", "vel.y", "vel.z"])
+                log_twist.columns = ["vx", "vy", "vz"]
+
+            log_data_world = b.message_by_topic(f'/{agent}/world')
+            log_world = pd.read_csv(log_data_world, usecols=["pose.position.x", "pose.position.y", "pose.position.z"])
+            log_world.columns = ["px", "py", "pz"]
+
             ###### difference from the previous pos to the current pos
             # print(log.diff().to_numpy())
-            diff_matrix = log.diff().to_numpy()
+            diff_matrix = log_world.diff().to_numpy()
 
             # since the first row is NaN, starts 
-            for j in range(1, len(log.diff())):
-                total_dist += np.linalg.norm(log.diff().to_numpy()[j,0:2])
+            for j in range(1, len(log_world.diff())):
+                total_dist += np.linalg.norm(log_world.diff().to_numpy()[j,0:2])
 
             ###### max vel
-            for j in range(len(log.to_numpy())):
-                max_vel = max(max_vel, np.linalg.norm(log.to_numpy()[j,3:5]))
-                if max_vel > 10:
+            for j in range(len(log_twist.to_numpy())):
+                max_vel = max(max_vel, np.linalg.norm(log_twist.to_numpy()[j,0:2]))
+                if max_vel > 3.46:
                     print("max velocity is too large: ", max_vel, "abort")
                     print('rosbags ' + str(rosbags[i]))
-                    sys.exit(1)
+                    # sys.exit(1)
         ave_dist = total_dist / num_of_agents
 
         os.system(f'echo "{test}" >> '+home_dir+'/ave_dist.txt')

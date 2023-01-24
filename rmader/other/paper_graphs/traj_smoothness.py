@@ -55,17 +55,17 @@ for method in methods:
 
         if method == "oldmader":
             # old mader
-            source_dir = f"/media/kota/T7/rmader_ral/mader/oldmader/bags/cd{cd}ms/*.bag"
+            source_dir = f"/media/kota/T7/rmader_ral/oldmader/bags/cd{cd}ms/*.bag"
             first_agent_idx = 1
             dt = 0.01 #[s] MADERm EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
         elif method == "rmader":
             # rmader
-            source_dir = f"/media/kota/T7/rmader_ral/mader/rmader/bags/cd{cd}ms/dc{dc}ms/*.bag"
+            source_dir = f"/media/kota/T7/rmader_ral/rmader/bags/cd{cd}ms/dc{dc}ms/*.bag"
             first_agent_idx = 1
             dt = 0.01 #[s] MADERm EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
         elif method == "wo_check_rmader":
             # rmader without check
-            source_dir = f"/media/kota/T7/rmader_ral/mader/wo_check_rmader/bags/cd{cd}ms/dc{dc}ms/*.bag"
+            source_dir = f"/media/kota/T7/rmader_ral/wo_check_rmader/bags/cd{cd}ms/dc{dc}ms/*.bag"
             first_agent_idx = 1
             dt = 0.01 #[s] MADERm EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
         elif method == "ego_swarm":
@@ -87,7 +87,7 @@ for method in methods:
 
         for name_bag in list_of_bags:
             bag = rosbag.Bag(name_bag)
-            print('rosbag ' + str(list_of_bags[i]))
+            print('rosbag ' + str(name_bag))
             topics=[]
             for i in range(0+first_agent_idx,num_of_agents+first_agent_idx): #if you use MADER you need to make it range(1, num_of_agents+1)
                 if i <= 9:
