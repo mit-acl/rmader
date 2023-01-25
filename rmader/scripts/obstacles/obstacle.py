@@ -30,10 +30,7 @@ class Obstacle_Planner:
 
     def __init__(self):
  
-        tmp=rospy.get_namespace();
-        #https://stackoverflow.com/questions/1450897/remove-characters-except-digits-from-string-using-python
-        tmp=re.sub("\D", "", tmp)
-        self.id=  4000+ int(tmp)  #Current id 4000 to avoid interference with ids from agents #TODO
+        self.id= int(self.safeGetParam('~obs_id'))
 
         self.whoplans=WhoPlans();
         self.whoplans.value=self.whoplans.OTHER
@@ -291,7 +288,7 @@ class Obstacle_Planner:
         # self.dyn_traj_msg.pos.x=eval(x_string)
         # self.dyn_traj_msg.pos.y=eval(y_string)
         # self.dyn_traj_msg.pos.z=eval(z_string)
-        self.dyn_traj_msg.id = 4000
+        self.dyn_traj_msg.id = self.id
         self.pubTraj.publish(self.dyn_traj_msg)
 
         self.marker.pose.position=self.dyn_traj_msg.pos
