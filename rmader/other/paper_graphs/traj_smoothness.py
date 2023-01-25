@@ -26,7 +26,8 @@ import matplotlib.font_manager as font_manager
 
 # initialization
 home_dir = "/media/kota/T7/rmader_ral/"
-methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+# methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+methods = ["rmader", "wo_check_rmader"]
 num_of_agents=10
 oldmader_traj_smoothness_acc = []
 oldmader_traj_smoothness_jer = []
@@ -40,7 +41,7 @@ edg_team_traj_smoothness_acc = []
 edg_team_traj_smoothness_jer = []
 
 for method in methods: 
-    cd_list = [0, 50, 100, 200, 300]
+    cd_list = [200, 300]
     for cd in cd_list:
         if cd == 0:
             dc = 75 
@@ -49,9 +50,9 @@ for method in methods:
         elif cd == 100:
             dc = 175
         elif cd == 200:
-            dc = 250
+            dc = 275
         elif cd == 300:
-            dc = 350
+            dc = 375
 
         if method == "oldmader":
             # old mader

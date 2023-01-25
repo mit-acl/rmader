@@ -24,7 +24,8 @@ if __name__ == '__main__':
     num_of_agents = 10
     stop_cnt_tol = 1e-2 # stop count torelance
     home_dir = "/media/kota/T7/rmader_ral"
-    methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+    # methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+    methods = ["wo_check_rmader"]
     oldmader_ave_dist = []
     oldmader_stop_cnt = []
     rmader_ave_dist = []
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     edg_team_stop_cnt = []
 
     for method in methods: 
-        cd_list = [0, 50, 100, 200, 300]
+        cd_list = [200, 300]
         for cd in cd_list:
             if cd == 0:
                 dc = 75 
@@ -46,9 +47,9 @@ if __name__ == '__main__':
             elif cd == 100:
                 dc = 175
             elif cd == 200:
-                dc = 250
+                dc = 275
             elif cd == 300:
-                dc = 350
+                dc = 375
 
             if method == "oldmader":
                 # old mader

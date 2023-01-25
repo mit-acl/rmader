@@ -26,9 +26,10 @@ from tf_bag import BagTfTransformer
 if __name__ == '__main__':
 
     # initialization
-    home_dir = "/media/kota/T7/rmader_ral/mader/rmader_obs"
+    home_dir = "/media/kota/T7/rmader_ral/rmader_obs"
     num_of_agents = 10
     source_dir = home_dir+"/bags/cd50ms/dc80ms"           
+    # source_dir = home_dir+"/bags/cd50ms/dc125ms"           
     source_len = len(source_dir)
     rosbag_list = glob.glob(source_dir+"/*.bag")
     rosbag_list.sort() #alphabetically order
@@ -78,8 +79,8 @@ if __name__ == '__main__':
                 agent2 = agent_obs_list[i_agent2]
                 if agent1 == agent2 or (agent1[:3] == "obs" and agent2[:3] == "obs"):
                     break
-                print("agent1", agent1)
-                print("agent2", agent2)
+                # print("agent1", agent1)
+                # print("agent2", agent2)
 
                 for ii in range(len(times_discret)-1):
                     time=times_discret[ii];
