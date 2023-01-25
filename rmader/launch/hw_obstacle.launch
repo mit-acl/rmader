@@ -5,6 +5,7 @@
 
     <node ns="$(arg quad1)" name="obstacle" pkg="rmader" type="obstacle.py" output="screen" clear_params="true">
         <rosparam file="$(find rmader)/param/obstacle1.yaml" command="load"/>
+        <param name="obs_id" value="4001" />
     </node>
 
     <node ns="$(arg quad1)" name="rmader_obs_commands" pkg="rmader" type="rmader_obs_commands.py" output="screen"/>
@@ -15,6 +16,7 @@
 
     <node ns="$(arg quad2)" name="obstacle" pkg="rmader" type="obstacle.py" output="screen" clear_params="true">
         <rosparam file="$(find rmader)/param/obstacle2.yaml" command="load"/>
+        <param name="obs_id" value="4002" />
     </node>
 
     <node ns="$(arg quad2)" name="rmader_obs_commands" pkg="rmader" type="rmader_obs_commands.py" output="screen"/>
