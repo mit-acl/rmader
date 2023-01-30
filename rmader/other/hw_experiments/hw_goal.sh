@@ -38,7 +38,7 @@ sleep 1
 tmux send-keys -t $SESSION:$w.0 "ssh nuc1@192.168.15.2" C-m
 tmux send-keys -t $SESSION:$w.1 "ssh nuc2@192.168.16.2" C-m
 # tmux send-keys -t $SESSION:$w.2 "ssh nuc4@192.168.18.2" C-m
-tmux send-keys -t $SESSION:$w.3 "ssh nuc5@192.168.19.2" C-m
+tmux send-keys -t $SESSION:$w.3 "ssh nuc7@192.168.21.2" C-m
 tmux send-keys -t $SESSION:$w.4 "ssh nuc08@192.168.22.2" C-m
 # tmux send-keys -t $SESSION:$w.5 "ssh nuc08@192.168.22.2" C-m
 
@@ -49,7 +49,7 @@ if [ "$1" == "pos" ]; then
 	tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX01"  
 	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=2 quad:=NX02"  
 	# tmux send-keys -t $SESSION:$w.2 "roslaunch rmader position_exchange.launch mode:=3 quad:=NX04" 
-	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=3 quad:=NX05"  
+	tmux send-keys -t $SESSION:$w.3 "roslaunch rmader position_exchange.launch mode:=3 quad:=NX07"  
 	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader position_exchange.launch mode:=4 quad:=NX08"  
 	# tmux send-keys -t $SESSION:$w.5 "roslaunch rmader position_exchange.launch mode:=6 quad:=NX08 one_time_exchange:="$ONE_TIME_EXCHANGE 
 
