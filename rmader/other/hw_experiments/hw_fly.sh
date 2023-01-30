@@ -50,9 +50,9 @@ sleep 1
 tmux send-keys -t $SESSION:$w.0 "ssh root@nx01.local" C-m
 tmux send-keys -t $SESSION:$w.2 "ssh root@nx02.local" C-m
 # tmux send-keys -t $SESSION:$w.4 "ssh root@nx04.local" C-m  
-tmux send-keys -t $SESSION:$w.6 "ssh root@nx05.local" C-m
-# tmux send-keys -t $SESSION:$w.8 "ssh root@nx07.local" C-m
-tmux send-keys -t $SESSION:$w.8 "ssh root@nx08.local" C-m
+# tmux send-keys -t $SESSION:$w.6 "ssh root@nx05.local" C-m
+tmux send-keys -t $SESSION:$w.8 "ssh root@nx07.local" C-m
+tmux send-keys -t $SESSION:$w.10 "ssh root@nx08.local" C-m
 tmux send-keys -t $SESSION:$w.12 "ssh root@nx06.local" C-m
 tmux send-keys -t $SESSION:$w.14 "ssh root@nx10.local" C-m
 # tmux send-keys -t $SESSION:$w.6 "ssh root@nx07.local" C-m
@@ -73,9 +73,9 @@ sleep 3
 tmux send-keys -t $SESSION:$w.1 "ssh nuc1@192.168.15.2" C-m
 tmux send-keys -t $SESSION:$w.3 "ssh nuc2@192.168.16.2" C-m
 # tmux send-keys -t $SESSION:$w.5 "ssh nuc4@192.168.18.2" C-m
-tmux send-keys -t $SESSION:$w.7 "ssh nuc5@192.168.19.2" C-m
-tmux send-keys -t $SESSION:$w.9 "ssh nuc08@192.168.22.2" C-m
-# tmux send-keys -t $SESSION:$w.11 "ssh nuc08@192.168.22.2" C-m
+# tmux send-keys -t $SESSION:$w.7 "ssh nuc5@192.168.19.2" C-m
+tmux send-keys -t $SESSION:$w.9 "ssh nuc7@192.168.21.2" C-m
+tmux send-keys -t $SESSION:$w.11 "ssh nuc08@192.168.22.2" C-m
 # tmux send-keys -t $SESSION:$w.11 "ssh nuc08@192.168.22.2" C-m
 # tmux send-keys -t $SESSION:$w.7 "ssh nuc@192.168.21.2" C-m
 # tmux send-keys -t $SESSION:$w.9 "ssh nuc08@192.168.22.2" C-m
@@ -99,8 +99,8 @@ if [[ $ifDELETE == 'true' ]]; then
 	tmux send-keys -t $SESSION:$w.1 "cd /home/nuc1/Research/bags && rm *.txt && cd" C-m
 	tmux send-keys -t $SESSION:$w.3 "cd /home/nuc2/Research/bags && rm *.txt && cd" C-m
 	# tmux send-keys -t $SESSION:$w.5 "cd /home/nuc4/Research/bags && rm *.txt && cd" C-m
-	tmux send-keys -t $SESSION:$w.7 "cd /home/nuc5/Research/bags && rm *.txt && cd" C-m
-	tmux send-keys -t $SESSION:$w.9 "cd /home/nuc8/Research/bags && rm *.txt && cd" C-m
+	tmux send-keys -t $SESSION:$w.7 "cd /home/nuc7/Research/bags && rm *.txt && cd" C-m
+	tmux send-keys -t $SESSION:$w.9 "cd /home/nuc08/Research/bags && rm *.txt && cd" C-m
 	# tmux send-keys -t $SESSION:$w.11 "cd /home/nuc08/Research/bags && rm *.txt && cd" C-m
 	# tmux send-keys -t $SESSION:$w.9 "cd /home/nuc5/Research/bags && rm *.txt" C-m
 	# tmux send-keys -t $SESSION:$w11 "cd /home/nuc6/Research/bags && rm *.txt" C-m
@@ -110,7 +110,7 @@ if [[ $ifDELETE == 'true' ]]; then
 	
 fi
 
-# for i in 5 7 11 # RUNNING MESH WITH NETWORK MANAGER NX04, 05, 08
+# for i in 1 7 11 # RUNNING MESH WITH NETWORK MANAGER NX01, 04, 05, 07, 08
 # do
 # 	tmux send-keys -t $SESSION:$w.$i "cd && ./ad_hoc_without_NM.sh" C-m
 # done
@@ -122,7 +122,7 @@ sleep 5
 tmux send-keys -t $SESSION:$w.1 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc1/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX01) 2>&1 | tee ~/Research/bags/nx01_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 tmux send-keys -t $SESSION:$w.3 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc2/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX02) 2>&1 | tee ~/Research/bags/nx02_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 # tmux send-keys -t $SESSION:$w.5 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc4/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX04) 2>&1 | tee ~/Research/bags/nx04_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
-tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc5/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX05) 2>&1 | tee ~/Research/bags/nx05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
+tmux send-keys -t $SESSION:$w.7 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc7/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX07) 2>&1 | tee ~/Research/bags/nx07_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 tmux send-keys -t $SESSION:$w.9 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc8/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 # tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc08/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX08) 2>&1 | tee ~/Research/bags/nx08_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
 # tmux send-keys -t $SESSION:$w.11 "(roscd rmader && git rev-parse HEAD && git diff --color && cd /home/nuc6/Research/bags/ && roslaunch rmader hw_onboard.launch quad:=NX06) 2>&1 | tee ~/Research/bags/nx05_rmader_$(date '+%Y_%m_%d_%H_%M_%S').txt" C-m
