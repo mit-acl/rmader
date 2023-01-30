@@ -111,7 +111,7 @@ opt:
   a_star_bias: 0.0 #Bias (cost=g+bias*h) in the A* search #default is 1.0
 
   factor_alpha: 2.5 #[-] DeltaT = factor_alpha*States_took_previous_replan
-  factor_alloc: 1.0 #>=1. Used to find the total duration of a given trajectory.
+  factor_alloc: 2.0 #>=1. Used to find the total duration of a given trajectory.
   factor_alloc_close: 2.5 #>=1. Used to find the total duration of a given trajectory. When an agent gets close to the goal, we see a very short traj, so allocate more time for optimization
   dist_factor_alloc_close: 5.0 #>=1. When dist to goal is < than this, the factor_alloc_close is used (instead of factor_alloc)
 
