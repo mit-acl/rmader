@@ -72,9 +72,9 @@ if __name__ == '__main__':
             if is_docker: ## using Docker on lambda machine
                 source_dir = "/home/kota/data/mader"
                 if is_oldmader:
-                    folder_bags=source_dir + "/oldmader/bags/cd"+str(cd)+"ms"
-                    folder_txts=source_dir + "/oldmader/txt_files/cd"+str(cd)+"ms"
-                    folder_csv=source_dir + "/oldmader/csv/cd"+str(cd)+"ms"
+                    folder_bags=source_dir + "/oldmader_obs/bags/cd"+str(cd)+"ms"
+                    folder_txts=source_dir + "/oldmader_obs/txt_files/cd"+str(cd)+"ms"
+                    folder_csv=source_dir + "/oldmader_obs/csv/cd"+str(cd)+"ms"
                 else:
                     folder_bags=source_dir +"/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms"
                     folder_txts=source_dir +"/rmader_obs/txt_files/cd"+str(cd)+"ms/dc"+str_dc+"ms"
