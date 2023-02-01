@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
     ##### loop
     for cd in cd_list:
-        is_oldmader=False
+        is_oldmader=True
         if cd == 0:
             dc_list = [75] #dc_list[0] will be used for old mader (which doesn't need delay check) so enter some value (default 0)
         elif cd == 50:
