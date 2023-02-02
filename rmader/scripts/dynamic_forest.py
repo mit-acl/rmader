@@ -56,7 +56,7 @@ class MovingForest:
         self.scale=1.0
         self.slower_min=5.2
         self.slower_max= 5.2
-        self.bbox_dynamic=[1.0, 1.0, 1.0] 
+        self.bbox_dynamic=[0.4, 0.4, 0.4] 
         self.bbox_static_vert=[0.45, 0.45, 4]  #[0.4, 0.4, 6] for sphere sim
         self.bbox_static_horiz=[0.4, 4, 0.4]
         self.percentage_vert=1.0;  #0.5 for sphere sim
@@ -304,7 +304,7 @@ class FakeSim:
 def startNode(total_num_obs):
     c = FakeSim(total_num_obs)
     
-    rospy.Timer(rospy.Duration(0.01), c.pubTF)
+    rospy.Timer(rospy.Duration(0.05), c.pubTF)
     rospy.spin()
 
 if __name__ == '__main__':
@@ -319,7 +319,7 @@ if __name__ == '__main__':
     #     total_num_obs=int(sys.argv[1])
 
     # print("sys.argv[1]= ", sys.argv[1])
-    total_num_obs=20 #70 for sphere sim
+    total_num_obs=10 #70 for sphere sim
     # total_num_obs=100 #70 for sphere sim
     try:
         rospy.init_node('dynamic_obstacles')
