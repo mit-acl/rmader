@@ -170,7 +170,7 @@ class TermGoalSender:
             #     self.term_goal.pose.position.y = self.sign * 0
 
 
-            elif self.mode == 7: 
+            if self.mode == 7: 
                 self.term_goal.pose.position.x = self.wps[self.wpidx,0]
                 self.term_goal.pose.position.y = self.wps[self.wpidx,1]
                 self.term_goal.pose.position.z = self.wps[self.wpidx,2]
