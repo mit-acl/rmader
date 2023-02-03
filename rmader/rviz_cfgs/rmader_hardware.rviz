@@ -200,7 +200,7 @@ Visualization Manager:
       Marker Topic: /NX04/rmader/obstacles
       Name: Obstacles
       Namespaces:
-        markertacles: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -314,7 +314,7 @@ Visualization Manager:
       Marker Topic: /NX01/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
-        NX01: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -322,7 +322,7 @@ Visualization Manager:
       Marker Topic: /NX02/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
-        NX02: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -338,7 +338,7 @@ Visualization Manager:
       Marker Topic: /NX04/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
-        NX04: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -346,7 +346,7 @@ Visualization Manager:
       Marker Topic: /NX05/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
-        NX05: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -362,7 +362,7 @@ Visualization Manager:
       Marker Topic: /NX07/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
-        NX07: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -374,13 +374,13 @@ Visualization Manager:
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: false
+      Enabled: true
       Marker Topic: /SQ09s/rmader/traj_safe_colored
       Name: Safe_Color
       Namespaces:
         {}
       Queue Size: 100
-      Value: false
+      Value: true
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /NX09/rmader/traj_safe_colored
@@ -975,7 +975,7 @@ Visualization Manager:
       Shaft Radius: 0.05000000074505806
       Shape: Axes
       Topic: /NX08/world
-      Unreliable: false
+      Unreliable: true
       Value: true
     - Alpha: 1
       Axes Length: 0.5
@@ -1006,7 +1006,7 @@ Visualization Manager:
       Marker Topic: /NX01/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX01: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1014,7 +1014,7 @@ Visualization Manager:
       Marker Topic: /NX02/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX02: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1030,7 +1030,7 @@ Visualization Manager:
       Marker Topic: /NX04/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX04: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1038,7 +1038,7 @@ Visualization Manager:
       Marker Topic: /NX05/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX05: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1054,7 +1054,7 @@ Visualization Manager:
       Marker Topic: /NX07/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX07: true
+        {}
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray
@@ -1062,7 +1062,7 @@ Visualization Manager:
       Marker Topic: /NX01/rmader/traj_safe_colored_bef_commit
       Name: MarkerArray
       Namespaces:
-        NX01: true
+        {}
       Queue Size: 100
       Value: true
   Enabled: true
@@ -1093,7 +1093,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 31.430002212524414
+      Distance: 49.455718994140625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1231,5 +1231,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1884
-  X: 72
-  Y: 27
+  X: 3858
+  Y: 0
