@@ -187,16 +187,16 @@ class TermGoalSender:
             #     self.term_goal.pose.position.z = self.wps[self.wpidx,2]
             #     self.wpidx = (self.wpidx + 1) % len(self.wps)
 
-            if self.mode == 1: 
-                self.term_goal.pose.position.x = self.wps1[self.wpidx1,0]
-                self.term_goal.pose.position.y = self.wps1[self.wpidx1,1]
-                self.term_goal.pose.position.z = self.wps1[self.wpidx1,2]
-                self.wpidx1 = (self.wpidx1 + 1) % len(self.wps1)
-            elif self.mode == 2: 
-                self.term_goal.pose.position.x = self.wps2[self.wpidx2,0]
-                self.term_goal.pose.position.y = self.wps2[self.wpidx2,1]
-                self.term_goal.pose.position.z = self.wps2[self.wpidx2,2]
-                self.wpidx2 = (self.wpidx2 + 1) % len(self.wps2)
+            # if self.mode == 1: 
+            #     self.term_goal.pose.position.x = self.wps1[self.wpidx1,0]
+            #     self.term_goal.pose.position.y = self.wps1[self.wpidx1,1]
+            #     self.term_goal.pose.position.z = self.wps1[self.wpidx1,2]
+            #     self.wpidx1 = (self.wpidx1 + 1) % len(self.wps1)
+            # elif self.mode == 2: 
+            #     self.term_goal.pose.position.x = self.wps2[self.wpidx2,0]
+            #     self.term_goal.pose.position.y = self.wps2[self.wpidx2,1]
+            #     self.term_goal.pose.position.z = self.wps2[self.wpidx2,2]
+            #     self.wpidx2 = (self.wpidx2 + 1) % len(self.wps2)
 
             # set random goals ()
             # if self.mode == 6:
@@ -345,49 +345,49 @@ class TermGoalSender:
             #mode3                                          mode4#
             ######################################################
 
-            # full space exact position exchange
-            # if self.mode == 1:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp6[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp6[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp1[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp1[1]
-            # elif self.mode == 2:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp5[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp5[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp2[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp2[1]
-            # elif self.mode == 3:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp4[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp4[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp3[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp3[1]
-            # elif self.mode == 4:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp3[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp3[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp4[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp4[1]
-            # elif self.mode == 5:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp2[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp2[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp5[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp5[1]
-            # elif self.mode == 6:
-            #     if self.if_arrived:
-            #         self.term_goal.pose.position.x = self.full_exact_wp1[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp1[1]
-            #     else:
-            #         self.term_goal.pose.position.x = self.full_exact_wp6[0]
-            #         self.term_goal.pose.position.y = self.full_exact_wp6[1]
+            full space exact position exchange
+            if self.mode == 1:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
+            elif self.mode == 2:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
+            elif self.mode == 3:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
+            elif self.mode == 4:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp3[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp3[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp4[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp4[1]
+            elif self.mode == 5:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp2[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp2[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp5[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp5[1]
+            elif self.mode == 6:
+                if self.if_arrived:
+                    self.term_goal.pose.position.x = self.full_exact_wp1[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp1[1]
+                else:
+                    self.term_goal.pose.position.x = self.full_exact_wp6[0]
+                    self.term_goal.pose.position.y = self.full_exact_wp6[1]
 
             ######################################################    
             #mode1                                          mode2#
