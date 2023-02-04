@@ -60,7 +60,7 @@ tmux send-keys -t $SESSION:$w.4 "ssh root@nx07.local" C-m
 
 sleep 5
 
-for i in 0 2
+for i in 0 4
 do
 	tmux send-keys -t $SESSION:$w.$i "./nuc_voxl_connection" C-m
 done
@@ -104,10 +104,10 @@ sleep 10
 	
 # fi
 
-for i in 1 5 # RUNNING MESH WITH NETWORK MANAGER NX01, 04, 05, 07, 08
-do
-	tmux send-keys -t $SESSION:$w.$i "cd && ./ad_hoc_without_NM.sh" C-m
-done
+# for i in 1 5 # RUNNING MESH WITH NETWORK MANAGER NX01, 04, 05, 07, 08
+# do
+# 	tmux send-keys -t $SESSION:$w.$i "cd && ./ad_hoc_without_NM.sh" C-m
+# done
 
 sleep 5
 
