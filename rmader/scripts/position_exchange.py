@@ -156,17 +156,17 @@ class TermGoalSender:
 
             # set goals (exact position exchange, this could lead to drones going to exact same locations)
             if self.mode == 1:
-                self.term_goal.pose.position.x = -3.0
-                self.term_goal.pose.position.y = 3.0
+                self.term_goal.pose.position.x = 3.0
+                self.term_goal.pose.position.y = -3.0
             elif self.mode == 2:
-                self.term_goal.pose.position.x = 3.0
-                self.term_goal.pose.position.y = 3.0
-            elif self.mode == 3:
                 self.term_goal.pose.position.x = -3.0
                 self.term_goal.pose.position.y = -3.0
-            elif self.mode == 4:
+            elif self.mode == 3:
                 self.term_goal.pose.position.x = 3.0
-                self.term_goal.pose.position.y = -3.0
+                self.term_goal.pose.position.y = 3.0
+            elif self.mode == 4:
+                self.term_goal.pose.position.x = -3.0
+                self.term_goal.pose.position.y = 3.0
 
 
             # if self.mode == 7: 
