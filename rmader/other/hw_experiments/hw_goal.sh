@@ -35,7 +35,7 @@ done
 sleep 1
 
 # ssh each nuc
-tmux send-keys -t $SESSION:$w.1 "ssh nuc4@192.168.18.2" C-m
+tmux send-keys -t $SESSION:$w.1 "ssh nuc08@192.168.22.2" C-m
 tmux send-keys -t $SESSION:$w.4 "ssh nuc7@192.168.21.2" C-m
 # tmux send-keys -t $SESSION:$w.1 "ssh nuc2@192.168.16.2" C-m
 # tmux send-keys -t $SESSION:$w.0 "ssh nuc1@192.168.15.2" C-m
@@ -48,7 +48,7 @@ sleep 1
 
 # send goals (randomly generated or position exchange)
 if [ "$1" == "pos" ]; then
-	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX04"  
+	tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX08"  
 	tmux send-keys -t $SESSION:$w.4 "roslaunch rmader position_exchange.launch mode:=4 quad:=NX07"  
 	# tmux send-keys -t $SESSION:$w.0 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX01"  
 	# tmux send-keys -t $SESSION:$w.1 "roslaunch rmader position_exchange.launch mode:=1 quad:=NX02"  
