@@ -80,9 +80,9 @@ tuning_param:
   delay_check_sec: 0.05 # seconds
   simulated_comm_delay_sec: 0.05 #seconds
   comm_delay_param: 1.0
-  v_max: [2.0, 2.0, 2.0]   #[m/s]  7.0
-  a_max: [3.0, 3.0, 3.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
-  j_max: [4.0, 4.0, 4.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
+  v_max: [0.5, 0.5, 0.5]   #[m/s]  7.0
+  a_max: [1.0, 1.0, 1.0]   #[m/s2] Note that if a_max.z() > 9.81, the drone may flip
+  j_max: [2.0, 2.0, 2.0]   #[m/s3]  #Right now it's only used for Gurobi, not for NLOPT
 
 basis: "MINVO"  #MINVO OR B_SPLINE or BEZIER.  This is the basis used for collision checking
 alpha_shrink: 0.9 #\in [0,1] Only used for MINVO/Bezier
