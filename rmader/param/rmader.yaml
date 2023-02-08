@@ -40,7 +40,7 @@ camera2: "05"
 is_artificial_comm_delay: false
 
 # replan after reached goal?
-is_replan_after_goal_reached: false
+is_replan_after_goal_reached: true
 
 # for obstacles, we use /trajs without any communicatoin delays, and for agents, we introduce comm delays
 is_obs_sim: false
