@@ -25,6 +25,8 @@ if __name__ == '__main__':
     # cd_list = [0, 50, 100, 200, 300]
     cd_list = [50]
 
+
+
     for cd in cd_list:
         is_oldmader=False
         if cd == 0: 
@@ -44,7 +46,7 @@ if __name__ == '__main__':
 
             # source directory
             if is_oldmader:
-                source_dir = parent_source_dir + "/oldmader/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
+                source_dir = parent_source_dir + "/oldmader_obs/bags/cd"+str(cd)+"ms" # change the source dir accordingly #10 agents
                 # is_oldmader = False
             else:
                 source_dir = parent_source_dir + "/rmader_obs/bags/cd"+str(cd)+"ms/dc"+str_dc+"ms" # change the source dir accordingly #10 agents
@@ -86,11 +88,11 @@ if __name__ == '__main__':
                 print("completion_time", completion_time)
                 completion_time_per_sim_list.append(completion_time)
 
-            os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/completion_time.txt')
+            os.system('echo "'+source_dir+'" >> '+parent_source_dir+'/travel_time.txt')
             try:
-                os.system('echo "ave is '+str(round(statistics.mean(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
-                os.system('echo "max is '+str(round(max(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
-                os.system('echo "min is '+str(round(min(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/completion_time.txt')
+                os.system('echo "ave is '+str(round(statistics.mean(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/travel_time.txt')
+                os.system('echo "max is '+str(round(max(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/travel_time.txt')
+                os.system('echo "min is '+str(round(min(completion_time_per_sim_list),2))+'s" >> '+parent_source_dir+'/travel_time.txt')
             except:
                 pass
-            os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/completion_time.txt')
+            os.system('echo "------------------------------------------------------------" >> '+parent_source_dir+'/travel_time.txt')

@@ -26,9 +26,10 @@ from tf_bag import BagTfTransformer
 if __name__ == '__main__':
 
     # initialization
-    home_dir = "/media/kota/T7/rmader_ral/rmader_obs"
+    home_dir = "/media/kota/T7/rmader_ral/oldmader_obs"
     num_of_agents = 10
-    source_dir = home_dir+"/bags/cd50ms/dc80ms"           
+    # source_dir = home_dir+"/bags/cd50ms/dc80ms"           
+    source_dir = home_dir+"/bags/cd50ms"           
     # source_dir = home_dir+"/bags/cd50ms/dc125ms"           
     source_len = len(source_dir)
     rosbag_list = glob.glob(source_dir+"/*.bag")
@@ -109,5 +110,5 @@ if __name__ == '__main__':
     
     collision_per = collision_cnt
     os.system('echo "'+source_dir+'" >> '+home_dir+'/collision_count.txt')
-    os.system('echo "'+str(collision_cnt)+'/'+str(len(rosbag))+' - '+str(round(collision_per,2))+'%" >> '+home_dir+'/collision_count.txt')
+    os.system('echo "'+str(collision_cnt)+'/100'++' - '+str(round(collision_per,2))+'%" >> '+home_dir+'/collision_count.txt')
     os.system('echo "------------------------------------------------------------" >> '+home_dir+'/collision_count.txt')

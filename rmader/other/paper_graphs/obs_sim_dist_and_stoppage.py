@@ -23,14 +23,15 @@ if __name__ == '__main__':
     # initialization
     num_of_agents = 10
     stop_cnt_tol = 1e-2 # stop count torelance
-    home_dir = "/media/kota/T7/rmader_ral/mader/rmader_obs"
+    home_dir = "/media/kota/T7/rmader_ral/oldmader_obs"
     rmader_ave_dist = []
     rmader_stop_cnt = []
 
     cd_list = [50]
     for cd in cd_list:
         dc = 80 
-        source_dir = f"/media/kota/T7/rmader_ral/mader/rmader_obs/bags/cd{cd}ms/dc{dc}ms/*.bag"
+        # source_dir = f"/media/kota/T7/rmader_ral/mader/rmader_obs/bags/cd{cd}ms/dc{dc}ms/*.bag"
+        source_dir = f"/media/kota/T7/rmader_ral/oldmader_obs/bags/cd{cd}ms/*.bag"
         first_agent_idx = 1
         dt = 0.01 #[s] MADER EGO-Swarm, EDG-Team's state/pos_cmd is published every 10ms
 
