@@ -1,16 +1,15 @@
 # Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay #
 
+#### **Accepted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
+#### **Submitted to IEEE Robotics and Automation Society (RA-L)**  
 
-### **Submitted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
-
-
-|100ms Delay Check (0ms artificial comm delay introduced)|200ms Delay Check (100ms artificial comm delay introduced)          |
+|4 agents with 2 dynamic obstacles|6 agents with 2 dynamic obstacles|
 | ------------------------- | ------------------------- |
-<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc100ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc200ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | 
+<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/4agent2obsOnboardTest5_github.gif" width="400" height="221" alt="Hardware experiment: 4 agent with 2 dynamic obstacles"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/6agent2obs_github.gif" width="400" height="221" alt="Hardware experiment: 6 agent with 2 dynamic obstacles"></a> | 
 
-|400ms Delay Check (300ms artificial comm delay introduced)| Hardware Experiments |
+|10 agents under 300ms comm. delay|10 agents with 10 dynamic obstacles under 50ms comm. delay |
 | ------------------------- | ------------------------- |
-|<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/sim_dc400ms.gif" width="470" height="260" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/hw.gif" width="470" height="260" style="margin:20px 20px" alt="Robust MADER: Decentralized and Asynchronous Multiagent Traj. Planner Robust to Communication Delay"></a>|  
+|<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/rmader_cd300_sim_github.gif" width="400" height="221" alt="Simulation: 10 agents under 300ms comm. delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/rmader_obs_sim_github.gif" width="400" height="221" style="margin:20px 20px" alt="Simulation: 10 agents with 10 dynamic obstacles under 50ms comm. delay"></a>|  
 
 ## Citation
 
