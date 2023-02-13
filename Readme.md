@@ -5,7 +5,7 @@
 
 |4 agents with 2 dynamic obstacles|6 agents with 2 dynamic obstacles|
 | ------------------------- | ------------------------- |
-<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/4agent2obsOnboardTest5_github.gif" width="400" height="221" alt="Hardware experiment: 4 agent with 2 dynamic obstacles"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/6agent2obs_github.gif" width="400" height="221" alt="Hardware experiment: 6 agent with 2 dynamic obstacles"></a> | 
+<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/4agent2obs_v2.gif" width="400" height="221" alt="Hardware experiment: 4 agent with 2 dynamic obstacles"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/6agent2obs_v2.gif" width="400" height="221" alt="Hardware experiment: 6 agent with 2 dynamic obstacles"></a> | 
 
 |10 agents under 300ms comm. delay|10 agents with 10 dynamic obstacles under 50ms comm. delay |
 | ------------------------- | ------------------------- |
