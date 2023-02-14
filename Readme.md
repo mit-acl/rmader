@@ -1,7 +1,7 @@
 # Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay #
 
 #### **Accepted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
-#### **Submitted to IEEE Robotics and Automation Society (RA-L)**  
+#### **Submitted to IEEE Robotics and Automation Letters (RA-L)**  
 
 |4 agents with 2 dynamic obstacles|6 agents with 2 dynamic obstacles|
 | ------------------------- | ------------------------- |
