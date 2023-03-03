@@ -42,8 +42,8 @@ do
 done
 
 # wait for .bashrc to load
-sleep 1
-
+# sleep 1
+#
 # send commands to each pane
 # ssh each voxl 
 tmux send-keys -t $SESSION:$w.0 "ssh root@nx08.local" C-m
@@ -58,14 +58,14 @@ tmux send-keys -t $SESSION:$w.4 "ssh root@nx09.local" C-m
 # tmux send-keys -t $SESSION:$w.10 "ssh root@nx09.local" C-m
 
 
-sleep 5
+# sleep 5
 
 for i in 0 4
 do
 	tmux send-keys -t $SESSION:$w.$i "./nuc_voxl_connection" C-m
 done
 
-sleep 3
+# sleep 3
 
 # ssh each nuc
 tmux send-keys -t $SESSION:$w.1 "ssh nuc08@192.168.22.2" C-m
@@ -92,7 +92,7 @@ tmux send-keys -t $SESSION:$w.5 "sudo ntpdate time.nist.gov" C-m
 # tmux send-keys -t $SESSION:$w.9 "sudo ntpdate time.nist.gov" C-m
 # tmux send-keys -t $SESSION:$w.11 "sudo ntpdate time.nist.gov" C-m
 
-sleep 10
+# sleep 10
 
 # if [[ $ifDELETE == 'true' ]]; then 
 # 	# tmux send-keys -t $SESSION:$w.1 "cd /home/nuc1/Research/bags && rm *.txt && cd" C-m
