@@ -13,7 +13,18 @@
 
 ## Citation
 
-Please cite [Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay](https://arxiv.org/abs/2209.13667) ([pdf](https://arxiv.org/abs/2209.13667), [video](https://youtu.be/vH09kwJOBYs)):
+[(RA-L preprint) Robust MADER: Decentralized Multiagent Trajectory Planner Robust to Communication Delay in Dynamic Environments](https://arxiv.org/abs/2303.06222) ([pdf](https://arxiv.org/abs/2303.06222), [video](https://youtu.be/i1d8di2Nrbs)):
+
+```bibtex
+@article{kondo2023robust,
+  title={Robust MADER: Decentralized Multiagent Trajectory Planner Robust to Communication Delay in Dynamic Environments},
+  author={Kondo, Kota and Figueroa, Reinaldo and Rached, Juan and Tordesillas, Jesus and Lusk, Parker C and How, Jonathan P},
+  journal={arXiv preprint arXiv:2303.06222},
+  year={2022}
+}
+```
+
+[(ICRA Paper) Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay](https://arxiv.org/abs/2209.13667) ([pdf](https://arxiv.org/abs/2209.13667), [video](https://youtu.be/vH09kwJOBYs)):
 
 ```bibtex
 @article{kondo2022robust,
