@@ -20,7 +20,7 @@
   title={Robust MADER: Decentralized Multiagent Trajectory Planner Robust to Communication Delay in Dynamic Environments},
   author={Kondo, Kota and Figueroa, Reinaldo and Rached, Juan and Tordesillas, Jesus and Lusk, Parker C and How, Jonathan P},
   journal={arXiv preprint arXiv:2303.06222},
-  year={2022}
+  year={2023}
 }
 ```
 
