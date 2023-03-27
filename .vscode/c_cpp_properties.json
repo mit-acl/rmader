@@ -1,0 +1,30 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/swarm/code/rmader_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/swarm/code/rmader_ws/src/rmader/thirdparty/DecompROS/decomp_ros_utils/include/**",
+        "/home/swarm/code/rmader_ws/src/rmader/thirdparty/DecompROS/DecompUtil/include/**",
+        "/home/swarm/code/rmader_ws/src/mocap/include/**",
+        "/home/swarm/code/rmader_ws/src/optitrack/include/**",
+        "/home/swarm/code/rmader_ws/src/OptiTrack-Motive-2-Client/include/**",
+        "/home/swarm/code/rmader_ws/src/outer_loop/include/**",
+        "/home/swarm/code/rmader_ws/src/rmader/rmader/include/**",
+        "/home/swarm/code/rmader_ws/src/rmader/submodules/separator/include/**",
+        "/home/swarm/code/rmader_ws/src/snap_sim/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
