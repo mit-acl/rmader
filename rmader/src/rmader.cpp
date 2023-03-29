@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
 /* ----------------------------------------------------------------------------
  * Copyright 2022, Kota Kondo, Aerospace Controls Laboratory
  * Massachusetts Institute of Technology
@@ -351,7 +353,7 @@ void Rmader::updateTrajObstacles(mt::dynTraj traj)
 }
 
 std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, double t_start, double t_end,
-                                                        const Eigen::Vector3d& delta)
+                                                        const Eigen::Vector3d& delta) const
 {
   std::vector<Eigen::Vector3d> points;
 
@@ -422,7 +424,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 }
 
 // return a vector that contains all the vertexes of the polyhedral approx of an interval.
-std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end)
+std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end) const
 {
   Eigen::Vector3d delta = Eigen::Vector3d::Zero();
   Eigen::Vector3d drone_boundarybox = par_.drone_bbox;
@@ -914,7 +916,7 @@ std::vector<mt::dynTrajCompiled> Rmader::getTrajs()
 
 // check wheter a mt::dynTrajCompiled and a pwp_optimized are in collision in the interval [t_start, t_end]
 bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized,
-                                                      double t_start, double t_end, bool& is_q0_fail)
+                                                      double t_start, double t_end, bool& is_q0_fail) const
 {
   Eigen::Vector3d n_i;
   double d_i;
@@ -962,7 +964,7 @@ bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, 
 }
 
 bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized, double t_start,
-                                       double t_end)
+                                       double t_end) const
 {
   Eigen::Vector3d n_i;
   double d_i;
@@ -1001,7 +1003,7 @@ bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePo
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
 // Check period and Recheck period is defined here
-bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
+bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail) const
 {
   bool result = true;
   for (auto& traj : trajs_)
@@ -1022,7 +1024,7 @@ bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& 
 }
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
-bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized)
+bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized) const
 {
   started_check_ = true;
 
@@ -2449,3 +2451,4 @@ void Rmader::getID(int& id)
 {
   id_ = id;
 }
+#pragma clang diagnostic pop
