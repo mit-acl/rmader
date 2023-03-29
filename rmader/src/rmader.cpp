@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "Simplify"
 /* ----------------------------------------------------------------------------
  * Copyright 2022, Kota Kondo, Aerospace Controls Laboratory
  * Massachusetts Institute of Technology
@@ -31,7 +29,7 @@ using namespace termcolor;
 // typedef ROSWallTimer MyTimer;
 typedef RMADER_timers::Timer MyTimer;
 
-Rmader::Rmader(mt::parameters par) : par_(par)
+Rmader::Rmader(mt::parameters const& par) : par_(par)
 {
   // drone_status_ == DroneStatus::YAWING;
   drone_status_ == DroneStatus::TRAVELING;
@@ -135,7 +133,7 @@ Rmader::Rmader(mt::parameters par) : par_(par)
 void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompiled& traj_compiled)
 {
   mtx_t_.lock();
-  for (auto function_i : traj.function)
+  for (auto const& function_i : traj.function)
   {
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double> expression_t;
@@ -174,7 +172,7 @@ void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompile
 }
 // Note that we need to compile the trajectories inside mader.cpp because t_ is in mader.hpp
 
-void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
+void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj const& traj)
 {
   // std::cout << "in updateTrajObstacles" << std::endl;
 
@@ -216,7 +214,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
 
   std::vector<mt::dynTrajCompiled> local_trajs;
 
-  for (auto traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     mtx_t_.lock();
     t_ = ros::Time::now().toSec();
@@ -273,7 +271,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
   // std::cout << "aft mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
 }
 
-void Rmader::updateTrajObstacles(mt::dynTraj traj)
+void Rmader::updateTrajObstacles(mt::dynTraj const& traj)
 {
   MyTimer tmp_t(true);
 
@@ -307,7 +305,7 @@ void Rmader::updateTrajObstacles(mt::dynTraj traj)
   // Note that these positions are obtained with the trajectory stored in the past in the local map
   std::vector<mt::dynTrajCompiled> local_trajs;
 
-  for (auto traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     mtx_t_.lock();
     t_ = ros::Time::now().toSec();
@@ -667,7 +665,7 @@ void Rmader::removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, 
     }*/
 }
 
-bool Rmader::IsTranslating()
+bool Rmader::IsTranslating() const
 {
   return (drone_status_ == DroneStatus::GOAL_SEEN || drone_status_ == DroneStatus::TRAVELING);
 }
@@ -1029,7 +1027,7 @@ bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized) const
   started_check_ = true;
 
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1060,7 +1058,7 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
   bool is_q0_fail = false;
   mtx_trajs_.lock();  // this function is called in mader_ros.cpp so need to lock in the function
   bool result = true;
-  for (auto& traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     if (traj_compiled.is_agent == true)
     {
@@ -1150,7 +1148,7 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
 bool Rmader::safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev)
 {
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1173,7 +1171,7 @@ bool Rmader::safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev)
 bool Rmader::safetyCheck_for_A_star_failure_pwp_now(mt::PieceWisePol pwp_now)
 {
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1241,7 +1239,7 @@ bool Rmader::isReplanningNeeded()
   return true;
 }
 
-bool Rmader::isGoalSeen()
+bool Rmader::isGoalSeen() const
 {
   if (drone_status_ == DroneStatus::GOAL_SEEN)
   {
@@ -1253,7 +1251,7 @@ bool Rmader::isGoalSeen()
   }
 }
 
-bool Rmader::isGoalReached()
+bool Rmader::isGoalReached() const
 {
   if (drone_status_ == DroneStatus::GOAL_REACHED)
   {
@@ -2451,4 +2449,3 @@ void Rmader::getID(int& id)
 {
   id_ = id;
 }
-#pragma clang diagnostic pop

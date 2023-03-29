@@ -45,7 +45,7 @@ using namespace termcolor;
 class Rmader
 {
 public:
-  Rmader(mt::parameters par);
+  Rmader(mt::parameters const& par);
   bool replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_safe_out, std::vector<Hyperplane3D>& planes,
               int& num_of_LPs_run, int& num_of_QCQPs_run, mt::PieceWisePol& pwp_out);
   bool replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<mt::state>& headsup_plan,
@@ -64,17 +64,17 @@ public:
   void setTerminalGoal(mt::state& term_goal);
   void resetInitialization();
 
-  bool IsTranslating();
-  void updateTrajObstacles_with_delaycheck(mt::dynTraj traj);
-  void updateTrajObstacles(mt::dynTraj traj);
+  bool IsTranslating() const;
+  void updateTrajObstacles_with_delaycheck(mt::dynTraj const& traj);
+  void updateTrajObstacles(mt::dynTraj const& traj);
 
   Eigen::Vector2d RotationMatrix(Eigen::Vector2d& vec, const double& angle);
   void getID(int& id);
   mt::state moveAoutOfBbox(const mt::state& A);
   int getMissedMsgsCnt();
   mt::state getGterm();
-  bool isGoalSeen();
-  bool isGoalReached();
+  bool isGoalSeen() const;
+  bool isGoalReached() const;
   bool initializedAllExceptPlanner();
 
   std::vector<mt::dynTrajCompiled> getTrajs();
