@@ -393,7 +393,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 
       if (delta.norm() < 1e-6)
       {  // no inflation
-        points.push_back(Eigen::Vector3d(x, y, z));
+        points.emplace_back(x, y, z);
       }
       else
       {
@@ -401,18 +401,18 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 
         if (j == V.cols() - 1)
         {
-          points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z + delta.z()));
+          points.emplace_back(x + delta.x(), y + delta.y(), z + delta.z());
+          points.emplace_back(x + delta.x(), y - delta.y(), z - delta.z());
+          points.emplace_back(x + delta.x(), y + delta.y(), z - delta.z());
+          points.emplace_back(x + delta.x(), y - delta.y(), z + delta.z());
+          points.emplace_back(x - delta.x(), y - delta.y(), z - delta.z());
+          points.emplace_back(x - delta.x(), y + delta.y(), z + delta.z());
+          points.emplace_back(x - delta.x(), y + delta.y(), z - delta.z());
+          points.emplace_back(x - delta.x(), y - delta.y(), z + delta.z());
         }
         else
         {
-          points.push_back(Eigen::Vector3d(x, y, z));
+          points.emplace_back(x, y, z);
         }
       }
     }
@@ -457,14 +457,14 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& tra
       mtx_t_.unlock();
 
       //"Minkowski sum along the trajectory: box centered on the trajectory"
-      points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z + delta.z()));
+      points.emplace_back(x + delta.x(), y + delta.y(), z + delta.z());
+      points.emplace_back(x + delta.x(), y - delta.y(), z - delta.z());
+      points.emplace_back(x + delta.x(), y + delta.y(), z - delta.z());
+      points.emplace_back(x + delta.x(), y - delta.y(), z + delta.z());
+      points.emplace_back(x - delta.x(), y - delta.y(), z - delta.z());
+      points.emplace_back(x - delta.x(), y + delta.y(), z + delta.z());
+      points.emplace_back(x - delta.x(), y + delta.y(), z - delta.z());
+      points.emplace_back(x - delta.x(), y - delta.y(), z + delta.z());
     }
 
     return points;
@@ -560,7 +560,7 @@ CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled& traj, double
   std::vector<Point_3> points_cgal;
   for (auto point_i : points)
   {
-    points_cgal.push_back(Point_3(point_i.x(), point_i.y(), point_i.z()));
+    points_cgal.emplace_back(point_i.x(), point_i.y(), point_i.z());
   }
 
   // std::cout << "1.1.6" << std::endl;
@@ -576,14 +576,14 @@ void Rmader::removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, 
   std::vector<Eigen::Vector3d> pointsB;
   Eigen::Vector3d delta = par_.Ra * Eigen::Vector3d::Ones();
 
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z()));
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z());
 
   std::vector<mt::dynTrajCompiled> local_trajs;
 
