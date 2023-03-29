@@ -350,13 +350,13 @@ void Rmader::updateTrajObstacles(mt::dynTraj const& traj)
   // std::cout << bold << blue << "updateTrajObstacles took " << tmp_t << reset << std::endl;
 }
 
-std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, double t_start, double t_end,
+std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol const& pwp, double t_start, double t_end,
                                                         const Eigen::Vector3d& delta) const
 {
   std::vector<Eigen::Vector3d> points;
 
-  std::vector<double>::iterator low = std::lower_bound(pwp.times.begin(), pwp.times.end(), t_start);
-  std::vector<double>::iterator up = std::upper_bound(pwp.times.begin(), pwp.times.end(), t_end);
+  auto const low = std::lower_bound(pwp.times.begin(), pwp.times.end(), t_start);
+  auto const up = std::upper_bound(pwp.times.begin(), pwp.times.end(), t_end);
 
   // // Example: times=[1 2 3 4 5 6 7]
   // // t_start=1.5;
@@ -422,7 +422,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 }
 
 // return a vector that contains all the vertexes of the polyhedral approx of an interval.
-std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end) const
+std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end) const
 {
   Eigen::Vector3d delta = Eigen::Vector3d::Zero();
   Eigen::Vector3d drone_boundarybox = par_.drone_bbox;
@@ -430,6 +430,8 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& tra
   if (traj.is_agent == false)
   {
     std::vector<Eigen::Vector3d> points;
+    long const estimated_size = (t_end - t_start) / par_.gamma;
+    if (estimated_size > 0) points.reserve(8u * (1 + static_cast<size_t>(estimated_size)));
     // delta = traj.bbox / 2.0 + (par_.drone_radius + par_.beta + par_.alpha) *
     //                            Eigen::Vector3d::Ones();  // every side of the box will be increased by 2*delta
     //(+delta on one end, -delta on the other)
@@ -549,7 +551,7 @@ void Rmader::changeBBox(Eigen::Vector3d& drone_boundarybox)
 }
 
 // See https://doc.cgal.org/Manual/3.7/examples/Convex_hull_3/quickhull_3.cpp
-CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end)
+CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end)
 {
   // std::cout << "1.1.4" << std::endl;
 
@@ -670,9 +672,10 @@ bool Rmader::IsTranslating() const
   return (drone_status_ == DroneStatus::GOAL_SEEN || drone_status_ == DroneStatus::TRAVELING);
 }
 
-ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled& traj, double t_start, double t_end)
+ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled const& traj, double t_start, double t_end)
 {
   ConvexHullsOfCurve convexHulls;
+  convexHulls.reserve(par_.num_pol);
   double deltaT = (t_end - t_start) / (1.0 * par_.num_pol);  // num_pol is the number of intervals
 
   // std::cout << "1.1.3" << std::endl;
@@ -688,10 +691,11 @@ ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled& traj, double 
 ConvexHullsOfCurves Rmader::convexHullsOfCurves(double t_start, double t_end)
 {
   ConvexHullsOfCurves result;
+  result.reserve(trajs_.size());
 
   // std::cout << "1.1.2" << std::endl;
 
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     result.push_back(convexHullsOfCurve(traj, t_start, t_end));
   }

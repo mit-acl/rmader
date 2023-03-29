@@ -109,12 +109,12 @@ private:
   /*  vec_E<Polyhedron<3>> cu::vectorGCALPol2vectorJPSPol(ConvexHullsOfCurves& convex_hulls_of_curves);
     mt::ConvexHullsOfCurves_Std cu::vectorGCALPol2vectorStdEigen(ConvexHullsOfCurves& convexHulls);*/
   ConvexHullsOfCurves convexHullsOfCurves(double t_start, double t_end);
-  ConvexHullsOfCurve convexHullsOfCurve(mt::dynTrajCompiled& traj, double t_start, double t_end);
-  CGAL_Polyhedron_3 convexHullOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end);
+  ConvexHullsOfCurve convexHullsOfCurve(mt::dynTrajCompiled const& traj, double t_start, double t_end);
+  CGAL_Polyhedron_3 convexHullOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end);
 
-  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::PieceWisePol& pwp, double t_start, double t_end,
+  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::PieceWisePol const& pwp, double t_start, double t_end,
                                                   const Eigen::Vector3d& delta_inflation) const;
-  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end) const;
+  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end) const;
   void yaw(double diff, mt::state& next_goal);
 
   void changeBBox(Eigen::Vector3d& drone_boundarybox);
