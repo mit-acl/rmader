@@ -23,6 +23,7 @@
 #endif
 
 using namespace termcolor;
+using mtx_guard = std::lock_guard<std::mutex>;
 
 // Uncomment the type of timer you want:
 // typedef ROSTimer MyTimer;getNextGoal
@@ -132,7 +133,7 @@ Rmader::Rmader(mt::parameters const& par) : par_(par)
 
 void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompiled& traj_compiled)
 {
-  mtx_t_.lock();
+  mtx_guard guard(mtx_t_);
   for (auto const& function_i : traj.function)
   {
     typedef exprtk::symbol_table<double> symbol_table_t;
@@ -150,8 +151,6 @@ void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompile
 
     traj_compiled.function.push_back(expression);
   }
-
-  mtx_t_.unlock();
 
   traj_compiled.bbox = traj.bbox;
   traj_compiled.id = traj.id;
@@ -216,14 +215,12 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj const& traj)
 
   for (auto const& traj_compiled : trajs_)
   {
-    mtx_t_.lock();
-    t_ = ros::Time::now().toSec();
-
-    Eigen::Vector3d center_obs;
-    center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
-        traj_compiled.function[2].value();
-
-    mtx_t_.unlock();
+    auto const& center_obs = evaluateAt(ros::Time::now().toSec(), [&](){
+        Eigen::Vector3d center_obs;
+        center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
+                traj_compiled.function[2].value();
+        return center_obs;
+    });
 
     if (((traj_compiled.is_static == true) && (center_obs - state_.pos).norm() > 2 * par_.Ra) ||  ////
         ((traj_compiled.is_static == false) && (center_obs - state_.pos).norm() > 4 * par_.Ra))
@@ -307,14 +304,12 @@ void Rmader::updateTrajObstacles(mt::dynTraj const& traj)
 
   for (auto const& traj_compiled : trajs_)
   {
-    mtx_t_.lock();
-    t_ = ros::Time::now().toSec();
-
-    Eigen::Vector3d center_obs;
-    center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
-        traj_compiled.function[2].value();
-
-    mtx_t_.unlock();
+    auto const& center_obs = evaluateAt(ros::Time::now().toSec(), [&](){
+        Eigen::Vector3d center_obs;
+        center_obs << traj_compiled.function[0].value(), traj_compiled.function[1].value(),
+                traj_compiled.function[2].value();
+        return center_obs;
+    });
 
     if (((traj_compiled.is_static == true) && (center_obs - state_.pos).norm() > 2 * par_.Ra) ||  ////
         ((traj_compiled.is_static == false) && (center_obs - state_.pos).norm() > 4 * par_.Ra))
@@ -431,7 +426,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled cons
   {
     std::vector<Eigen::Vector3d> points;
     long const estimated_size = (t_end - t_start) / par_.gamma;
-    if (estimated_size > 0) points.reserve(8u * (1 + static_cast<size_t>(estimated_size)));
+    if (estimated_size > 0 && estimated_size < 1000000000) points.reserve(8u * (1 + static_cast<size_t>(estimated_size)));
     // delta = traj.bbox / 2.0 + (par_.drone_radius + par_.beta + par_.alpha) *
     //                            Eigen::Vector3d::Ones();  // every side of the box will be increased by 2*delta
     //(+delta on one end, -delta on the other)
@@ -450,13 +445,11 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled cons
          ((t > t_end) && ((t - t_end) < par_.gamma));  /////// This is to ensure we have a sample a the end
          t = t + par_.gamma)
     {
-      mtx_t_.lock();
-      t_ = std::min(t, t_end);  // this min only has effect on the last sample
-
-      double x = traj.function[0].value();
-      double y = traj.function[1].value();
-      double z = traj.function[2].value();
-      mtx_t_.unlock();
+      auto const& [x, y, z] = evaluateAt(std::min(t, t_end), [&](){
+          return std::make_tuple(traj.function[0].value(),
+                                 traj.function[1].value(),
+                                 traj.function[2].value());
+      });
 
       //"Minkowski sum along the trajectory: box centered on the trajectory"
       points.emplace_back(x + delta.x(), y + delta.y(), z + delta.z());
@@ -596,23 +589,22 @@ void Rmader::removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, 
     // STATIC OBSTACLES/AGENTS
     if (traj.is_static == true)
     {
-      mtx_t_.lock();
-      t_ = t_start;  // which is constant along the trajectory
+      auto const& [center_obs, positive_half_diagonal] = evaluateAt(t_start, [&](){
+          Eigen::Vector3d center_obs;
+          // TODO: should mtx_t_ be locked here? And what is t_ set to?
+          if (traj.is_agent == false)
+          {
+              center_obs << traj.function[0].value(), traj.function[1].value(), traj.function[2].value();
+          }
+          else
+          {
+              center_obs = traj.pwp.eval(t_);
+          }
 
-      Eigen::Vector3d center_obs;
-      if (traj.is_agent == false)
-      {
-        center_obs << traj.function[0].value(), traj.function[1].value(), traj.function[2].value();
-      }
-      else
-      {
-        center_obs = traj.pwp.eval(t_);
-      }
-
-      mtx_t_.unlock();
-      // mtx_t_.unlock();
-      Eigen::Vector3d positive_half_diagonal;
-      positive_half_diagonal << traj.bbox[0] / 2.0, traj.bbox[1] / 2.0, traj.bbox[2] / 2.0;
+          Eigen::Vector3d positive_half_diagonal;
+          positive_half_diagonal << traj.bbox[0] / 2.0, traj.bbox[1] / 2.0, traj.bbox[2] / 2.0;
+          return std::make_tuple(center_obs, positive_half_diagonal);
+      });
 
       Eigen::Vector3d c1 = center_obs - positive_half_diagonal;
       Eigen::Vector3d c2 = center_obs + positive_half_diagonal;

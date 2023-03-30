@@ -132,6 +132,13 @@ private:
 
   void printDroneStatus();
 
+  template<typename F>
+  auto evaluateAt(double const time, F&& f) const {
+      std::lock_guard<std::mutex> guard(mtx_t_);
+      t_ = time;
+      return std::forward<F>(f)();
+  }
+
   mt::parameters par_;
 
   mutable double t_;  // variable where the expressions of the trajs of the dyn obs are evaluated
