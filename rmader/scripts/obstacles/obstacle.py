@@ -69,7 +69,7 @@ class Obstacle_Planner:
         self.pubGoalTimer=rospy.Timer(rospy.Duration(0.01), self.pubCB)
         self.pubGoalTimer.shutdown()
 
-        self.is_centralized = False
+        self.is_centralized = True
         if self.is_centralized:
             self.pubTraj = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
         else:
