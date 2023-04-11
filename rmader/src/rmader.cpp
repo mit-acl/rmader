@@ -1217,7 +1217,7 @@ bool Rmader::isReplanningNeeded()
   }
 
   // Check if we have seen the goal in the last replan
-  double dist_last_plan_to_goal = (G_term.pos - plan_.back().pos).norm();
+  double dist_last_plan_to_goal = (G_term.pos - plan_.front().pos).norm();
   // std::cout << "dist_last_plan_to_goal= " << dist_last_plan_to_goal << std::endl;
   mtx_plan_.unlock();
 

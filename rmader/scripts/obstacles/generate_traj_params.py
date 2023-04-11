@@ -28,7 +28,7 @@ all_drones=[     #"name",     "bbox",           "slower", "offset", "lim_x",    
             Drone("obstacle2", [1.0, 0.8, 3.0], 5.5,       0.0,     [9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
             ]
 
-all_drones.append(Drone("obstacle1", [1.5, 1.5, 1.0],  8.5,   0.0,   [-1.0, 1.0], [-1.0, 1.0],   [zmin,zmax]))
+all_drones.append(Drone("obstacle1", [0.8, 0.8, 1.0],  8.5,   0.0,   [-1.0, 1.0], [-1.0, 1.0],   [zmin,zmax]))
 
 tmp = rospkg.RosPack()
 pwd_package=tmp.get_path('rmader')

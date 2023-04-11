@@ -75,7 +75,7 @@ setting:
 
 tuning_param:
   drone_bbox: [0.9, 0.9, 0.8] #(m) Used for collision checking replacing drone_radius. The bounding box dimension [x y z]
-  Ra: 15.0           # [m] Radius of my planning sphere (planning horizon). Should be < fov_depth
+  Ra: 20.0           # [m] Radius of my planning sphere (planning horizon). Should be < fov_depth
   delay_check_sec: 0.05 # seconds
   simulated_comm_delay_sec: 0.05 #seconds
   comm_delay_param: 1.0
