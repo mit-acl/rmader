@@ -7,7 +7,7 @@
 ifDELETE=$1
 
 # session name
-SESSION=rmader
+SESSION=rmader_fly
 WINDOW=base_station
 
 # creates the session with a name and renames the window name
