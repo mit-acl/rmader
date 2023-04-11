@@ -6,13 +6,17 @@ import sys
 
 # Read the video from specified path
 path = "/home/kota/Dropbox (MIT)/Research/MIT/RMADER/rmader_ral_videos"
-video = "6agent_mesh"; start_time = 23; end_time = 30 
-# video = "2agent1obs"; start_time = 56; end_time = 61 #70 - 75s
+# video = "6agent_mesh"; start_time = 23; end_time = 30 
+video = "2agent1obs_test1"; start_time = 48; end_time = 51 #70 - 75s
 # video = "4agent2obsGPR"; start_time = 47; end_time = 54 #47 - 54s
 ss_path = f"/home/kota/Research/rmader_ws/src/rmader/rmader/other/paper_graphs/screenshots/{video}"
 if not os.path.exists(ss_path):
     os.mkdir(ss_path)
-cam = cv2.VideoCapture(path+f"/{video}.MP4") 
+# try:
+#     cam = cv2.VideoCapture(path+f"/{video}.MP4")
+# except:
+cam = cv2.VideoCapture(path+f"/{video}.mp4")
+
 
 try:
     # creating a folder named data

@@ -32,10 +32,10 @@ if __name__ == '__main__':
     # for test_num in tests_num:
     #     tests.append(f"test{test_num}")
 
-    # tests.append("2agent1obs/test1") 
+    tests.append("2agent1obs/test1") 
     # tests.append("2agent1obs/test2") 
     # tests.append("4agent2obs/test4")
-    tests.append("4agent2obs/test5")
+    # tests.append("4agent2obs/test5")
     # tests.append("4agent2obs/test7")
     # tests.append("6agent2obs/test10")
     # tests.append("6agent2obs/test11") 

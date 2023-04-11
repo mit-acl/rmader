@@ -30,14 +30,17 @@ if __name__ == '__main__':
     home_dir = "/media/kota/T7/rmader_ral/hw/"
     # rmader_obs (mesh)
     tests = []
-    tests = ["rmader_obs/2agent1obs/test1", "rmader_obs/2agent1obs/test2", "rmader_obs/4agent2obs/test4", \
+    tests = ["rmader_obs/2agent1obs/test1", "rmader_obs/4agent2obs/test4", \
                     "rmader_obs/4agent2obs/test7", "rmader_obs/6agent2obs/test3", "rmader_obs/6agent2obs/test10", \
                     "rmader_obs/6agent2obs/test11"]
     # rmader_mesh
+    # /media/kota/T7/rmader_ral/hw/rmader_mesh/test6/NX04_2022-10-17-21-02-15.bag has a couple of crazy big comm delay in the beginning. Need to filter it.
     rmader_decentr_tests = [2, 3, 4, 5, 6]
     for rmader_decentr_test in rmader_decentr_tests:
         tests.append("rmader_mesh/test"+str(rmader_decentr_test))
     # mader_centr
+    # /media/kota/T7/rmader_ral/hw/mader_centr/test6/bags/NX01_2022-08-12-16-59-40.bag has 17sec comm delay during flight
+    # /media/kota/T7/rmader_ral/hw/mader_centr/test6/bags/NX07_2022-08-12-16-59-52.bag has 26sec comm delay during    
     mader_centr_tests = [4, 2, 6, 7, 8]
     for mader_centr_test in mader_centr_tests:
         tests.append("mader_centr/test"+str(mader_centr_test)+"/bags")
@@ -103,7 +106,11 @@ if __name__ == '__main__':
             if test.startswith('rmader_obs'):
                 for logcd, logid in zip(log.comm_delay, log.id):
                     if str(logid) in agents:
-                        cdlists[agents.index(str(logid))].append(logcd)
+                        if logcd > 30:
+                            print(logcd)
+                            print("logcd is greater than 30 sec")
+                        else:
+                            cdlists[agents.index(str(logid))].append(logcd)
 
                 # get offset
                 for ag, cdlist in zip(agents, cdlists):
@@ -117,11 +124,20 @@ if __name__ == '__main__':
                     cd_mesh.extend(list(map(lambda x : x - offsets[ag], cdlist)))
 
             elif test.startswith('rmader_mesh'):
-                print(log.comm_delay)
-                cd_mesh.extend(list(log.comm_delay))
+                for logcd in log.comm_delay:
+                        if logcd > 30:
+                            print(logcd)
+                            print("logcd is greater than 30 sec")
+                        else:
+                            cd_mesh.append(logcd)
             else:
                 try:
-                    cd_centr.extend(list(log.comm_delay))
+                    for logcd in log.comm_delay:
+                        if logcd > 30:
+                            print(logcd)
+                            print("logcd is greater than 30 sec")
+                        else:
+                            cd_centr.append(logcd)
                 except:
                     # rmader_centr/test2/NX05 doesn't have comm_delay
                     pass
@@ -139,16 +155,26 @@ if __name__ == '__main__':
     textstr_rmader.append('RMADER Percentile')
     # q-th percentile
     print('CD WiFi')
-    for q in range(0,105,5):
+    for q in range(0,101,1):
         # in case you wanna calculate the value of q-th percentile
-        print(str(q) + "-th percentile value is " + str(numpy.percentile(cd_centr, q)))
+        print_string = str(q) + "-th percentile value is " + str(numpy.percentile(cd_centr, q))
+        print(print_string)
+        os.system('echo "'+print_string+'" >> '+home_dir+'/comm_delay_hist.txt')
+
         # if (q==25 or q==50 or q==75 or q==95):
         #     textstr_rmader.append(str(q)+'th: '+str(round(numpy.percentile(cd_all, q),2)*100)+'ms')
 
     print('CD MESH')
-    for q in range(0,105,5):
+    for q in range(0,101,1):
         # in case you wanna calculate the value of q-th percentile
-        print(str(q) + "-th percentile value is " + str(numpy.percentile(cd_mesh, q)))
+        print_string = str(q) + "-th percentile value is " + str(numpy.percentile(cd_mesh, q))
+        print(print_string)
+        os.system('echo "'+print_string+'" >> '+home_dir+'/comm_delay_hist.txt')
+
+    cd_all = np.concatenate((np.array(cd_centr), np.array(cd_mesh)), axis=None)
+    print(f"average in center: {np.mean(cd_centr)}")
+    print(f"average in mesh: {np.mean(cd_mesh)}")
+    print(f"average in all: {np.mean(cd_all)}")
 
     handles = [mpl_patches.Rectangle((0, 0), 1, 1, fc="white", ec="white", lw=0, alpha=0)] * 5
 

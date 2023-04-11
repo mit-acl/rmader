@@ -24,8 +24,8 @@ if __name__ == '__main__':
     num_of_agents = 10
     stop_cnt_tol = 1e-2 # stop count torelance
     home_dir = "/media/kota/T7/rmader_ral"
-    # methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
-    methods = ["wo_check_rmader"]
+    methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+    # methods = ["wo_check_rmader"]
     oldmader_ave_dist = []
     oldmader_stop_cnt = []
     rmader_ave_dist = []
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     edg_team_stop_cnt = []
 
     for method in methods: 
-        cd_list = [200, 300]
+        cd_list = [0, 50, 100, 200, 300]
         for cd in cd_list:
             if cd == 0:
                 dc = 75 
@@ -183,10 +183,10 @@ if __name__ == '__main__':
 
     # number of stops
     fig, ax = plt.subplots()
-    ax.plot(x, oldmader_stop_cnt, color='b', linewidth=1.5, marker = 'o', label='MADER')
-    ax.plot(x, rmader_stop_cnt, color='r', linewidth=1.5, marker = 'o', label='RMADER')
-    ax.plot(x, wo_check_rmader_stop_cnt, color='purple', linewidth=1.5, marker = 'o', label='RMADER w/o check')
-    ax.plot(x, ego_swarm_stop_cnt, color='g', linewidth=1.5, marker = 'o', label='EGO-Swarm')
+    ax.plot(x, rmader_stop_cnt, color='r', linewidth=1.5, marker = 'o', ls='dashdot', label='RMADER')
+    ax.plot(x, wo_check_rmader_stop_cnt, color='purple', linewidth=1.5, marker = 'o', ls='dotted', label='RMADER w/o check')
+    ax.plot(x, oldmader_stop_cnt, color='b', linewidth=1.5, marker = 'o', ls='-.', label='MADER')
+    ax.plot(x, ego_swarm_stop_cnt, color='g', linewidth=1.5, marker = 'o', ls=':', label='EGO-Swarm')
     ax.plot(x, edg_team_stop_cnt, color='orange', linewidth=1.5, marker = 'o', label='EDG-Team')
     ax.set_xticks(np.arange(0,300+50,50))
     ax.set_xticklabels(np.arange(0,300+50,50), fontproperties=font)
@@ -205,10 +205,10 @@ if __name__ == '__main__':
 
     # total travel distance
     fig, ax = plt.subplots()
-    ax.plot(x, oldmader_ave_dist, color='b', linewidth=1.5, marker = 'o', label='MADER')
-    ax.plot(x, rmader_ave_dist, color='r', linewidth=1.5, marker = 'o', label='RMADER')
-    ax.plot(x, wo_check_rmader_ave_dist, color='purple', linewidth=1.5, marker = 'o', label='RMADER w/o check')
-    ax.plot(x, ego_swarm_ave_dist, color='g', linewidth=1.5, marker = 'o', label='EGO-Swarm')
+    ax.plot(x, rmader_ave_dist, color='r', linewidth=1.5, marker = 'o', ls='dashdot', label='RMADER')
+    ax.plot(x, wo_check_rmader_ave_dist, color='purple', linewidth=1.5, marker = 'o', ls='dotted', label='RMADER w/o check')
+    ax.plot(x, oldmader_ave_dist, color='b', linewidth=1.5, marker = 'o', ls='-.', label='MADER')
+    ax.plot(x, ego_swarm_ave_dist, color='g', linewidth=1.5, marker = 'o', ls=':', label='EGO-Swarm')
     ax.plot(x, edg_team_ave_dist, color='orange', linewidth=1.5, marker = 'o', label='EDG-Team')
     ax.set_xticks(np.arange(0,300+50,50))
     ax.set_xticklabels(np.arange(0,300+50,50), fontproperties=font)

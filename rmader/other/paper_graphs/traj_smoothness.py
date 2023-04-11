@@ -26,8 +26,8 @@ import matplotlib.font_manager as font_manager
 
 # initialization
 home_dir = "/media/kota/T7/rmader_ral/"
-# methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
-methods = ["rmader", "wo_check_rmader"]
+methods = ["oldmader", "rmader", "wo_check_rmader", "ego_swarm", "edg_team"]
+# methods = ["rmader", "wo_check_rmader"]
 num_of_agents=10
 oldmader_traj_smoothness_acc = []
 oldmader_traj_smoothness_jer = []
@@ -41,7 +41,7 @@ edg_team_traj_smoothness_acc = []
 edg_team_traj_smoothness_jer = []
 
 for method in methods: 
-    cd_list = [200, 300]
+    cd_list = [0, 50, 100, 200, 300]
     for cd in cd_list:
         if cd == 0:
             dc = 75 
@@ -178,10 +178,10 @@ font.set_size(16)
 
 # traj. smoothness (acc) time
 fig, ax = plt.subplots()
-ax.plot(x, oldmader_traj_smoothness_acc, color='b', linewidth=1.5, marker = 'o', label='MADER')
-ax.plot(x, rmader_traj_smoothness_acc, color='r', linewidth=1.5, marker = 'o', label='RMADER')
-ax.plot(x, wo_check_rmader_traj_smoothness_acc, color='purple', linewidth=1.5, marker = 'o', label='RMADER w/o check')
-ax.plot(x, ego_swarm_traj_smoothness_acc, color='g', linewidth=1.5, marker = 'o', label='EGO-Swarm')
+ax.plot(x, rmader_traj_smoothness_acc, color='r', linewidth=1.5, marker = 'o', ls='dashdot', label='RMADER')
+ax.plot(x, wo_check_rmader_traj_smoothness_acc, color='purple', linewidth=1.5, marker = 'o', ls='dotted', label='RMADER w/o check')
+ax.plot(x, oldmader_traj_smoothness_acc, color='b', linewidth=1.5, marker = 'o', ls='-.', label='MADER')
+ax.plot(x, ego_swarm_traj_smoothness_acc, color='g', linewidth=1.5, marker = 'o', ls=':', label='EGO-Swarm')
 ax.plot(x, edg_team_traj_smoothness_acc, color='orange', linewidth=1.5, marker = 'o', label='EDG-Team')
 ax.set_xticks(np.arange(0,300+50,50))
 ax.set_xticklabels(np.arange(0,300+50,50), fontproperties=font)
@@ -200,10 +200,10 @@ plt.close('all')
 
 # traj. smoothness (jerk) time
 fig, ax = plt.subplots()
-ax.plot(x, rmader_traj_smoothness_jer, color='r', linewidth=1.5, marker = 'o', label='RMADER (proposed)')
-ax.plot(x, wo_check_rmader_traj_smoothness_jer, color='purple', linewidth=1.5, marker = 'o', label='RMADER w/o check')
-ax.plot(x, oldmader_traj_smoothness_jer, color='b', linewidth=1.5, marker = 'o', label='MADER')
-ax.plot(x, ego_swarm_traj_smoothness_jer, color='g', linewidth=1.5, marker = 'o', label='EGO-Swarm')
+ax.plot(x, rmader_traj_smoothness_jer, color='r', linewidth=1.5, marker = 'o', ls='dashdot', label='RMADER')
+ax.plot(x, wo_check_rmader_traj_smoothness_jer, color='purple', linewidth=1.5, marker = 'o', ls='dotted', label='RMADER w/o check')
+ax.plot(x, oldmader_traj_smoothness_jer, color='b', linewidth=1.5, marker = 'o', ls='-.', label='MADER')
+ax.plot(x, ego_swarm_traj_smoothness_jer, color='g', linewidth=1.5, marker = 'o', ls=':', label='EGO-Swarm')
 ax.plot(x, edg_team_traj_smoothness_jer, color='orange', linewidth=1.5, marker = 'o', label='EDG-Team')
 ax.set_xticks(np.arange(0,300+50,50))
 ax.set_xticklabels(np.arange(0,300+50,50), fontproperties=font)
