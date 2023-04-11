@@ -22,16 +22,13 @@ def getTrefoil(tt,offset,slower,lim_x, lim_y, lim_z):
 Drone = collections.namedtuple('Drone', ["name","bbox", "slower", "offset", "lim_x", "lim_y", "lim_z"])
 
 zmin=1.0
-zmax=2.5
+zmax=2.0
 
-all_drones=[     #"name",     "bbox",      "slower", "offset", "lim_x",    "lim_y",    "lim_z"
-            Drone("obstacle2", [0.8
-                , 0.8
-            , 0.8
-            ],  5.5,   0.0,   [9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
+all_drones=[     #"name",     "bbox",           "slower", "offset", "lim_x",    "lim_y",    "lim_z"
+            Drone("obstacle2", [1.0, 0.8, 3.0], 5.5,       0.0,     [9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
             ]
 
-all_drones.append(Drone("obstacle1", [0.8, 0.8, 0.8],  5.5,   0.0,   [-2.0, 2.0], [-2.0, 2.0],   [zmin,zmax]))
+all_drones.append(Drone("obstacle1", [0.8, 0.8, 3.0],  8.5,   0.0,   [-1.0, 1.0], [-1.0, 1.0],   [zmin,zmax]))
 
 tmp = rospkg.RosPack()
 pwd_package=tmp.get_path('rmader')

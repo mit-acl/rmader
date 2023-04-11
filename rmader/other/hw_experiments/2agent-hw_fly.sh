@@ -39,7 +39,7 @@ sleep 1
 # send commands to each pane
 # ssh each voxl 
 tmux send-keys -t $SESSION:$w.0 "ssh root@nx01.local" C-m
-tmux send-keys -t $SESSION:$w.2 "ssh root@nx09.local" C-m
+tmux send-keys -t $SESSION:$w.2 "ssh root@nx08.local" C-m
 tmux send-keys -t $SESSION:$w.4 "ssh root@nx06.local" C-m
 
 sleep 3
@@ -51,7 +51,7 @@ done
 
 # ssh each nuc
 tmux send-keys -t $SESSION:$w.1 "ssh nuc1@192.168.15.2" C-m
-tmux send-keys -t $SESSION:$w.3 "ssh nuc9@192.168.23.2" C-m
+tmux send-keys -t $SESSION:$w.3 "ssh nuc08@192.168.22.2" C-m
 
 sleep 1
 
@@ -73,11 +73,11 @@ tmux send-keys -t $SESSION:$w.3 "cd && ./ad_hoc_without_NM.sh" C-m
 
 sleep 8
 
-tmux send-keys -t $SESSION:$w.1 "cd && ping 192.168.100.9" C-m
+tmux send-keys -t $SESSION:$w.1 "cd && ping 192.168.100.8" C-m
 tmux send-keys -t $SESSION:$w.3 "cd && ping 192.168.100.1" C-m
 
 tmux send-keys -t $SESSION:$w.1 "roslaunch rmader hw_onboard.launch quad:=NX01"
-tmux send-keys -t $SESSION:$w.3 "roslaunch rmader hw_onboard.launch quad:=NX09"
+tmux send-keys -t $SESSION:$w.3 "roslaunch rmader hw_onboard.launch quad:=NX08"
 
 # run the nuc connection command and fly command (fly script record related rostopics so the below command should be sent at last)
 sleep 5 
