@@ -29,7 +29,7 @@ is_check: true
 is_optimistic_dc: false
 
 # agents' ids
-agents_ids: [1, 6, 9]
+agents_ids: [1, 6, 8]
 
 # who's the camera man? (if you are camera man is_camera_yawing will be true in rmader_ros.cpp)
 camera1: "20"
