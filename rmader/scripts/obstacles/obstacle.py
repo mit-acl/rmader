@@ -50,7 +50,10 @@ class Obstacle_Planner:
         self.traj=np.array([self.traj_x, self.traj_y, self.traj_z])
 
         self.dyn_traj_msg=DynTraj(); 
-        self.dyn_traj_msg.is_agent=False;
+        self.dyn_traj_msg.is_agent=False
+
+        self.static_traj_msg = DynTraj()
+        self.static_traj_msg.is_agent = False
 
         #TODO: note that in pubCB I'm not using rosTime direcly. Need to include this "offset" in the strings below. Not important when dyn_traj_msg is not used by PANTHER (i.e. when PANTHER is running its own tracker)
         # self.dyn_traj_msg.s_mean = [str(self.traj[0]), str(self.traj[1]), str(self.traj[2]-self.bbox[2]/2.0)] #Two notes here:
@@ -75,8 +78,13 @@ class Obstacle_Planner:
         else:
             self.pubTraj = rospy.Publisher('rmader/trajs', DynTraj, queue_size=1, latch=True)
 
+        self.pubStaticObs = rospy.Publisher('/trajs', DynTraj, queue_size=1, latch=True)
+
         self.pubTrajTimer=rospy.Timer(rospy.Duration(0.01), self.pubTrajCB)
         self.pubTrajTimer.shutdown()
+
+        self.pubStaticObsTimer=rospy.Timer(rospy.Duration(0.01), self.pubStaticObsCB)
+        self.pubStaticObsTimer.shutdown()
 
 
     def generateMarker(self, bbox, i):
@@ -215,6 +223,7 @@ class Obstacle_Planner:
 
         self.pubGoalTimer=rospy.Timer(rospy.Duration(0.01), self.pubCB)
         self.pubTrajTimer=rospy.Timer(rospy.Duration(0.01), self.pubTrajCB)
+        self.pubStaticObsTimer=rospy.Timer(rospy.Duration(0.01), self.pubStaticObsCB)
 
         print("End of initializePlanner")
 
@@ -295,6 +304,26 @@ class Obstacle_Planner:
         self.marker.header.stamp=self.dyn_traj_msg.header.stamp
         self.pubMesh.publish(self.marker)
                   
+    def pubStaticObsCB(self, timer):
+
+        x = 0.0
+        y = 0.0
+        z = 1.5
+
+        x_string = str(x)
+        y_string = str(y)
+        z_string = str(z)
+
+        self.static_traj_msg.bbox = [3.0, 3.0, 2.5]
+        self.static_traj_msg.is_agent = False
+        self.static_traj_msg.header.stamp = rospy.Time.now()
+        self.static_traj_msg.function = [x_string, y_string, z_string]
+        self.static_traj_msg.pos.x=eval(x_string)
+        self.static_traj_msg.pos.y=eval(y_string)
+        self.static_traj_msg.pos.z=eval(z_string)
+        self.static_traj_msg.id = 9001
+        self.pubStaticObs.publish(self.static_traj_msg)
+
 def startNode():
     c = Obstacle_Planner()
     rospy.Subscriber("state", State, c.stateCB)
@@ -304,4 +333,4 @@ def startNode():
 if __name__ == '__main__':
     rospy.init_node('Obstacle_Planner')  
     startNode()
-    print("started!") 
+    print("started!")
