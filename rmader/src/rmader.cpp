@@ -928,7 +928,7 @@ bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, 
 
     // This is my trajectory (with inflation)
     Eigen::Vector3d inflation;
-    inflation << 0.0, 0.0, 0.0;
+    inflation << -0.01, -0.01, -0.01;
     std::vector<Eigen::Vector3d> pointsA =
         vertexesOfInterval(pwp_optimized, t_start + i * deltaT, t_start + (i + 1) * deltaT, inflation);
 
