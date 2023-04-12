@@ -34,7 +34,7 @@ tmp = rospkg.RosPack()
 pwd_package=tmp.get_path('rmader')
 t=sp.symbols('t')
 for i in range(len(all_drones)):
-    drone_i=all_drones[i];
+    drone_i=all_drones[i]
     traj=getTrefoil(t, drone_i.offset, drone_i.slower, drone_i.lim_x, drone_i.lim_y, drone_i.lim_z)
     # print traj
     name_file=pwd_package+f"/param/{drone_i.name}.yaml"
