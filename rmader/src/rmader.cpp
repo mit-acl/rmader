@@ -928,7 +928,7 @@ bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, 
 
     // This is my trajectory (with inflation)
     Eigen::Vector3d inflation;
-    inflation << -0.01, -0.01, -0.01;
+    inflation << 0.01, 0.01, 0.01;
     std::vector<Eigen::Vector3d> pointsA =
         vertexesOfInterval(pwp_optimized, t_start + i * deltaT, t_start + (i + 1) * deltaT, inflation);
 
@@ -1074,7 +1074,10 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
           }
           else if (headsup_time - traj_compiled.time_created > 1e-2)
           {
-            if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+            if (traj_compiled.id ==  9001){
+              std::cout << "9001 is skipped" << std::endl;
+            }
+            else if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
                                                          pwp_now.times.back(), is_q0_fail))
             {
               ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
@@ -1119,7 +1122,10 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
       }
       else
       {  // if traj_compiled.is_agent == false
-        if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
+        if (traj_compiled.id ==  9001){
+          std::cout << "9001 is skipped" << std::endl;
+        }
+        else if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(),
                                                      pwp_now.times.back(), is_q0_fail))
         {
           ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);
@@ -1129,7 +1135,10 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
     }
     else
     {
-      if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back(),
+      if (traj_compiled.id ==  9001){
+        std::cout << "9001 is skipped" << std::endl;
+      }
+      else if (trajsAndPwpAreInCollision_with_inflation(traj_compiled, pwp_now, pwp_now.times.front(), pwp_now.times.back(),
                                                    is_q0_fail))
       {
         ROS_ERROR_STREAM("In delay check traj_compiled collides with " << traj_compiled.id);

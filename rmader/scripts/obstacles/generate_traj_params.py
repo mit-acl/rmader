@@ -22,7 +22,7 @@ def getTrefoil(tt,offset,slower,lim_x, lim_y, lim_z):
 Drone = collections.namedtuple('Drone', ["name","bbox", "slower", "offset", "lim_x", "lim_y", "lim_z"])
 
 zmin=1.0
-zmax=2.0
+zmax=1.8
 
 all_drones=[     #"name",     "bbox",           "slower", "offset", "lim_x",    "lim_y",    "lim_z"
             Drone("obstacle2", [1.0, 0.8, 3.0], 5.5,       0.0,     [9.0, 13.0], [-2.0, 2.0],   [zmin,zmax])
