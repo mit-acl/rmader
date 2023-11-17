@@ -6,11 +6,11 @@
 
 |4 agents with 2 dynamic obstacles|6 agents with 2 dynamic obstacles|
 | ------------------------- | ------------------------- |
-<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/4agent2obs_shorter.gif" width="400" height="221" alt="Hardware experiment: 4 agent with 2 dynamic obstacles"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/6agent2obs_shorter.gif" width="400" height="221" alt="Hardware experiment: 6 agent with 2 dynamic obstacles"></a> | 
+<a target="_blank" href="https://youtu.be/i1d8di2Nrbs"><img src="./rmader/imgs/4agent2obs_shorter.gif" width="400" height="221" alt="Hardware experiment: 4 agent with 2 dynamic obstacles"></a> | <a target="_blank" href="https://youtu.be/i1d8di2Nrbs"><img src="./rmader/imgs/6agent2obs_shorter.gif" width="400" height="221" alt="Hardware experiment: 6 agent with 2 dynamic obstacles"></a> | 
 
 |10 agents under 300ms comm. delay|10 agents with 10 dynamic obstacles under 50ms comm. delay |
 | ------------------------- | ------------------------- |
-|<a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/rmader_cd300_sim_github.gif" width="400" height="221" alt="Simulation: 10 agents under 300ms comm. delay"></a> | <a target="_blank" href="https://youtu.be/vH09kwJOBYs"><img src="./rmader/imgs/rmader_obs_sim_github.gif" width="400" height="221" style="margin:20px 20px" alt="Simulation: 10 agents with 10 dynamic obstacles under 50ms comm. delay"></a>|  
+|<a target="_blank" href="https://youtu.be/i1d8di2Nrbs"><img src="./rmader/imgs/rmader_cd300_sim_github.gif" width="400" height="221" alt="Simulation: 10 agents under 300ms comm. delay"></a> | <a target="_blank" href="https://youtu.be/i1d8di2Nrbs"><img src="./rmader/imgs/rmader_obs_sim_github.gif" width="400" height="221" style="margin:20px 20px" alt="Simulation: 10 agents with 10 dynamic obstacles under 50ms comm. delay"></a>|  
 
 ## Citation
 
