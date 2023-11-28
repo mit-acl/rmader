@@ -1,8 +1,8 @@
 # Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay #
 
+#### **Accepted to IEEE Robotics and Automation Letters (RA-L)**  
 #### **Accepted to 2023 IEEE International Conference on Robotics and Automation (ICRA)**
 #### **Awarded Best Poster Award at 2023 IEEE International Conference on Robotics and Automation (ICRA) CAMRS Workshop**
-#### **Submitted to IEEE Robotics and Automation Letters (RA-L)**  
 
 |4 agents with 2 dynamic obstacles|6 agents with 2 dynamic obstacles|
 | ------------------------- | ------------------------- |
@@ -28,12 +28,15 @@
 (ICRA Paper) [Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay](https://arxiv.org/abs/2209.13667) ([pdf](https://arxiv.org/abs/2209.13667), [video](https://youtu.be/vH09kwJOBYs)):
 
 ```bibtex
-@article{kondo2022robust,
-  title={Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay},
-  author={Kondo, Kota and Tordesillas, Jesus and Figueroa, Reinaldo and Rached, Juan and Merkel, Joseph and Lusk, Parker C and How, Jonathan P},
-  journal={arXiv preprint arXiv:2209.13667},
-  year={2022}
-}
+@INPROCEEDINGS{10161244,
+  author={Kondo, Kota and Tordesillas, Jesus and Figueroa, Reinaldo and Rached, Juan and Merkel, Joseph and Lusk, Parker C. and How, Jonathan P.},
+  booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)}, 
+  title={Robust MADER: Decentralized and Asynchronous Multiagent Trajectory Planner Robust to Communication Delay}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1687-1693},
+  doi={10.1109/ICRA48891.2023.10161244}}
 ```
 
 ## General Setup
