@@ -45,7 +45,7 @@ using namespace termcolor;
 class Rmader
 {
 public:
-  Rmader(mt::parameters par);
+  Rmader(mt::parameters const& par);
   bool replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_safe_out, std::vector<Hyperplane3D>& planes,
               int& num_of_LPs_run, int& num_of_QCQPs_run, mt::PieceWisePol& pwp_out);
   bool replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<mt::state>& headsup_plan,
@@ -64,17 +64,17 @@ public:
   void setTerminalGoal(mt::state& term_goal);
   void resetInitialization();
 
-  bool IsTranslating();
-  void updateTrajObstacles_with_delaycheck(mt::dynTraj traj);
-  void updateTrajObstacles(mt::dynTraj traj);
+  bool IsTranslating() const;
+  void updateTrajObstacles_with_delaycheck(mt::dynTraj const& traj);
+  void updateTrajObstacles(mt::dynTraj const& traj);
 
   Eigen::Vector2d RotationMatrix(Eigen::Vector2d& vec, const double& angle);
   void getID(int& id);
   mt::state moveAoutOfBbox(const mt::state& A);
   int getMissedMsgsCnt();
   mt::state getGterm();
-  bool isGoalSeen();
-  bool isGoalReached();
+  bool isGoalSeen() const;
+  bool isGoalReached() const;
   bool initializedAllExceptPlanner();
 
   std::vector<mt::dynTrajCompiled> getTrajs();
@@ -92,29 +92,29 @@ private:
 
   bool initializedStateAndTermGoal();
 
-  bool safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail);
-  bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized);
+  bool safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail) const;
+  bool safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized) const;
 
   bool safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev);
   bool safetyCheck_for_A_star_failure_pwp_now(mt::PieceWisePol pwp_now);
 
   bool trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized,
-                                                double t_start, double t_end, bool& is_q0_fail);
+                                                double t_start, double t_end, bool& is_q0_fail) const;
 
   bool trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized, double t_start,
-                                 double t_end);
+                                 double t_end) const;
 
   void removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, double t_end);
 
   /*  vec_E<Polyhedron<3>> cu::vectorGCALPol2vectorJPSPol(ConvexHullsOfCurves& convex_hulls_of_curves);
     mt::ConvexHullsOfCurves_Std cu::vectorGCALPol2vectorStdEigen(ConvexHullsOfCurves& convexHulls);*/
   ConvexHullsOfCurves convexHullsOfCurves(double t_start, double t_end);
-  ConvexHullsOfCurve convexHullsOfCurve(mt::dynTrajCompiled& traj, double t_start, double t_end);
-  CGAL_Polyhedron_3 convexHullOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end);
+  ConvexHullsOfCurve convexHullsOfCurve(mt::dynTrajCompiled const& traj, double t_start, double t_end);
+  CGAL_Polyhedron_3 convexHullOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end);
 
-  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::PieceWisePol& pwp, double t_start, double t_end,
-                                                  const Eigen::Vector3d& delta_inflation);
-  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end);
+  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::PieceWisePol const& pwp, double t_start, double t_end,
+                                                  const Eigen::Vector3d& delta_inflation) const;
+  std::vector<Eigen::Vector3d> vertexesOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end) const;
   void yaw(double diff, mt::state& next_goal);
 
   void changeBBox(Eigen::Vector3d& drone_boundarybox);
@@ -134,7 +134,7 @@ private:
 
   mt::parameters par_;
 
-  double t_;  // variable where the expressions of the trajs of the dyn obs are evaluated
+  mutable double t_;  // variable where the expressions of the trajs of the dyn obs are evaluated
 
   std::mutex mtx_trajs_;
   std::vector<mt::dynTrajCompiled> trajs_;
@@ -168,7 +168,7 @@ private:
 
   std::mutex mtx_G;
   std::mutex mtx_G_term;
-  std::mutex mtx_t_;
+  mutable std::mutex mtx_t_;
 
   std::mutex mtx_hrtwch_;
 
@@ -190,7 +190,7 @@ private:
 
   bool exists_previous_pwp_ = false;
 
-  bool started_check_ = false;
+  mutable bool started_check_ = false;
 
   bool have_received_trajectories_while_checking_ = false;
 

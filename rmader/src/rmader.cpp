@@ -29,7 +29,7 @@ using namespace termcolor;
 // typedef ROSWallTimer MyTimer;
 typedef RMADER_timers::Timer MyTimer;
 
-Rmader::Rmader(mt::parameters par) : par_(par)
+Rmader::Rmader(mt::parameters const& par) : par_(par)
 {
   // drone_status_ == DroneStatus::YAWING;
   drone_status_ == DroneStatus::TRAVELING;
@@ -133,7 +133,7 @@ Rmader::Rmader(mt::parameters par) : par_(par)
 void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompiled& traj_compiled)
 {
   mtx_t_.lock();
-  for (auto function_i : traj.function)
+  for (auto const& function_i : traj.function)
   {
     typedef exprtk::symbol_table<double> symbol_table_t;
     typedef exprtk::expression<double> expression_t;
@@ -172,7 +172,7 @@ void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompile
 }
 // Note that we need to compile the trajectories inside mader.cpp because t_ is in mader.hpp
 
-void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
+void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj const& traj)
 {
   // std::cout << "in updateTrajObstacles" << std::endl;
 
@@ -214,7 +214,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
 
   std::vector<mt::dynTrajCompiled> local_trajs;
 
-  for (auto traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     mtx_t_.lock();
     t_ = ros::Time::now().toSec();
@@ -271,7 +271,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
   // std::cout << "aft mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
 }
 
-void Rmader::updateTrajObstacles(mt::dynTraj traj)
+void Rmader::updateTrajObstacles(mt::dynTraj const& traj)
 {
   MyTimer tmp_t(true);
 
@@ -305,7 +305,7 @@ void Rmader::updateTrajObstacles(mt::dynTraj traj)
   // Note that these positions are obtained with the trajectory stored in the past in the local map
   std::vector<mt::dynTrajCompiled> local_trajs;
 
-  for (auto traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     mtx_t_.lock();
     t_ = ros::Time::now().toSec();
@@ -350,13 +350,13 @@ void Rmader::updateTrajObstacles(mt::dynTraj traj)
   // std::cout << bold << blue << "updateTrajObstacles took " << tmp_t << reset << std::endl;
 }
 
-std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, double t_start, double t_end,
-                                                        const Eigen::Vector3d& delta)
+std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol const& pwp, double t_start, double t_end,
+                                                        const Eigen::Vector3d& delta) const
 {
   std::vector<Eigen::Vector3d> points;
 
-  std::vector<double>::iterator low = std::lower_bound(pwp.times.begin(), pwp.times.end(), t_start);
-  std::vector<double>::iterator up = std::upper_bound(pwp.times.begin(), pwp.times.end(), t_end);
+  auto const low = std::lower_bound(pwp.times.begin(), pwp.times.end(), t_start);
+  auto const up = std::upper_bound(pwp.times.begin(), pwp.times.end(), t_end);
 
   // // Example: times=[1 2 3 4 5 6 7]
   // // t_start=1.5;
@@ -393,7 +393,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 
       if (delta.norm() < 1e-6)
       {  // no inflation
-        points.push_back(Eigen::Vector3d(x, y, z));
+        points.emplace_back(x, y, z);
       }
       else
       {
@@ -401,18 +401,18 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 
         if (j == V.cols() - 1)
         {
-          points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z + delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z - delta.z()));
-          points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z + delta.z()));
+          points.emplace_back(x + delta.x(), y + delta.y(), z + delta.z());
+          points.emplace_back(x + delta.x(), y - delta.y(), z - delta.z());
+          points.emplace_back(x + delta.x(), y + delta.y(), z - delta.z());
+          points.emplace_back(x + delta.x(), y - delta.y(), z + delta.z());
+          points.emplace_back(x - delta.x(), y - delta.y(), z - delta.z());
+          points.emplace_back(x - delta.x(), y + delta.y(), z + delta.z());
+          points.emplace_back(x - delta.x(), y + delta.y(), z - delta.z());
+          points.emplace_back(x - delta.x(), y - delta.y(), z + delta.z());
         }
         else
         {
-          points.push_back(Eigen::Vector3d(x, y, z));
+          points.emplace_back(x, y, z);
         }
       }
     }
@@ -422,7 +422,7 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::PieceWisePol& pwp, d
 }
 
 // return a vector that contains all the vertexes of the polyhedral approx of an interval.
-std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end)
+std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end) const
 {
   Eigen::Vector3d delta = Eigen::Vector3d::Zero();
   Eigen::Vector3d drone_boundarybox = par_.drone_bbox;
@@ -430,6 +430,8 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& tra
   if (traj.is_agent == false)
   {
     std::vector<Eigen::Vector3d> points;
+    long const estimated_size = (t_end - t_start) / par_.gamma;
+    if (estimated_size > 0) points.reserve(8u * (1 + static_cast<size_t>(estimated_size)));
     // delta = traj.bbox / 2.0 + (par_.drone_radius + par_.beta + par_.alpha) *
     //                            Eigen::Vector3d::Ones();  // every side of the box will be increased by 2*delta
     //(+delta on one end, -delta on the other)
@@ -457,14 +459,14 @@ std::vector<Eigen::Vector3d> Rmader::vertexesOfInterval(mt::dynTrajCompiled& tra
       mtx_t_.unlock();
 
       //"Minkowski sum along the trajectory: box centered on the trajectory"
-      points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y + delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x + delta.x(), y - delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z + delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y + delta.y(), z - delta.z()));
-      points.push_back(Eigen::Vector3d(x - delta.x(), y - delta.y(), z + delta.z()));
+      points.emplace_back(x + delta.x(), y + delta.y(), z + delta.z());
+      points.emplace_back(x + delta.x(), y - delta.y(), z - delta.z());
+      points.emplace_back(x + delta.x(), y + delta.y(), z - delta.z());
+      points.emplace_back(x + delta.x(), y - delta.y(), z + delta.z());
+      points.emplace_back(x - delta.x(), y - delta.y(), z - delta.z());
+      points.emplace_back(x - delta.x(), y + delta.y(), z + delta.z());
+      points.emplace_back(x - delta.x(), y + delta.y(), z - delta.z());
+      points.emplace_back(x - delta.x(), y - delta.y(), z + delta.z());
     }
 
     return points;
@@ -549,7 +551,7 @@ void Rmader::changeBBox(Eigen::Vector3d& drone_boundarybox)
 }
 
 // See https://doc.cgal.org/Manual/3.7/examples/Convex_hull_3/quickhull_3.cpp
-CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled& traj, double t_start, double t_end)
+CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled const& traj, double t_start, double t_end)
 {
   // std::cout << "1.1.4" << std::endl;
 
@@ -560,7 +562,7 @@ CGAL_Polyhedron_3 Rmader::convexHullOfInterval(mt::dynTrajCompiled& traj, double
   std::vector<Point_3> points_cgal;
   for (auto point_i : points)
   {
-    points_cgal.push_back(Point_3(point_i.x(), point_i.y(), point_i.z()));
+    points_cgal.emplace_back(point_i.x(), point_i.y(), point_i.z());
   }
 
   // std::cout << "1.1.6" << std::endl;
@@ -576,14 +578,14 @@ void Rmader::removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, 
   std::vector<Eigen::Vector3d> pointsB;
   Eigen::Vector3d delta = par_.Ra * Eigen::Vector3d::Ones();
 
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z()));
-  pointsB.push_back(Eigen::Vector3d(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z()));
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() + delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() + delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() + delta.y(), A.pos.z() - delta.z());
+  pointsB.emplace_back(A.pos.x() - delta.x(), A.pos.y() - delta.y(), A.pos.z() + delta.z());
 
   std::vector<mt::dynTrajCompiled> local_trajs;
 
@@ -665,14 +667,15 @@ void Rmader::removeTrajsThatWillNotAffectMe(const mt::state& A, double t_start, 
     }*/
 }
 
-bool Rmader::IsTranslating()
+bool Rmader::IsTranslating() const
 {
   return (drone_status_ == DroneStatus::GOAL_SEEN || drone_status_ == DroneStatus::TRAVELING);
 }
 
-ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled& traj, double t_start, double t_end)
+ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled const& traj, double t_start, double t_end)
 {
   ConvexHullsOfCurve convexHulls;
+  convexHulls.reserve(par_.num_pol);
   double deltaT = (t_end - t_start) / (1.0 * par_.num_pol);  // num_pol is the number of intervals
 
   // std::cout << "1.1.3" << std::endl;
@@ -688,10 +691,11 @@ ConvexHullsOfCurve Rmader::convexHullsOfCurve(mt::dynTrajCompiled& traj, double 
 ConvexHullsOfCurves Rmader::convexHullsOfCurves(double t_start, double t_end)
 {
   ConvexHullsOfCurves result;
+  result.reserve(trajs_.size());
 
   // std::cout << "1.1.2" << std::endl;
 
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     result.push_back(convexHullsOfCurve(traj, t_start, t_end));
   }
@@ -914,7 +918,7 @@ std::vector<mt::dynTrajCompiled> Rmader::getTrajs()
 
 // check wheter a mt::dynTrajCompiled and a pwp_optimized are in collision in the interval [t_start, t_end]
 bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized,
-                                                      double t_start, double t_end, bool& is_q0_fail)
+                                                      double t_start, double t_end, bool& is_q0_fail) const
 {
   Eigen::Vector3d n_i;
   double d_i;
@@ -962,7 +966,7 @@ bool Rmader::trajsAndPwpAreInCollision_with_inflation(mt::dynTrajCompiled traj, 
 }
 
 bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePol pwp_optimized, double t_start,
-                                       double t_end)
+                                       double t_end) const
 {
   Eigen::Vector3d n_i;
   double d_i;
@@ -1001,7 +1005,7 @@ bool Rmader::trajsAndPwpAreInCollision(mt::dynTrajCompiled traj, mt::PieceWisePo
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
 // Check period and Recheck period is defined here
-bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail)
+bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& is_q0_fail) const
 {
   bool result = true;
   for (auto& traj : trajs_)
@@ -1022,12 +1026,12 @@ bool Rmader::safetyCheckAfterOptForRmader(mt::PieceWisePol pwp_optimized, bool& 
 }
 
 // Checks that I have not received new trajectories that affect me while doing the optimization
-bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized)
+bool Rmader::safetyCheckAfterOpt(mt::PieceWisePol pwp_optimized) const
 {
   started_check_ = true;
 
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1058,7 +1062,7 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
   bool is_q0_fail = false;
   mtx_trajs_.lock();  // this function is called in mader_ros.cpp so need to lock in the function
   bool result = true;
-  for (auto& traj_compiled : trajs_)
+  for (auto const& traj_compiled : trajs_)
   {
     if (traj_compiled.is_agent == true)
     {
@@ -1148,7 +1152,7 @@ bool Rmader::delayCheck(mt::PieceWisePol pwp_now, const double& headsup_time)
 bool Rmader::safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev)
 {
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1171,7 +1175,7 @@ bool Rmader::safetyCheck_for_A_star_failure(mt::PieceWisePol pwp_prev)
 bool Rmader::safetyCheck_for_A_star_failure_pwp_now(mt::PieceWisePol pwp_now)
 {
   bool result = true;
-  for (auto traj : trajs_)
+  for (auto const& traj : trajs_)
   {
     if (traj.time_received > time_init_opt_ && traj.is_agent == true)
     {
@@ -1239,7 +1243,7 @@ bool Rmader::isReplanningNeeded()
   return true;
 }
 
-bool Rmader::isGoalSeen()
+bool Rmader::isGoalSeen() const
 {
   if (drone_status_ == DroneStatus::GOAL_SEEN)
   {
@@ -1251,7 +1255,7 @@ bool Rmader::isGoalSeen()
   }
 }
 
-bool Rmader::isGoalReached()
+bool Rmader::isGoalReached() const
 {
   if (drone_status_ == DroneStatus::GOAL_REACHED)
   {
