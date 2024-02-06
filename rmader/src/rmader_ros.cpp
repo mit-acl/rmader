@@ -47,8 +47,8 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "agents_ids", agents_ids);
 
   // using take off in the beginning
-  bool is_take_off;
-  mu::safeGetParam(nh1_, "is_take_off", is_take_off);
+  bool need_take_off;
+  mu::safeGetParam(nh1_, "need_take_off", need_take_off);
 
   // using centralized trajs or not
   bool is_centralized = false;
@@ -77,96 +77,73 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   mu::safeGetParam(nh1_, "camera1", camera1);
   mu::safeGetParam(nh1_, "camera2", camera2);
   (id == camera1 || id == camera2) ? par_.is_camera_yawing = true : par_.is_camera_yawing = false;
-
-  // if using artificallly introduced comm delay
-  mu::safeGetParam(nh1_, "is_artificial_comm_delay", is_artificial_comm_delay_);
-
   mu::safeGetParam(nh1_, "yaw/w_max", par_.w_max);
   mu::safeGetParam(nh1_, "yaw/alpha_filter_dyaw", par_.alpha_filter_dyaw);
-
   mu::safeGetParam(nh1_, "visual/is_visual", par_.visual);
   mu::safeGetParam(nh1_, "visual/color_type", par_.color_type);
   mu::safeGetParam(nh1_, "visual/n_agents", par_.n_agents);
   mu::safeGetParam(nh1_, "visual/res_plot_traj", par_.res_plot_traj);
-
   mu::safeGetParam(nh1_, "setting/dc", par_.dc);
   mu::safeGetParam(nh1_, "setting/goal_radius", par_.goal_radius);
-
-  // since drone_bbox is a vector, you need a workaround like this
   std::vector<double> drone_bbox_tmp;
   mu::safeGetParam(nh1_, "tuning_param/drone_bbox", drone_bbox_tmp);
   par_.drone_bbox << drone_bbox_tmp[0], drone_bbox_tmp[1], drone_bbox_tmp[2];
   mu::safeGetParam(nh1_, "tuning_param/Ra", par_.Ra);
-  // if using delay check(this has to be true if we wanna use RMADER)
   mu::safeGetParam(nh1_, "tuning_param/delay_check_sec", par_.delay_check);
   delay_check_ = par_.delay_check;
   mu::safeGetParam(nh1_, "tuning_param/simulated_comm_delay_sec", simulated_comm_delay_);
   mu::safeGetParam(nh1_, "tuning_param/comm_delay_param", par_.comm_delay_param);
-
   mu::safeGetParam(nh1_, space_size + "/x_min", par_.x_min);
   mu::safeGetParam(nh1_, space_size + "/x_max", par_.x_max);
-
   mu::safeGetParam(nh1_, space_size + "/y_min", par_.y_min);
   mu::safeGetParam(nh1_, space_size + "/y_max", par_.y_max);
-
   mu::safeGetParam(nh1_, space_size + "/z_min", par_.z_min);
   mu::safeGetParam(nh1_, space_size + "/z_max", par_.z_max);
-
   std::vector<double> v_max_tmp;
   std::vector<double> a_max_tmp;
   std::vector<double> j_max_tmp;
-
   mu::safeGetParam(nh1_, "tuning_param/v_max", v_max_tmp);
   mu::safeGetParam(nh1_, "tuning_param/a_max", a_max_tmp);
   mu::safeGetParam(nh1_, "tuning_param/j_max", j_max_tmp);
-
   par_.v_max << v_max_tmp[0], v_max_tmp[1], v_max_tmp[2];
   par_.a_max << a_max_tmp[0], a_max_tmp[1], a_max_tmp[2];
   par_.j_max << j_max_tmp[0], j_max_tmp[1], j_max_tmp[2];
-
   mu::safeGetParam(nh1_, "nlopt/num_pol", par_.num_pol);
   mu::safeGetParam(nh1_, "nlopt/deg_pol", par_.deg_pol);
   mu::safeGetParam(nh1_, "nlopt/epsilon_tol_constraints", par_.epsilon_tol_constraints);
   mu::safeGetParam(nh1_, "nlopt/xtol_rel", par_.xtol_rel);
   mu::safeGetParam(nh1_, "nlopt/ftol_rel", par_.ftol_rel);
   mu::safeGetParam(nh1_, "nlopt/solver", par_.solver);
-
   mu::safeGetParam(nh1_, "opt/upper_bound_runtime_snlopt", par_.upper_bound_runtime_snlopt);
   mu::safeGetParam(nh1_, "opt/lower_bound_runtime_snlopt", par_.lower_bound_runtime_snlopt);
   mu::safeGetParam(nh1_, "opt/kappa", par_.kappa);
   mu::safeGetParam(nh1_, "opt/mu", par_.mu);
-
   mu::safeGetParam(nh1_, "opt/a_star_samp_x", par_.a_star_samp_x);
   mu::safeGetParam(nh1_, "opt/a_star_samp_y", par_.a_star_samp_y);
   mu::safeGetParam(nh1_, "opt/a_star_samp_z", par_.a_star_samp_z);
   mu::safeGetParam(nh1_, "opt/a_star_fraction_voxel_size", par_.a_star_fraction_voxel_size);
   mu::safeGetParam(nh1_, "opt/allow_infeasible_guess", par_.allow_infeasible_guess);
-
   mu::safeGetParam(nh1_, "opt/a_star_bias", par_.a_star_bias);
-
   mu::safeGetParam(nh1_, "opt/factor_alpha", par_.factor_alpha);
   mu::safeGetParam(nh1_, "opt/factor_alloc", par_.factor_alloc);
   mu::safeGetParam(nh1_, "opt/factor_alloc_close", par_.factor_alloc_close);
   mu::safeGetParam(nh1_, "opt/dist_factor_alloc_close", par_.dist_factor_alloc_close);
   mu::safeGetParam(nh1_, "opt/weight", par_.weight);
-
   mu::safeGetParam(nh1_, "basis", par_.basis);
-
   mu::safeGetParam(nh1_, "alpha", par_.alpha);
   mu::safeGetParam(nh1_, "beta", par_.beta);
   mu::safeGetParam(nh1_, "gamma", par_.gamma);
-
   mu::safeGetParam(nh1_, "alpha_shrink", par_.alpha_shrink);
-
-  // mu::safeGetParam(nh1_, "fov_horiz_deg", par_.fov_horiz_deg);
-  // mu::safeGetParam(nh1_, "fov_vert_deg", par_.fov_vert_deg);
-  // mu::safeGetParam(nh1_, "fov_depth", par_.fov_depth);
-
-  std::cout << "Parameters obtained" << std::endl;
+  mu::safeGetParam(nh1_, "ground_pd/kv", par_.kv);
+  mu::safeGetParam(nh1_, "ground_pd/kp", par_.kp);
+  mu::safeGetParam(nh1_, "ground_pd/kw", par_.kw);
+  mu::safeGetParam(nh1_, "ground_pd/kyaw", par_.kyaw);
+  mu::safeGetParam(nh1_, "ground_pd/kalpha", par_.kalpha);
+  mu::safeGetParam(nh1_, "visual/obstacle_visualization_duration", par_.obstacle_visualization_duration);
+  mu::safeGetParam(nh1_, "setting/max_seconds_keeping_traj", par_.max_seconds_keeping_traj);
+  mu::safeGetParam(nh1_, "setting/obstacle_edge_cb_freq", par_.obstacle_edge_cb_freq);
 
   // CHECK parameters
-  std::cout << bold << "Parameters obtained, checking them..." << reset << std::endl;
-
   verify((par_.gamma > 0), "Not satisfied: (par_.gamma > 0)");
   verify((par_.beta >= 0 || par_.alpha >= 0), "Not satisfied: (par_.beta >= 0 || par_.alpha >= 0)");
   // verify((par_.a_max.z() <= 9.81), "par_.a_max.z() >= 9.81, the drone will flip");
@@ -179,8 +156,8 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   verify((par_.epsilon_tol_constraints < 0.02), "The tolerance on the constraints is too big -->  there will be "
                                                 "jumps in accel/vel");
   std::cout << bold << "Parameters checked" << reset << std::endl;
-  /////////////////////
 
+  // initialize pointer
   rmader_ptr_ = std::unique_ptr<Rmader>(new Rmader(par_));
 
   // get my namespace
@@ -212,15 +189,18 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   }
   pub_comm_delay_ = nh1_.advertise<rmader_msgs::CommDelay>("comm_delay", 1);
   pub_missed_msgs_cnt_ = nh1_.advertise<rmader_msgs::MissedMsgsCnt>("missed_msgs_cnt", 1);
+  pub_cmd_vel_ = nh1_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
   // Subscribers
   sub_term_goal_ = nh1_.subscribe("term_goal", 1, &RmaderRos::terminalGoalCB, this);
   // sub_mode_ = nh1_.subscribe("mode", 1, &RmaderRos::modeCB, this);
   sub_whoplans_ = nh1_.subscribe("who_plans", 1, &RmaderRos::whoPlansCB, this);
-  sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);
+  // sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);
+  sub_state_ = nh1_.subscribe("/odom", 1, &RmaderRos::OdomCB, this);
+  // Subscribe to the obstacles from costmap converter
+  sub_costmap_obst_ = nh1_.subscribe("/costmap_converter/costmap_obstacles", 1, &RmaderRos::costmapObstCB, this);
 
   // Subscribers for trajs
-
   if (is_obs_sim)  // if we run sims with obs and agents, we want to subscribe to both /trajs and /agent/rmader/trajs
   {
     sub_cent_traj_ = nh1_.subscribe("/trajs", 30, &RmaderRos::trajCB, this);  // The number is the queue size
@@ -271,28 +251,28 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   // Timers
   pubCBTimer_ = nh2_.createTimer(ros::Duration(par_.dc), &RmaderRos::pubCB, this);
   replanCBTimer_ = nh3_.createTimer(ros::Duration(par_.dc), &RmaderRos::replanCB, this);
+  obstacleEdgeCBTimer_ = nh5_.createTimer(ros::Duration(par_.obstacle_edge_cb_freq), &RmaderRos::obstacleEdgeCB, this);
 
-  // For now stop all these subscribers/timers until we receive GO
-  // // sub_state_.shutdown();
-  // pubCBTimer_.stop();
-  // replanCBTimer_.stop();
   sub_state_.shutdown();
   sub_term_goal_.shutdown();
   pubCBTimer_.stop();
   replanCBTimer_.stop();
+  obstacleEdgeCBTimer_.stop();
 
-  if (!is_take_off)
+  if (!need_take_off)
   {                                                                                     // no need to take off
     sub_term_goal_ = nh1_.subscribe("term_goal", 1, &RmaderRos::terminalGoalCB, this);  // TODO: duplicated from above
-    sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);                 // TODO: duplicated from above
+    // sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);                 // TODO: duplicated from above
+    sub_state_ = nh1_.subscribe("/odom", 1, &RmaderRos::OdomCB, this);                 // TODO: duplicated from above
     pubCBTimer_.start();
     replanCBTimer_.start();
+    obstacleEdgeCBTimer_.start();
     is_rmader_running_ = true;
     std::cout << on_blue << "**************MADER STARTED" << reset << std::endl;
   }
 
   // Rviz_Visual_Tools
-  visual_tools_.reset(new rvt::RvizVisualTools("world", "/rviz_visual_tools"));
+  visual_tools_.reset(new rvt::RvizVisualTools("map", "/rviz_visual_tools"));
   visual_tools_->loadMarkerPub();  // create publisher before waitin
   ros::Duration(0.5).sleep();
   visual_tools_->deleteAllMarkers();
@@ -303,31 +283,10 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
   E_ = mu::getMarkerSphere(0.35, mu::red_normal);
   A_ = mu::getMarkerSphere(0.35, mu::red_normal);
 
-  // If you want another thread for the replanCB: replanCBTimer_ = nh_.createTimer(ros::Duration(par_.dc),
-  // &RmaderRos::replanCB, this);
-
-  // these lines are moved above
-  // name_drone_ = ros::this_node::getNamespace();  // Return also the slashes (2 in Kinetic, 1 in Melodic)
-  // name_drone_.erase(std::remove(name_drone_.begin(), name_drone_.end(), '/'), name_drone_.end());  // Remove the
-  // slashes
-
-  // std::string id = name_drone_;
-  // id.erase(0, 2);  // Erase SQ or HX i.e. SQ12s --> 12s  HX8621 --> 8621 # TODO Hard-coded for this this convention
   id_ = std::stoi(id);
-
   rmader_ptr_->getID(id_);
-
   timer_stop_.Reset();
-
   clearMarkerActualTraj();
-
-  ////// to avoid having to click on the GUI (TODO)
-  // rmader_msgs::Mode tmp;
-  // tmp.mode = 1;
-  // modeCB(tmp);
-  //// ros::Duration(1.0).sleep();  // TODO
-  //// bool success_service_call = system("rosservice call /change_mode 'mode: 1'");
-  ////
 
   ROS_INFO("Planner initialized");
 }
@@ -337,14 +296,94 @@ RmaderRos::~RmaderRos()
   sub_state_.shutdown();
   pubCBTimer_.stop();
   replanCBTimer_.stop();
+  obstacleEdgeCBTimer_.stop();
 }
 
 void RmaderRos::pubObstacles(mt::Edges edges_obstacles)
 {
-  pub_obstacles_.publish(mu::edges2Marker(edges_obstacles, mu::color(mu::red_normal)));
+
+  if (edges_obstacles.size() > 0){
+    pub_obstacles_.publish(mu::edges2Marker(edges_obstacles, mu::color(mu::red_normal)));
+  }
 
   return;
 }
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void RmaderRos::costmapObstCB(const costmap_converter::ObstacleArrayMsg& msg){
+
+  //
+  // store this received obstacle array
+  //
+
+  // remove all the obstacles coming from costmap in trajs_
+  rmader_ptr_->removeCostmapObstacles();
+
+  // go through each obstacle
+  for (auto osbt : msg.obstacles)
+  {
+    // initialize dynTraj
+    mt::dynTraj tmp;
+
+    // get centroid of the polygon
+    std::vector<double> pos_x;
+    std::vector<double> pos_y;
+    std::vector<double> pos_z;
+    for (auto p : osbt.polygon.points)
+    {
+      pos_x.push_back(p.x);
+      pos_y.push_back(p.y);
+      pos_z.push_back(p.z);
+    }    
+
+    // get min and max of pos_x, pos_y, pos_z
+    double min_x = *std::min_element(pos_x.begin(), pos_x.end());
+    double max_x = *std::max_element(pos_x.begin(), pos_x.end());
+    double min_y = *std::min_element(pos_y.begin(), pos_y.end());
+    double max_y = *std::max_element(pos_y.begin(), pos_y.end());
+    double min_z = *std::min_element(pos_z.begin(), pos_z.end());
+    double max_z = *std::max_element(pos_z.begin(), pos_z.end());
+
+    // get the box_center
+    double box_center_x = (min_x + max_x) / 2;
+    double box_center_y = (min_y + max_y) / 2;
+    double box_center_z = (min_z + max_z) / 2;
+
+    // store the obstacle
+    tmp.function.push_back(std::to_string(box_center_x));
+    tmp.function.push_back(std::to_string(box_center_y));
+    tmp.function.push_back(std::to_string(box_center_z));
+
+    // get the bbox of the obstacle
+    double bbox_x = (max_x - min_x) / 2;
+    double bbox_y = (max_y - min_y) / 2;
+    double bbox_z = (max_z - min_z) / 2;
+
+    // id needs to be unique
+    tmp.id = costmap_obst_id_;
+    costmap_obst_id_++;
+    if (costmap_obst_id_ > 1000)
+    {
+      costmap_obst_id_ = 0;
+    }
+
+    // publish the trajectory
+    tmp.bbox << bbox_x, bbox_y, bbox_z;
+    tmp.is_agent = false;
+    tmp.is_committed = true;
+    tmp.is_costmap_obst = true;
+    tmp.time_received = ros::Time::now().toSec();
+    rmader_ptr_->updateTrajObstacles(tmp);
+  }
+
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
 
 void RmaderRos::trajCB(const rmader_msgs::DynTraj& msg)
 {
@@ -464,35 +503,16 @@ void RmaderRos::publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_commi
   msg.bbox.push_back(par_.drone_bbox[0]);
   msg.bbox.push_back(par_.drone_bbox[1]);
   msg.bbox.push_back(par_.drone_bbox[2]);
-  // msg.bbox.push_back(2 * par_.drone_radius);
-  // msg.bbox.push_back(2 * par_.drone_radius);
-  // msg.bbox.push_back(2 * par_.drone_radius);
   msg.pos.x = state_.pos.x();
   msg.pos.y = state_.pos.y();
   msg.pos.z = state_.pos.z();
   msg.id = id_;
-
   msg.is_agent = true;
-
   msg.pwp = mu::pwp2PwpMsg(pwp);
-
   msg.time_created = ros::Time::now().toSec();
-
-  // msg.time_sent = ros::Time::now().toSec();  // to measure comm delay between agents
-
   msg.is_committed = is_committed;
 
-  // std::cout<<"msg.pwp.times[0]= "<<msg.pwp.times[0]
-
   msg.traj_id = traj_id_;
-  // std::cout << "my traj_id is " << traj_id_ << std::endl;
-  // traj_id_++;
-
-  // for (auto &traj : trajs)
-  // {
-  //   std::cout << "veh " << traj.id << " id " << traj.traj_id << std::endl;
-  // }
-
   pub_traj_.publish(msg);
 }
 
@@ -509,9 +529,6 @@ void RmaderRos::publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_commi
   msg.bbox.push_back(par_.drone_bbox[0]);
   msg.bbox.push_back(par_.drone_bbox[1]);
   msg.bbox.push_back(par_.drone_bbox[2]);
-  // msg.bbox.push_back(2 * par_.drone_radius);
-  // msg.bbox.push_back(2 * par_.drone_radius);
-  // msg.bbox.push_back(2 * par_.drone_radius);
   msg.pos.x = state_.pos.x();
   msg.pos.y = state_.pos.y();
   msg.pos.z = state_.pos.z();
@@ -537,21 +554,6 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
 {
   if (ros::ok() && published_initial_position_ == true && is_rmader_running_)
   {
-    // replanCBTimer_.stop();  // to avoid blockage
-
-    // introduce random wait time in the beginning
-    // if (!is_replanCB_called_ && is_sequencial_start_)
-    // {
-    //   // to avoid initial path search congestions add some random sleep here
-    //   // std::random_device rd;
-    //   // std::default_random_engine eng(rd());
-    //   // std::uniform_real_distribution<float> distr(0, 1);  // sleep between 0 and 1 sec
-    //   // ros::Duration(distr(eng)).sleep();
-
-    //   srand(time(NULL));
-    //   ros::Duration(0.25 * id_).sleep();
-    //   is_replanCB_called_ = true;
-    // }
 
     // Check if reached the goal
     if (!is_replan_after_goal_reached_)
@@ -564,11 +566,6 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         msg.missed_msgs_cnt = missed_msgs_cnt_;
         msg.msgs_cnt = msgs_cnt_;
         pub_missed_msgs_cnt_.publish(msg);
-
-        // sub_state_.shutdown();
-        // sub_term_goal_.shutdown();
-        // pubCBTimer_.stop();
-        // replanCBTimer_.stop();
         return;
       }
     }
@@ -842,8 +839,8 @@ void RmaderRos::whoPlansCB(const rmader_msgs::WhoPlans& msg)
   }
   else
   {  // MADER is the one who plans now (this happens when the take-off is finished)
-    sub_term_goal_ = nh1_.subscribe("term_goal", 1, &RmaderRos::terminalGoalCB, this);  // TODO: duplicated from above
-    sub_state_ = nh1_.subscribe("state", 1, &RmaderRos::stateCB, this);                 // TODO: duplicated from above
+    sub_term_goal_ = nh1_.subscribe("/SQ01s/term_goal", 1, &RmaderRos::terminalGoalCB, this);  // TODO: duplicated from above
+    sub_state_ = nh1_.subscribe("/odom", 1, &RmaderRos::OdomCB, this);                 // TODO: duplicated from above
     pubCBTimer_.start();
     replanCBTimer_.start();
     is_rmader_running_ = true;
@@ -857,19 +854,13 @@ void RmaderRos::stateCB(const snapstack_msgs::State& msg)
   state_tmp.setPos(msg.pos.x, msg.pos.y, msg.pos.z);
   state_tmp.setVel(msg.vel.x, msg.vel.y, msg.vel.z);
   state_tmp.setAccel(0.0, 0.0, 0.0);
-  // std::cout << bold << red << "MSG_QUAT= " << msg.quat << reset << std::endl;
+
   double roll, pitch, yaw;
   mu::quaternion2Euler(msg.quat, roll, pitch, yaw);
   state_tmp.setYaw(yaw);
+
   state_ = state_tmp;
-  // std::cout << bold << red << "STATE_YAW= " << state_.yaw << reset << std::endl;
-
-  // std::cout << "Updating state to" << std::endl;
-  // state_tmp.print();
-
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->updateState(state_tmp);  // this updates state //mader_ptr_ is a pointer to mader object
-  // mtx_mader_ptr_.unlock();
 
   W_T_B_ = Eigen::Translation3d(msg.pos.x, msg.pos.y, msg.pos.z) *
            Eigen::Quaterniond(msg.quat.w, msg.quat.x, msg.quat.y, msg.quat.z);
@@ -877,83 +868,175 @@ void RmaderRos::stateCB(const snapstack_msgs::State& msg)
   if (published_initial_position_ == false)
   {
     pwp_last_ = mu::createPwpFromStaticPosition(state_);
-    // publishOwnTraj(pwp_last_, true);
     published_initial_position_ = true;
   }
-  // mtx_mader_ptr_.lock();
   if (rmader_ptr_->IsTranslating() == true && par_.visual)
   {
     pubActualTraj();
   }
-  // mtx_mader_ptr_.unlock();
-
-  // publishFOV();
 }
 
-// void RmaderRos::modeCB(const rmader_msgs::Mode& msg)
-// {
-//   // rmader_ptr_->changeMode(msg.mode);
+void RmaderRos::OdomCB(const nav_msgs::Odometry& msg)
+{
+  mt::state state_tmp;
+  state_tmp.setPos(msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z);
+  state_tmp.setVel(msg.twist.twist.linear.x, msg.twist.twist.linear.y, msg.twist.twist.linear.z);
+  state_tmp.setAccel(0.0, 0.0, 0.0);
+  state_tmp.setYaw(0.0);  // This field is not used
 
-//   if (msg.mode != msg.GO)
-//   {  // MADER DOES NOTHING
-//     // sub_state_.shutdown();
-//     pubCBTimer_.stop();
-//     replanCBTimer_.stop();
-//     // std::cout << on_blue << "**************stopping replanCBTimer" << reset << std::endl;
-//     rmader_ptr_->resetInitialization();
-//   }
-//   else
-//   {  // The mode changed to GO (the mode changes to go when takeoff is finished)
-//     // sub_state_ = nh_.subscribe("state", 1, &RmaderRos::stateCB, this);  // TODO duplicated from above
-//     // std::cout << on_blue << "**************starting replanCBTimer" << reset << std::endl;
-//     pubCBTimer_.start();
-//     replanCBTimer_.start();
-//   }
-// }
+  double roll, pitch, yaw;
+  mu::quaternion2Euler(msg.pose.pose.orientation, roll, pitch, yaw);
+  state_tmp.setYaw(yaw);  // TODO: use here (for yaw) the convention PANTHER is using (psi)
+
+  mtx_state_.lock();
+  state_ = state_tmp;
+  mtx_state_.unlock();
+  rmader_ptr_->updateState(state_tmp);
+
+  W_T_B_ = Eigen::Translation3d(msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z) *
+           Eigen::Quaterniond(msg.pose.pose.orientation.w, msg.pose.pose.orientation.x, msg.pose.pose.orientation.y,
+                              msg.pose.pose.orientation.z);
+
+  if (published_initial_position_ == false)
+  {
+    mtx_state_.lock();
+    pwp_last_ = mu::createPwpFromStaticPosition(state_);
+    mtx_state_.unlock();
+    publishOwnTraj(pwp_last_, true);
+    published_initial_position_ = true;
+  }
+  if (rmader_ptr_->IsTranslating() == true && par_.visual)
+  {
+    pubActualTraj();
+  }
+}
+
+double RmaderRos::wrapFromMPitoPi(double x)
+  {
+    x = fmod(x + M_PI, 2 * M_PI);
+    if (x < 0)
+      x += 2 * M_PI;
+    return x - M_PI;
+  }
 
 void RmaderRos::pubCB(const ros::TimerEvent& e)
 {
   mt::state next_goal;
-  // mtx_mader_ptr_.lock();
-  if (rmader_ptr_->getNextGoal(next_goal))
+  bool is_yawing = false;
+  if (rmader_ptr_->getNextGoal(next_goal, is_yawing))
   {
-    snapstack_msgs::Goal quadGoal;
 
-    quadGoal.p = mu::eigen2point(next_goal.pos);  // Kota changed it from eigen2rosvector July 26, 2021
+    // get goal
+    snapstack_msgs::Goal goal;
+    goal.p = mu::eigen2point(next_goal.pos);
+    goal.v = mu::eigen2rosvector(next_goal.vel);
+    goal.a = mu::eigen2rosvector(next_goal.accel);
+    goal.j = mu::eigen2rosvector(next_goal.jerk);
+    goal.psi = next_goal.yaw; // if you don't optimize yaw, this will always be zero
+    goal.dpsi = next_goal.dyaw;
 
-    // printf("terminal goal x %f \n", next_goal.pos.x());
-    // printf("terminal goal y %f \n", next_goal.pos.y());
-    // printf("terminal goal z %f \n", next_goal.pos.z());
+    // get current state
+    snapstack_msgs::State state;
+    mtx_state_.lock();
+    state.pos = mu::eigen2point(state_.pos);
+    state.vel = mu::eigen2rosvector(state_.vel);
+    double state_yaw = state_.yaw;
+    mtx_state_.unlock();
 
-    quadGoal.p = mu::eigen2point(next_goal.pos);  // Kota changed it from eigen2rosvector July 26, 2021
+    // get control commands v and w
+    geometry_msgs::Twist cmd_vel;
 
-    // printf("terminal goal x %f \n", next_goal.pos.x());
-    // printf("terminal goal y %f \n", next_goal.pos.y());
-    // printf("terminal goal z %f \n", next_goal.pos.z());
+    // compute desired velocity
+    double vel_desired = sqrt(goal.v.x * goal.v.x + goal.v.y * goal.v.y);
 
-    quadGoal.v = mu::eigen2rosvector(next_goal.vel);
-    quadGoal.a = mu::eigen2rosvector(next_goal.accel);
-    quadGoal.j = mu::eigen2rosvector(next_goal.jerk);
+    // compute alpha (ensures the vehicle is pointing towards the goals' position)
+    double alpha = wrapFromMPitoPi(state_yaw - atan2(goal.p.y - state.pos.y, goal.p.x - state.pos.x));
 
-    quadGoal.dpsi = next_goal.dyaw;  // no need to control dyaw
-    quadGoal.psi = next_goal.yaw;    // no need to contol yaw
+    // compute if the vehicle should move forward or backward
+    double forward = 1.0;
+    if (fabs(alpha) > M_PI / 2) 
+    {
+      forward = -1.0;
+    }
 
-    quadGoal.header.stamp = ros::Time::now();
-    quadGoal.header.frame_id = world_name_;
+    // compute dist_error (distance to goal)
+    double dist_error = forward * sqrt((goal.p.x - state.pos.x) * (goal.p.x - state.pos.x) + (goal.p.y - state.pos.y) * (goal.p.y - state.pos.y));
 
-    quadGoal.power = true;  // kota added July 27, 2021
+    // if dist_error is very small, then alpha should be zero
+    if (dist_error < 0.01)
+    {
+      alpha = 0.0;
+    }
 
-    pub_goal_.publish(quadGoal);
+    // If the vehicle is very close to goal, and desired velocity is very small, then just yaw
+    double yaw_error;
+    double yaw_desired = atan2(goal.v.y, goal.v.x);
+    // if (fabs(dist_error) < 0.1 && vel_desired < 0.01)
+    if (is_yawing)
+    {
+      yaw_error = wrapFromMPitoPi(goal.psi - state_yaw);
+      // yaw_error = wrapFromMPitoPi(yaw_desired - state_yaw);
+      cmd_vel.linear.x = 0.0;
+      cmd_vel.angular.z = par_.kyaw * yaw_error;
+      pub_cmd_vel_.publish(cmd_vel);
+      return;
+    }
 
+    // compute desired yaw rate (w)
+    double w_desired = (goal.v.x * goal.a.y - goal.v.y * goal.a.x) / (goal.v.x * goal.v.x + goal.v.y * goal.v.y);
+    if ((goal.v.x * goal.v.x + goal.v.y * goal.v.y) < 0.01)
+    {
+      w_desired = 0.0;
+    }
+
+    // compute yaw error (ensures the vehicle is pointing towards the goals' velocity)
+    yaw_error = wrapFromMPitoPi(yaw_desired - state_yaw);
+
+    // compute control commands
+    cmd_vel.linear.x = par_.kv * vel_desired + par_.kp * dist_error;
+    // cmd_vel.angular.z = kw * w_desired + kyaw * yaw_error - kalpha * alpha; // we are not optimizing yaw so it doesn't make sense to add it here
+    cmd_vel.angular.z = par_.kw * w_desired - par_.kalpha * alpha;
+    pub_cmd_vel_.publish(cmd_vel);
+
+    // Setpoint (from PUMA)
     setpoint_.header.stamp = ros::Time::now();
-    setpoint_.pose.position.x = quadGoal.p.x;
-    setpoint_.pose.position.y = quadGoal.p.y;
-    setpoint_.pose.position.z = quadGoal.p.z;
+    setpoint_.pose.position.x = goal.p.x;
+    setpoint_.pose.position.y = goal.p.y;
+    setpoint_.pose.position.z = goal.p.z;
 
     pub_setpoint_.publish(setpoint_);
   }
-  // mtx_mader_ptr_.unlock();
 }
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void RmaderRos::obstacleEdgeCB(const ros::TimerEvent& e)
+{
+  mt::Edges edges_obstacles;
+  rmader_ptr_->pubObstacleEdge(edges_obstacles);
+  clearObstacleEdges();
+  pubObstacles(edges_obstacles);
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void RmaderRos::clearObstacleEdges()
+{
+  // clear only the edges of the obstacles that are published 5 seconds ago
+  visualization_msgs::Marker m;
+  m.type = visualization_msgs::Marker::LINE_LIST;
+  m.action = visualization_msgs::Marker::DELETEALL;
+  m.id = 0;
+  pub_obstacles_.publish(m);
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
 
 void RmaderRos::clearMarkerArray(visualization_msgs::MarkerArray* tmp, ros::Publisher* publisher)
 {
@@ -966,7 +1049,7 @@ void RmaderRos::clearMarkerArray(visualization_msgs::MarkerArray* tmp, ros::Publ
   for (int i = 0; i < (*tmp).markers.size(); i++)
   {
     visualization_msgs::Marker m;
-    m.header.frame_id = "world";
+    m.header.frame_id = "map";
     m.header.stamp = ros::Time::now();
     m.type = visualization_msgs::Marker::ARROW;
     m.action = visualization_msgs::Marker::DELETE;
@@ -1115,26 +1198,15 @@ void RmaderRos::pubState(const mt::state& data, const ros::Publisher pub)
 
 void RmaderRos::terminalGoalCB(const geometry_msgs::PoseStamped& msg)
 {
+  std::cout << "terminal goal received" << std::endl;
   mt::state G_term;
   double z;
-
   if (!is_term_goal_initialized_)
   {
     is_term_goal_initialized_ = true;
     ros::Duration(0.1).sleep();  // wait to receive other's trajs
   }
-
-  // if (fabs(msg.pose.position.z) < 1e-5)  // This happens when you click in RVIZ (msg.z is 0.0)
-  // {
-  //   z = 1.0;
-  // }
-  // else  // This happens when you publish by yourself the goal (should always be above the ground)
-  // {
-  //   z = msg.pose.position.z;
-  // }
-  // for simulation i commented out the above lines
-  z = msg.pose.position.z;
-
+  z = 0.0;
   G_term.setPos(msg.pose.position.x, msg.pose.position.y, z);
   // mtx_mader_ptr_.lock();
   rmader_ptr_->setTerminalGoal(G_term);

@@ -1268,16 +1268,7 @@ exitloop:
     {
       std::cout << "[A*] choosing closest complete path as solution" << std::endl;
       best_node_ptr = complete_closest_result_so_far_ptr_;
-      // std::cout << bold << blue << "complete_closest_dist_so_far_= " << complete_closest_dist_so_far_ << reset
-      //           << std::endl;
       stuck_count_ = 0;
-
-      // auto first_node = expanded_valid_nodes_.front();
-      // auto last_node = expanded_valid_nodes_.back();
-      // std::cout << "first node" << std::endl;
-      // std::cout << first_node.qi << std::endl;
-      // std::cout << "last node" << std::endl;
-      // std::cout << last_node.qi << std::endl;
     }
     else
     {
@@ -1288,10 +1279,6 @@ exitloop:
     // check if drones are stuck
     auto first_node = expanded_valid_nodes_.front();
     auto last_node = expanded_valid_nodes_.back();
-    // std::cout << "first node" << std::endl;
-    // std::cout << first_node.qi << std::endl;
-    // std::cout << "last node" << std::endl;
-    // std::cout << last_node.qi << std::endl;
     double e = 1e-10;  // arbitrary threshold value
     Eigen::Vector3d diff = first_node.qi - last_node.qi;
 
@@ -1302,7 +1289,7 @@ exitloop:
       {
         is_stuck = true;
       }
-      // std::cout << "[A*] drones are stuck, make bbox smaller" << std::endl;
+      std::cout << "[A*] drones are stuck, make bbox smaller" << std::endl;
     }
     else
     {
@@ -1326,27 +1313,15 @@ exitloop:
   {
     for (int j = (best_node_ptr->index) + 1; j <= N_ - 2; j++)
     {
-      // return false;
-
       Node* node_ptr = new Node;
       node_ptr->qi = best_node_ptr->qi;
       node_ptr->index = j;
-
-      // std::cout << red << "Filled " << j << ", " << reset;
-
-      // << node_ptr->qi.transpose() << std::endl;
       node_ptr->previous = best_node_ptr;
       best_node_ptr = node_ptr;
     }
   }
 
   recoverPath(best_node_ptr);  // saved in result_
-
-  // std::cout << "____________" << std::endl;
-  // for (auto qi : result_)
-  // {
-  //   std::cout << qi.transpose() << std::endl;
-  // }
   result = result_;
 
   bool isFeasible = checkFeasAndFillND(result_, n, d);

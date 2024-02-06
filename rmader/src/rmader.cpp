@@ -158,6 +158,7 @@ void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompile
   traj_compiled.time_received = traj.time_received;  // ros::Time::now().toSec();
   traj_compiled.time_created = traj.time_created;
   traj_compiled.is_committed = traj.is_committed;
+  traj_compiled.is_costmap_obst = traj.is_costmap_obst;
   traj_compiled.traj_id = traj.traj_id;
 
   traj_compiled.is_static =
@@ -172,48 +173,52 @@ void Rmader::dynTraj2dynTrajCompiled(const mt::dynTraj& traj, mt::dynTrajCompile
 }
 // Note that we need to compile the trajectories inside mader.cpp because t_ is in mader.hpp
 
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void Rmader::removeCostmapObstacles()
+{
+
+  mtx_trajs_.lock();
+  // Remove all obstacles that are costmap obstacles (is_costmap_obst=true)
+  int trajs_size = trajs_.size();
+
+  for (int index_traj = 0; index_traj < trajs_size; index_traj++)
+  {
+    if (trajs_[index_traj].is_costmap_obst)
+    {
+      trajs_.erase(trajs_.begin() + index_traj);
+    }
+  }
+  mtx_trajs_.unlock();
+
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
 void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
 {
-  // std::cout << "in updateTrajObstacles" << std::endl;
-
   MyTimer tmp_t(true);
 
   mt::dynTrajCompiled traj_compiled;
   dynTraj2dynTrajCompiled(traj, traj_compiled);
 
-  // std::cout << "bef mtx_trajs_.lock() in updateTrajObstacles" << std::endl;
   mtx_trajs_.lock();
-  // std::cout << "aft mtx_trajs_.lock() in updateTrajObstacles" << std::endl;
-
-  // if (exists_in_local_map && traj.is_committed)
   if (traj.is_committed)
   {  // if that object already exists, substitute its trajectory
-    // clean
-
-    // std::cout << "clean!" << std::endl;
-
     trajs_.erase(std::remove_if(trajs_.begin(), trajs_.end(),
                                 [&](mt::dynTrajCompiled const& traj) { return traj.id == traj_compiled.id; }),
                  trajs_.end());
-
-    // std::cout << "traj_compiled.id is " << traj_compiled.id << std::endl;
-    // for (auto traj : trajs_){std::cout << "traj.id is " << traj.id << std::endl;}
-
     trajs_.push_back(traj_compiled);
   }
   else
   {  // if it doesn't exist or traj.is_committed == false, then add it to the local map
     trajs_.push_back(traj_compiled);
-    // std::cout << "traj_compiled.id is " << traj_compiled.id << std::endl;
-    // for (auto traj : trajs_){std::cout << "traj.id is " << traj.id << std::endl;}
-    // ROS_WARN_STREAM("Adding " << traj_compiled.id);
   }
-
-  // and now let's delete those trajectories of the obs/agents whose current positions are outside the local map
-  // Note that these positions are obtained with the trajectory stored in the past in the local map
-
   std::vector<mt::dynTrajCompiled> local_trajs;
-
   for (auto traj_compiled : trajs_)
   {
     mtx_t_.lock();
@@ -252,23 +257,7 @@ void Rmader::updateTrajObstacles_with_delaycheck(mt::dynTraj traj)
   }
 
   trajs_ = local_trajs;
-
-  // print out trajs_
-  // std::cout << "---------------------------------------------------------"<<std::endl;
-
-  // for (int jj=1; jj<=10; jj++){
-  //     std::cout << "Agent" << jj<<std::endl;
-  //     for (auto traj_compiled : trajs_)
-  //     {
-  //       if(traj_compiled.id==jj){
-  //       std::cout<< "     is_committed: " << traj_compiled.is_committed << std::endl;
-  //    }
-  //   }
-  // }
-
-  // std::cout << "bef mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
   mtx_trajs_.unlock();
-  // std::cout << "aft mtx_trajs_.unlock() in updateTrajObstacles" << std::endl;
 }
 
 void Rmader::updateTrajObstacles(mt::dynTraj traj)
@@ -689,8 +678,6 @@ ConvexHullsOfCurves Rmader::convexHullsOfCurves(double t_start, double t_end)
 {
   ConvexHullsOfCurves result;
 
-  // std::cout << "1.1.2" << std::endl;
-
   for (auto traj : trajs_)
   {
     result.push_back(convexHullsOfCurve(traj, t_start, t_end));
@@ -698,6 +685,63 @@ ConvexHullsOfCurves Rmader::convexHullsOfCurves(double t_start, double t_end)
 
   return result;
 }
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void Rmader::pubObstacleEdge(mt::Edges& edges_obstacles_out)
+{
+  //
+  // Get edges_obstacles
+  //
+
+  double t_start = ros::Time::now().toSec();
+  double t_final = t_start + par_.obstacle_visualization_duration;
+
+  // remove old trajectories
+  removeOldTrajectories();
+
+  ConvexHullsOfCurves hulls = convexHullsOfCurves(t_start, t_final);
+  edges_obstacles_out = cu::vectorGCALPol2edges(hulls);
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
+void Rmader::removeOldTrajectories()
+{
+  double time_now = ros::Time::now().toSec();
+  std::vector<int> ids_to_remove;
+
+  mtx_trajs_.lock();
+
+  for (int index_traj = 0; index_traj < trajs_.size(); index_traj++)
+  {
+    if ((time_now - trajs_[index_traj].time_received) > par_.max_seconds_keeping_traj)
+    {
+      // std::cout << "remove traj " << std::endl;
+      // std::cout << "time_now " << time_now << std::endl;
+      // std::cout << "trajs_[" << index_traj << "].time_received " << trajs_[index_traj].time_received << std::endl; 
+      ids_to_remove.push_back(trajs_[index_traj].id);
+    }
+  }
+
+  for (auto id : ids_to_remove)
+  {
+    // ROS_WARN_STREAM("Removing " << id);
+    trajs_.erase(
+        std::remove_if(trajs_.begin(), trajs_.end(), [&](mt::dynTrajCompiled const& traj) { return traj.id == id; }),
+        trajs_.end());
+  }
+
+  mtx_trajs_.unlock();
+}
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
 
 void Rmader::setTerminalGoal(mt::state& term_goal)
 {
@@ -711,8 +755,8 @@ void Rmader::setTerminalGoal(mt::state& term_goal)
   G_.pos = G_term_.pos;
   if (drone_status_ == DroneStatus::GOAL_REACHED)
   {
-    // changeDroneStatus(DroneStatus::YAWING);
-    changeDroneStatus(DroneStatus::TRAVELING);  // skip yawing
+    changeDroneStatus(DroneStatus::YAWING);
+    // changeDroneStatus(DroneStatus::TRAVELING);  // skip yawing
   }
   if (drone_status_ == DroneStatus::GOAL_SEEN)
   {
@@ -828,38 +872,9 @@ void Rmader::updateState(mt::state data)
     plan_.push_back(tmp);  // plan_ should be empty
 
     mtx_plan_.unlock();
-    // std::cout << "in updateState function ";
-    // plan_.print();
-    // previous_yaw_ = tmp.yaw;
     initial_yaw_ = tmp.yaw;
     state_initialized_ = true;
   }
-
-  // printDroneStatus();
-
-  // if (drone_status_ == DroneStatus::TRAVELING)
-  // {
-  // }
-
-  /* skip yawing process
-  if (drone_status_ == DroneStatus::YAWING)
-  {
-    state_initialized_ = true;
-  }
-  */
-  // state_initialized_ = true;
-
-  // mt::state tmp;
-  // tmp.pos = data.pos;
-  // tmp.yaw = data.yaw;
-  // plan_.pop_front();
-  // plan_.push_back(tmp); // plan_ should be empty
-  // std::cout << "plan size " << plan_.size() << std::endl;
-  // std::cout << "in updateState function ";
-  // plan_.print();
-  // previous_yaw_ = tmp.yaw;
-
-  // state_.print();
 }
 
 bool Rmader::initializedAllExceptPlanner()
@@ -1273,35 +1288,6 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
     return false;
   }
 
-  // Pop-up for demos
-
-  // if (is_z_max_increased_ && !is_going_back_to_normal_z_max_){
-  //   // following popped up trajectory and haven't yet reached to pop_up_last_state_in_plan_
-  //   Eigen::Vector3d diff = state_.pos - pop_up_last_state_in_plan_.pos;
-  //   pwp_out = mu::constPosition2pwp(pop_up_last_state_in_plan_.pos);
-  //   if (diff.norm() > 0.1){
-  //     return true;
-  //   }
-  //   std::cout << "reached pop_up_last_state_in_plan_" << "\n";
-  //   is_going_back_to_normal_z_max_ = true;
-  // }
-
-  // if (is_z_max_increased_ && is_going_back_to_normal_z_max_){
-  //   // once you reached pop_up_last_state_in_plan_, then you start planning new traj in extended z_max space
-  //   // std::cout << "state_.pos[2] " << state_.pos[2] << "\n";
-  //   // std::cout << "par_.z_max_ " << par_.z_max << "\n";
-  //   // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-  //   std::cout << "going back to the nominal space" << "\n";
-  //   if (state_.pos[2] < par_.z_max - 0.3){ // if you go back to the nominal z_max, then put z_max back. 0.3 is a
-  //   buffer
-  //     std::cout << "got back to the nomial space!!" << "\n";
-  //     solver_->changeZmax(par_.z_max); // put the z_max back to the nominal value
-  //     is_z_max_increased_ = false;
-  //     is_going_back_to_normal_z_max_ = false;
-  //   }
-  // }
-  // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-
   MyTimer replanCB_t(true);
 
   std::cout << bold << on_white << "**********************IN REPLAN CB*******************" << reset << std::endl;
@@ -1317,8 +1303,6 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
   mt::state A;
   int k_index;
 
-  // If k_index_end_=0, then A = plan_.back() = plan_[plan_.size() - 1]
-
   mtx_plan_.lock();
 
   mu::saturate(deltaT_, par_.lower_bound_runtime_snlopt / par_.dc, par_.upper_bound_runtime_snlopt / par_.dc);
@@ -1332,15 +1316,7 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
 
   k_index = plan_.size() - 1 - k_index_end_;
   A = plan_.get(k_index);
-
-  // std::cout << "in replan_with_delaycheck before opt" << std::endl;
-  // plan_.print();
-
   mtx_plan_.unlock();
-
-  // std::cout << blue << "k_index:" << k_index << reset << std::endl;
-  // std::cout << blue << "k_index_end_:" << k_index_end_ << reset << std::endl;
-  // std::cout << blue << "plan_.size():" << plan_.size() << reset << std::endl;
 
   double runtime_snlopt;
 
@@ -1676,16 +1652,8 @@ bool Rmader::replan_with_delaycheck(mt::Edges& edges_obstacles_out, std::vector<
   deltaT_ = std::max(par_.factor_alpha * states_last_replan, 1.0);
   deltaT_ = std::min(1.0 * deltaT_, 2.0 / par_.dc);
   mtx_offsets.unlock();
-
-  // std::cout << "end of replan" << "\n";
-  // std::cout << "k_index_end_ is " << k_index_end_ << "\n";
-  // std::cout << "deltaT_ is " << deltaT_ << "\n";
-  // std::cout << "plan_.size() " << plan_.size() << "\n";
-
   planner_initialized_ = true;
-
   mtx_plan_.lock();
-  // headsup trajectory
   headsup_plan = plan_.toStdVector();
   mtx_plan_.unlock();
 
@@ -1739,20 +1707,13 @@ bool Rmader::addTrajToPlan_with_delaycheck(mt::PieceWisePol& pwp)
   }
   else
   {
-    // std::cout << "Appending" << std::endl;
-    // std::cout << "before, plan_size=" << plan_.size() << std::endl;
     plan_.erase(plan_.end() - k_index_end_ - 1, plan_.end());  // this deletes also the initial condition...
-    // std::cout << "middle, plan_size=" << plan_.size() << " sol.size()=" << (solver_->traj_solution_).size()
-    // << std::endl;
     for (int i = 0; i < (solver_->traj_solution_).size(); i++)  //... which is included in traj_solution_[0]
     {
       plan_.push_back(solver_->traj_solution_[i]);
     }
-    // std::cout << "after, plan_size=" << plan_.size() << std::endl;
   }
 
-  // std::cout << "in addTrajToPlan_with_delaycheck" << std::endl;
-  // plan_.print();
   mtx_plan_.unlock();
 
   ////////////////////
@@ -1851,35 +1812,7 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
     return false;
   }
 
-  // if (is_z_max_increased_ && !is_going_back_to_normal_z_max_){
-  //   // following popped up trajectory and haven't yet reached to pop_up_last_state_in_plan_
-  //   Eigen::Vector3d diff = state_.pos - pop_up_last_state_in_plan_.pos;
-  //   pwp_out = mu::constPosition2pwp(pop_up_last_state_in_plan_.pos);
-  //   if (diff.norm() > 0.1){
-  //     return true;
-  //   }
-  //   std::cout << "reached pop_up_last_state_in_plan_" << "\n";
-  //   is_going_back_to_normal_z_max_ = true;
-  // }
-
-  // if (is_z_max_increased_ && is_going_back_to_normal_z_max_){
-  //   // once you reached pop_up_last_state_in_plan_, then you start planning new traj in extended z_max space
-  //   // std::cout << "state_.pos[2] " << state_.pos[2] << "\n";
-  //   // std::cout << "par_.z_max_ " << par_.z_max << "\n";
-  //   // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-  //   std::cout << "going back to the nominal space" << "\n";
-  //   if (state_.pos[2] < par_.z_max - 0.3){ // if you go back to the nominal z_max, then put z_max back. 0.3 is a
-  //   buffer
-  //     std::cout << "got back to the nomial space!!" << "\n";
-  //     solver_->changeZmax(par_.z_max); // put the z_max back to the nominal value
-  //     is_z_max_increased_ = false;
-  //     is_going_back_to_normal_z_max_ = false;
-  //   }
-  // }
-  // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-
   MyTimer replanCB_t(true);
-
   std::cout << bold << on_white << "**********************IN REPLAN CB*******************" << reset << std::endl;
 
   //////////////////////////////////////////////////////////////////////////
@@ -2060,47 +1993,6 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
   bool is_q0_fail;
 
   bool result = solver_->optimize(is_stuck, is_A_star_failed, is_q0_fail);  // calling the solver
-
-  // right after taking off, sometims drones cannot find a path
-  // sometimes the very initial path search takes more than how_many_A_star_failure counts and fails
-  // if (planner_initialized_){
-
-  //   // check if A_star is failed and see if the previous plan is feasible
-  //   if (is_A_star_failed && !is_pwp_prev_feasible_){
-  //     A_star_fail_count_ += 1;
-  //     is_A_star_failed_30_ = (A_star_fail_count_ > 30);
-  //     // need to check if my previous traj collides with others. and if that's the case pop it up
-  //     std::cout << "A_star is failing\n";
-  //     std::cout << "A_star_fail_count_ is " << A_star_fail_count_ << "\n";
-  //     if (is_A_star_failed_30_){
-  //       if(!safetyCheck_for_A_star_failure(pwp_prev_)){
-  //         std::cout << "previous pwp collide!" << "\n";
-  //         // if previous pwp is not feasible pop up the drone
-  //         // this only happens when two agents commit traj at the very same time (or in Recheck period)
-  //         is_pop_up_ = true;
-  //         A_star_fail_count_ = 0;
-  //         return false; //abort mader
-  //       } else {
-  //         // std::cout << "previous pwp doesn't collide!\n";
-  //         is_pwp_prev_feasible_ = true;
-  //         is_pop_up_ = false;
-  //         A_star_fail_count_ = 0;
-  //       }
-  //     }
-  //   } else {
-  //     is_pop_up_ = false;
-  //     A_star_fail_count_ = 0;
-  //   }
-
-  // }
-
-  // // check if drones are stuck or not
-  // if (is_stuck){
-  //   par_.is_stuck = true;
-  // } else {
-  //   par_.is_stuck = false;
-  // }
-
   num_of_LPs_run = solver_->getNumOfLPsRun();
   num_of_QCQPs_run = solver_->getNumOfQCQPsRun();
 
@@ -2118,50 +2010,12 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
   solver_->getPlanes(planes);
 
   solutions_found_++;
-
-  // av_improvement_nlopt_ = ((solutions_found_ - 1) * av_improvement_nlopt_ + solver_->improvement_) /
-  // solutions_found_;
-
-  // std::cout << blue << "Average improvement so far" << std::setprecision(5) << av_improvement_nlopt_ << reset
-  //          << std::endl;
-
   mt::PieceWisePol pwp_now;
   solver_->getSolution(pwp_now);
-
-  // // check if the current position/plan is colliding
-  // if (is_pop_up_initialized_){
-
-  //   // check if A_star is failed and see if the previous plan is feasible
-  //   if (is_A_star_failed_){
-  //     // need to check if my previous traj collides with others. and if that's the case pop it up
-  //     A_star_fail_count_pwp_now_ = A_star_fail_count_pwp_now_ + 1;
-  //     std::cout << "A_star is failing\n";
-  //     std::cout << "A_star_fail_count_pwp_now_ is " << A_star_fail_count_pwp_now_ << "\n";
-  //     double how_many_A_star_failure_now = 30;
-  //     if (A_star_fail_count_pwp_now_ > how_many_A_star_failure_now){
-  //       if(!safetyCheck_for_A_star_failure_pwp_now(pwp_now)){
-  //         std::cout << "pwp now collide!" << "\n";
-  //         // if previous pwp is not feasible pop up the drone
-  //         // this only happens when two agents commit traj at the very same time (or in Recheck period)
-  //         is_pop_up_ = true;
-  //         return false; //abort mader
-  //       } else {
-  //         is_pop_up_ = false;
-  //         A_star_fail_count_pwp_now_ = 0;
-  //       }
-  //     }
-  //   } else {
-  //     is_pop_up_ = false;
-  //     A_star_fail_count_pwp_now_ = 0;
-  //   }
-
-  // }
-
   MyTimer check_t(true);
   mtx_trajs_.lock();
   bool is_safe_after_opt = safetyCheckAfterOpt(pwp_now);
   mtx_trajs_.unlock();
-  // std::cout << bold << "Check Timer=" << check_t << std::endl;
 
   if (is_safe_after_opt == false)
   {
@@ -2174,33 +2028,25 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
   //////////////////////////////////////////////////////////////////////////
   ///////////////////////// Append to plan /////////////////////////////////
   //////////////////////////////////////////////////////////////////////////
+
   mtx_plan_.lock();
 
   int plan_size = plan_.size();
 
   if ((plan_size - 1 - k_index_end) < 0)
   {
-    // std::cout << bold << red << "Already published the point A" << reset << std::endl;
-    // std::cout << "plan_size= " << plan_size << std::endl;
-    // std::cout << "k_index_end= " << k_index_end << std::endl;
     mtx_plan_.unlock();
     return false;
   }
   else
   {
-    // std::cout << "Appending" << std::endl;
-    // std::cout << "before, plan_size=" << plan_.size() << std::endl;
     plan_.erase(plan_.end() - k_index_end - 1, plan_.end());  // this deletes also the initial condition...
-    // std::cout << "middle, plan_size=" << plan_.size() << " sol.size()=" << (solver_->traj_solution_).size()
-    // << std::endl;
     for (int i = 0; i < (solver_->traj_solution_).size(); i++)  //... which is included in traj_solution_[0]
     {
       plan_.push_back(solver_->traj_solution_[i]);
     }
-    // std::cout << "after, plan_size=" << plan_.size() << std::endl;
   }
 
-  // plan_.print();
   mtx_plan_.unlock();
 
   ////////////////////
@@ -2258,77 +2104,46 @@ void Rmader::resetInitialization()
   terminal_goal_initialized_ = false;
 }
 
+//
+// ------------------------------------------------------------------------------------------------------
+//
+
 void Rmader::yaw(double diff, mt::state& next_goal)
 {
-  // bang-buffer-bang control
-  if (abs(diff) < 3 * M_PI / 180)
-  {
-    next_goal.dyaw = 0.0;
-    next_goal.yaw = previous_yaw_;
-  }
-  else
-  {
-    mu::saturate(diff, -par_.dc * par_.w_max, par_.dc * par_.w_max);
-    double dyaw_not_filtered;
+  mu::saturate(diff, -par_.dc * par_.w_max, par_.dc * par_.w_max);
+  double dyaw_not_filtered;
 
-    dyaw_not_filtered = copysign(1, diff) * par_.w_max;
-
-    dyaw_filtered_ = (1 - par_.alpha_filter_dyaw) * dyaw_not_filtered + par_.alpha_filter_dyaw * dyaw_filtered_;
-    next_goal.dyaw = dyaw_filtered_;
-    next_goal.yaw = previous_yaw_ + dyaw_filtered_ * par_.dc;
-  }
+  dyaw_not_filtered = copysign(1, diff) * par_.w_max;
+  dyaw_filtered_ = (1 - par_.alpha_filter_dyaw) * dyaw_not_filtered + par_.alpha_filter_dyaw * dyaw_filtered_;
+  next_goal.dyaw = dyaw_filtered_;
+  next_goal.yaw = previous_yaw_ + dyaw_filtered_ * par_.dc;
+  previous_yaw_ = next_goal.yaw;
 }
 
 void Rmader::getDesiredYaw(mt::state& next_goal)
 {
-  if (par_.is_camera_yawing)
-  {
-    // looking at the center of highbay
-    double desired_yaw = atan2(state_.pos[1], state_.pos[0] - 5.5) -
-                         M_PI / 2;  // - M_PI / 2 is because the camera is mounted pointing at y-axis
-    double diff = desired_yaw - state_.yaw;
-    mu::angle_wrap(diff);
-    yaw(diff, next_goal);
-  }
-  else
-  {
-    next_goal.dyaw = 0.0;
-    next_goal.yaw = initial_yaw_;
-  }
-  // next_goal.yaw = state_.yaw;
-  /*
-  switch (drone_status_)
-  {
-    case DroneStatus::YAWING:
-      desired_yaw = atan2(G_term_.pos[1] - next_goal.pos[1], G_term_.pos[0] - next_goal.pos[0]);
-      diff = desired_yaw - state_.yaw;
-      break;
-    case DroneStatus::TRAVELING:
-    case DroneStatus::GOAL_SEEN:
-      desired_yaw = atan2(M_.pos[1] - next_goal.pos[1], M_.pos[0] - next_goal.pos[0]);
-      diff = desired_yaw - state_.yaw;
-      break;
-    case DroneStatus::GOAL_REACHED:
-      next_goal.dyaw = 0.0;
-      next_goal.yaw = previous_yaw_;
-      return;
-  }
+  mt::state current_state;
+  getState(current_state);
+  double desired_yaw = atan2(G_term_.pos[1] - current_state.pos[1], G_term_.pos[0] - current_state.pos[0]);
+  double diff = desired_yaw - current_state.yaw;
 
   mu::angle_wrap(diff);
-  if (fabs(diff) < 0.04 && drone_status_ == DroneStatus::YAWING)
-  {
-    changeDroneStatus(DroneStatus::TRAVELING);
-  }
   yaw(diff, next_goal);
-  */
+
+  if (fabs(diff) < 0.04)
+  {
+    std::cout << bold << "YAWING IS DONE!!" << std::endl;
+    changeDroneStatus(DroneStatus::TRAVELING);
+    next_goal.yaw = desired_yaw;
+  }
 }
 
-bool Rmader::getNextGoal(mt::state& next_goal)
+bool Rmader::getNextGoal(mt::state& next_goal, bool& is_yawing)
 {
-  if (initializedStateAndTermGoal() == false)  // || (drone_status_ == DroneStatus::GOAL_REACHED && plan_.size() ==
-                                               // 1))
+  if (initializedStateAndTermGoal() == false)  // || (drone_status_ == DroneStatus::GOAL_REACHED && plan_.size() == 1))
+                                               // TODO: if included this part commented out, the last state (which is
+                                               // the one that has zero accel) will never get published
   {
-    // std::cout << "Not publishing new goal!!" << std::endl;
     return false;
   }
 
@@ -2338,46 +2153,25 @@ bool Rmader::getNextGoal(mt::state& next_goal)
   next_goal.setZero();
   next_goal = plan_.front();
 
-  // if (is_pop_up_ && !is_z_max_increased_){
-  //   // we need to pop up the drone
-  //   std::cout << "pop up!!!!" << std::endl;
-  //   double pop_up_alt = par_.drone_bbox[2] + 0.1;
-  //   pop_up_state_ = state_;
-  //   std::cout << "plan_.size() is " << plan_.size() << "\n";
-  //   if (plan_.size() != 0){
-  //     for (int i = 0; i < plan_.size(); i++){
-  //     // increment z axis value
-  //     double pop_up_increment = pop_up_alt / plan_.size();
-  //     plan_.content[i].pos[2] = plan_.content[i].pos[2] + i * pop_up_increment;
-  //     }
-  //   } else {
-  //     double pop_up_increment = pop_up_alt / 400;
-  //     for (int i = 0; i < 400; i++){
-  //       mt::state temporaty_state = state_;
-  //       temporaty_state.pos[2] += i * pop_up_increment;
-  //       plan_.push_back(temporaty_state);
-  //     }
-  //   }
-
-  //   is_pop_up_ = false;
-  //   pop_up_last_state_in_plan_ = plan_.back();
-  //   double new_zmax = par_.z_max + pop_up_alt;
-  //   solver_->changeZmax(new_zmax);
-  //   is_z_max_increased_ = true;
-  // }
-
   if (plan_.size() > 1)
   {
     plan_.pop_front();
   }
 
-  getDesiredYaw(next_goal);  // we don't need to control yaw
-  previous_yaw_ = next_goal.yaw;
+  if (drone_status_ == DroneStatus::YAWING)
+  {
+    getDesiredYaw(next_goal);
+    is_yawing = true;
+  }
 
   mtx_goals.unlock();
   mtx_plan_.unlock();
   return true;
 }
+
+//
+// ------------------------------------------------------------------------------------------------------
+//
 
 // Debugging functions
 void Rmader::changeDroneStatus(int new_status)

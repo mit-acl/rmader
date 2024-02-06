@@ -18,6 +18,7 @@
 #include <rviz_visual_tools/rviz_visual_tools.h>
 #include <snapstack_msgs/State.h>
 #include <snapstack_msgs/Goal.h>
+#include <nav_msgs/Odometry.h>
 
 // #include <rmader_msgs/Mode.h>
 #include <rmader_msgs/WhoPlans.h>
@@ -31,6 +32,9 @@
 #include "rmader_types.hpp"
 
 #include "timer.hpp"
+
+#include <costmap_converter/ObstacleArrayMsg.h>
+#include <costmap_converter/ObstacleMsg.h>
 
 namespace rvt = rviz_visual_tools;
 
@@ -46,12 +50,13 @@ private:
   void publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_committed, std::vector<mt::dynTrajCompiled>& trajs);
   void publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_committed);
   void publishPlanes(std::vector<Hyperplane3D>& planes);
-
+  void costmapObstCB(const costmap_converter::ObstacleArrayMsg& msg);
   // class methods
   void pubTraj(const std::vector<mt::state>& data, const bool& is_committed);
   void terminalGoalCB(const geometry_msgs::PoseStamped& msg);
   void pubState(const mt::state& msg, const ros::Publisher pub);
   void stateCB(const snapstack_msgs::State& msg);
+  void OdomCB(const nav_msgs::Odometry& msg);
   void findAdaptiveDelayCheck(const mt::dynTraj tmp);
   // void modeCB(const rmader_msgs::Mode& msg);
   void whoPlansCB(const rmader_msgs::WhoPlans& msg);
@@ -60,6 +65,9 @@ private:
   void trajCB(const rmader_msgs::DynTraj& msg);
   void allTrajsTimerCB(const ros::TimerEvent& e);
   void visual(mt::Edges& edges_obstacles, std::vector<mt::state>& traj_plan, const bool& is_committed);
+  double wrapFromMPitoPi(double x);
+  void obstacleEdgeCB(const ros::TimerEvent& e);
+  void clearObstacleEdges();
 
   // void clearMarkerSetOfArrows();
   void clearMarkerActualTraj();
@@ -91,7 +99,7 @@ private:
   mt::PieceWisePol pwp_now_;
   mt::state state_;
 
-  std::string world_name_ = "world";
+  std::string world_name_ = "map";
 
   rvt::RvizVisualToolsPtr visual_tools_;
 
@@ -126,18 +134,21 @@ private:
   ros::Publisher pub_obstacles_;
   ros::Publisher pub_comm_delay_;
   ros::Publisher pub_missed_msgs_cnt_;
+  ros::Publisher pub_cmd_vel_;
 
   ros::Subscriber sub_term_goal_;
   // ros::Subscriber sub_mode_;
   ros::Subscriber sub_whoplans_;
   ros::Subscriber sub_state_;
   ros::Subscriber sub_cent_traj_;
+  ros::Subscriber sub_costmap_obst_;
 
   // subscribers for each agent
   std::vector<ros::Subscriber> sub_traj_;
 
   ros::Timer pubCBTimer_;
   ros::Timer replanCBTimer_;
+  ros::Timer obstacleEdgeCBTimer_;
 
   mt::parameters par_;  // where all the parameters are
 
@@ -179,6 +190,7 @@ private:
   std::mutex mtx_alltrajsTimers_;
   std::mutex mtx_rmader_ptr_;
   std::mutex mtx_adaptive_dc_;
+  std::mutex mtx_state_;
 
   std::deque<mt::dynTraj> alltrajs_;
   std::deque<ros::Timer> alltrajsTimers_;
@@ -195,4 +207,9 @@ private:
   mt::PieceWisePol pwp_last_;
 
   RMADER_timers::Timer timer_stop_;
+
+  // store costmap obstacles
+  std::vector<costmap_converter::ObstacleMsg> costmap_obst_;
+  int costmap_obst_id_ = 0;
+
 };

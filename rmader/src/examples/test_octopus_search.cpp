@@ -65,7 +65,7 @@ visualization_msgs::Marker getMarker(Eigen::Vector3d& center, double bbox_x, dou
 {
   visualization_msgs::Marker m;
   m.type = visualization_msgs::Marker::CUBE;
-  m.header.frame_id = "world";
+  m.header.frame_id = "map";
   m.header.stamp = ros::Time::now();
   m.ns = "marker_dyn_obs";
   m.action = visualization_msgs::Marker::ADD;
@@ -92,7 +92,7 @@ visualization_msgs::Marker getMarker(Eigen::Vector3d& center, double bbox_x, dou
   // {
   //   visualization_msgs::Marker m;
   //   m.type = visualization_msgs::Marker::CUBE;
-  //   m.header.frame_id = "world";
+  //   m.header.frame_id = "map";
   //   m.header.stamp = ros::Time::now();
   //   m.ns = ns;
   //   m.action = visualization_msgs::Marker::ADD;
@@ -282,7 +282,7 @@ int main(int argc, char** argv)
 
     // convert the obstacles polyhedron arrays
     decomp_ros_msgs::PolyhedronArray poly_msg = DecompROS::polyhedron_array_to_ros(cu::vectorGCALPol2vectorJPSPol(tmp));
-    poly_msg.header.frame_id = "world";
+    poly_msg.header.frame_id = "map";
     jps_poly_pubs[i].publish(poly_msg);
   }
 

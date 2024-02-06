@@ -537,6 +537,7 @@ struct dynTraj
   bool is_agent;  // true for a trajectory of an agent, false for an obstacle
   mt::PieceWisePol pwp;
   bool is_committed;
+  bool is_costmap_obst = false;
   int traj_id;
 };
 
@@ -551,6 +552,7 @@ struct dynTrajCompiled
   bool is_agent;  // true for a trajectory of an agent, false for an obstacle
   bool is_static;
   bool is_committed;
+  bool is_costmap_obst = false;
   mt::PieceWisePol pwp;
   int traj_id;
 };
@@ -649,6 +651,16 @@ struct parameters
   double gamma = 0.5;
 
   bool is_stuck = false;
+
+  double kv;
+  double kp;
+  double kw;
+  double kyaw;
+  double kalpha;
+
+  double obstacle_visualization_duration;
+  double max_seconds_keeping_traj;
+  double obstacle_edge_cb_freq;
 };
 
 typedef std::vector<mt::state> trajectory;

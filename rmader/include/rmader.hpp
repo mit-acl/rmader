@@ -53,10 +53,11 @@ public:
                               mt::PieceWisePol& pwp_now, double& headsup_time);
   bool addTrajToPlan_with_delaycheck(mt::PieceWisePol& pwp);
   bool delayCheck(mt::PieceWisePol pwp_optimized, const double& headsup_time);
-
+  void removeCostmapObstacles();
+  void pubObstacleEdge(mt::Edges& edges_obstacles_out);
+  void removeOldTrajectories();
   void updateState(mt::state data);
-
-  bool getNextGoal(mt::state& next_goal);
+  bool getNextGoal(mt::state& next_goal, bool& is_yawing);
   void getState(mt::state& data);
   void getG(mt::state& G);
   void getDetourG(mt::state& G);
@@ -153,7 +154,7 @@ private:
   int drone_status_ = DroneStatus::TRAVELING;  // status_ can be TRAVELING, GOAL_SEEN, GOAL_REACHED
   int planner_status_ = PlannerStatus::FIRST_PLAN;
 
-  double dyaw_filtered_ = 0;
+  double dyaw_filtered_ = 0.0;
 
   std::mutex mtx_goals;
 
