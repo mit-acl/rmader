@@ -22,8 +22,6 @@ include(${CGAL_USE_FILE})
 
 set(CMAKE_BUILD_TYPE Release) #From terminal: catkin config -DCMAKE_BUILD_TYPE=Release (or RelWithDebInfo) or Debug
 
-
-
 find_package(catkin REQUIRED COMPONENTS 
 	roscpp
 	rospy
@@ -36,6 +34,7 @@ find_package(catkin REQUIRED COMPONENTS
 	separator
   	jsk_rviz_plugins
 )
+
 find_package(decomp_util REQUIRED)
 include_directories(${DECOMP_UTIL_INCLUDE_DIRS})
 
