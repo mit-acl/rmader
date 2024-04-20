@@ -1851,33 +1851,6 @@ bool Rmader::replan(mt::Edges& edges_obstacles_out, std::vector<mt::state>& X_sa
     return false;
   }
 
-  // if (is_z_max_increased_ && !is_going_back_to_normal_z_max_){
-  //   // following popped up trajectory and haven't yet reached to pop_up_last_state_in_plan_
-  //   Eigen::Vector3d diff = state_.pos - pop_up_last_state_in_plan_.pos;
-  //   pwp_out = mu::constPosition2pwp(pop_up_last_state_in_plan_.pos);
-  //   if (diff.norm() > 0.1){
-  //     return true;
-  //   }
-  //   std::cout << "reached pop_up_last_state_in_plan_" << "\n";
-  //   is_going_back_to_normal_z_max_ = true;
-  // }
-
-  // if (is_z_max_increased_ && is_going_back_to_normal_z_max_){
-  //   // once you reached pop_up_last_state_in_plan_, then you start planning new traj in extended z_max space
-  //   // std::cout << "state_.pos[2] " << state_.pos[2] << "\n";
-  //   // std::cout << "par_.z_max_ " << par_.z_max << "\n";
-  //   // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-  //   std::cout << "going back to the nominal space" << "\n";
-  //   if (state_.pos[2] < par_.z_max - 0.3){ // if you go back to the nominal z_max, then put z_max back. 0.3 is a
-  //   buffer
-  //     std::cout << "got back to the nomial space!!" << "\n";
-  //     solver_->changeZmax(par_.z_max); // put the z_max back to the nominal value
-  //     is_z_max_increased_ = false;
-  //     is_going_back_to_normal_z_max_ = false;
-  //   }
-  // }
-  // std::cout << "par_for_solver.z_max " << solver_->printZmax() << "\n";
-
   MyTimer replanCB_t(true);
 
   std::cout << bold << on_white << "**********************IN REPLAN CB*******************" << reset << std::endl;

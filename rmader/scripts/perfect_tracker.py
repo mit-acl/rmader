@@ -11,20 +11,18 @@ from numpy import linalg as LA
 from tf.transformations import quaternion_from_euler, euler_from_quaternion, quaternion_about_axis, quaternion_multiply
 from visualization_msgs.msg import Marker
 
-
-
 class FakeSim:
 
     def __init__(self):
         self.state=State()
 
-        self.state.pos.x = rospy.get_param('~x', 0.0);
-        self.state.pos.y = rospy.get_param('~y', 0.0);
-        self.state.pos.z = rospy.get_param('~z', 0.0);
-        yaw = rospy.get_param('~yaw', 0.0);
+        self.state.pos.x = rospy.get_param('~x', 0.0)
+        self.state.pos.y = rospy.get_param('~y', 0.0)
+        self.state.pos.z = rospy.get_param('~z', 0.0)
+        yaw = rospy.get_param('~yaw', 0.0)
 
-        pitch=0.0;
-        roll=0.0;
+        pitch=0.0
+        roll=0.0
         quat = quaternion_from_euler(yaw, pitch, roll, 'rzyx')
 
         self.state.quat.x = quat[0]
@@ -44,30 +42,23 @@ class FakeSim:
         self.pubState.publish(self.state)  
 
         pose=Pose()
-        pose.position.x=self.state.pos.x;
-        pose.position.y=self.state.pos.y;
-        pose.position.z=self.state.pos.z;
+        pose.position.x=self.state.pos.x
+        pose.position.y=self.state.pos.y
+        pose.position.z=self.state.pos.z
         pose.orientation.x = quat[0]
         pose.orientation.y = quat[1]
         pose.orientation.z = quat[2]
         pose.orientation.w = quat[3]
 
-
     def goalCB(self, data):
 
-
-        state = State()
-
         axis_z=[0,0,1]
-
-        accel=[data.a.x, data.a.y, data.a.z + 9.81];
-
-        drone_quaternion_with_yaw=[];
-
+        accel=[data.a.x, data.a.y, data.a.z + 9.81]
+        drone_quaternion_with_yaw=[]
         if(LA.norm(accel)>1e-6 and LA.norm(np.cross(accel, axis_z))>1e-6): #TODO
           norm_accel=LA.norm(accel)
           accel=accel/norm_accel
-          axis=np.cross(accel, axis_z);
+          axis=np.cross(accel, axis_z)
 
           dot=np.dot(accel,axis_z)
           angle=math.acos(dot)        
@@ -97,12 +88,9 @@ class FakeSim:
                          self.name,
                          "vicon")
 
-            
-
 def startNode():
     c = FakeSim()
     rospy.Subscriber("goal", Goal, c.goalCB)
-
     rospy.spin()
 
 if __name__ == '__main__':

@@ -288,7 +288,15 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
     pubCBTimer_.start();
     replanCBTimer_.start();
     is_rmader_running_ = true;
-    std::cout << on_blue << "**************MADER STARTED" << reset << std::endl;
+    mt::state state_tmp;
+    state_tmp.setPos(0.0, 0.0, 0.0);
+    state_tmp.setVel(0.0, 0.0, 0.0);
+    state_tmp.setAccel(0.0, 0.0, 0.0);
+    double yaw = 0.0;
+    state_tmp.setYaw(yaw);
+    state_ = state_tmp;
+    rmader_ptr_->updateState(state_tmp);  // this updates state //mader_ptr_ is a pointer to mader object
+    std::cout << on_blue << "**************RMADER STARTED WITHOUT TAKEOFF" << reset << std::endl;
   }
 
   // Rviz_Visual_Tools
@@ -334,6 +342,8 @@ RmaderRos::RmaderRos(ros::NodeHandle nh1, ros::NodeHandle nh2, ros::NodeHandle n
 
 RmaderRos::~RmaderRos()
 {
+
+  std::cout << "Destructor is called" << std::endl;
   sub_state_.shutdown();
   pubCBTimer_.stop();
   replanCBTimer_.stop();
@@ -535,23 +545,10 @@ void RmaderRos::publishOwnTraj(const mt::PieceWisePol& pwp, const bool& is_commi
 
 void RmaderRos::replanCB(const ros::TimerEvent& e)
 {
-  if (ros::ok() && published_initial_position_ == true && is_rmader_running_)
+
+  // if (ros::ok() && published_initial_position_ == true && is_rmader_running_)
+  if (ros::ok() && is_rmader_running_)
   {
-    // replanCBTimer_.stop();  // to avoid blockage
-
-    // introduce random wait time in the beginning
-    // if (!is_replanCB_called_ && is_sequencial_start_)
-    // {
-    //   // to avoid initial path search congestions add some random sleep here
-    //   // std::random_device rd;
-    //   // std::default_random_engine eng(rd());
-    //   // std::uniform_real_distribution<float> distr(0, 1);  // sleep between 0 and 1 sec
-    //   // ros::Duration(distr(eng)).sleep();
-
-    //   srand(time(NULL));
-    //   ros::Duration(0.25 * id_).sleep();
-    //   is_replanCB_called_ = true;
-    // }
 
     // Check if reached the goal
     if (!is_replan_after_goal_reached_)
@@ -564,11 +561,6 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
         msg.missed_msgs_cnt = missed_msgs_cnt_;
         msg.msgs_cnt = msgs_cnt_;
         pub_missed_msgs_cnt_.publish(msg);
-
-        // sub_state_.shutdown();
-        // sub_term_goal_.shutdown();
-        // pubCBTimer_.stop();
-        // replanCBTimer_.stop();
         return;
       }
     }
@@ -691,11 +683,7 @@ void RmaderRos::replanCB(const ros::TimerEvent& e)
     }
     else
     {
-      // // std::cout << "I'm using old mader!!!!!" << std::endl;
-
-      // mtx_mader_ptr_.lock();
       replanned = rmader_ptr_->replan(edges_obstacles, traj_plan, planes, num_of_LPs_run_, num_of_QCQPs_run_, pwp_now_);
-      // mtx_mader_ptr_.unlock();
 
       if (par_.visual)
       {
@@ -857,37 +845,19 @@ void RmaderRos::stateCB(const snapstack_msgs::State& msg)
   state_tmp.setPos(msg.pos.x, msg.pos.y, msg.pos.z);
   state_tmp.setVel(msg.vel.x, msg.vel.y, msg.vel.z);
   state_tmp.setAccel(0.0, 0.0, 0.0);
-  // std::cout << bold << red << "MSG_QUAT= " << msg.quat << reset << std::endl;
   double roll, pitch, yaw;
   mu::quaternion2Euler(msg.quat, roll, pitch, yaw);
   state_tmp.setYaw(yaw);
   state_ = state_tmp;
-  // std::cout << bold << red << "STATE_YAW= " << state_.yaw << reset << std::endl;
-
-  // std::cout << "Updating state to" << std::endl;
-  // state_tmp.print();
-
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->updateState(state_tmp);  // this updates state //mader_ptr_ is a pointer to mader object
-  // mtx_mader_ptr_.unlock();
 
   W_T_B_ = Eigen::Translation3d(msg.pos.x, msg.pos.y, msg.pos.z) *
            Eigen::Quaterniond(msg.quat.w, msg.quat.x, msg.quat.y, msg.quat.z);
 
-  if (published_initial_position_ == false)
-  {
-    pwp_last_ = mu::createPwpFromStaticPosition(state_);
-    // publishOwnTraj(pwp_last_, true);
-    published_initial_position_ = true;
-  }
-  // mtx_mader_ptr_.lock();
   if (rmader_ptr_->IsTranslating() == true && par_.visual)
   {
     pubActualTraj();
   }
-  // mtx_mader_ptr_.unlock();
-
-  // publishFOV();
 }
 
 // void RmaderRos::modeCB(const rmader_msgs::Mode& msg)
@@ -1134,13 +1104,11 @@ void RmaderRos::terminalGoalCB(const geometry_msgs::PoseStamped& msg)
   // }
   // for simulation i commented out the above lines
   z = msg.pose.position.z;
-
   G_term.setPos(msg.pose.position.x, msg.pose.position.y, z);
-  // mtx_mader_ptr_.lock();
   rmader_ptr_->setTerminalGoal(G_term);
-  // mtx_mader_ptr_.unlock();
-
   pubState(G_term, pub_point_G_term_);
+
+  std::cout << G_term.pos.transpose() << std::endl;
 
   clearMarkerActualTraj();
 }

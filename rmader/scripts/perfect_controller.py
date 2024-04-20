@@ -23,17 +23,18 @@ import tf
 class FakeSim:
 
     def __init__(self):
+
+        print("Starting perfect controller node")
+
+
         self.state=State()
+        self.state.pos.x = rospy.get_param('~x', 0.0)
+        self.state.pos.y = rospy.get_param('~y', 0.0)
+        self.state.pos.z = rospy.get_param('~z', 0.0)
+        yaw = rospy.get_param('~yaw', 0.0)
 
-        self.state.pos.x = rospy.get_param('~x', 0.0);
-        self.state.pos.y = rospy.get_param('~y', 0.0);
-        self.state.pos.z = rospy.get_param('~z', 0.0);
-        yaw = rospy.get_param('~yaw', 0.0);
-
-        self.publish_marker_drone=True #TODO: this mesh is not scaled by the radius of the UAV of panther.yaml
-
-        pitch=0.0;
-        roll=0.0;
+        pitch=0.0
+        roll=0.0
         quat = quaternion_from_euler(yaw, pitch, roll, 'rzyx')
 
         self.state.quat.x = quat[0]
@@ -51,27 +52,20 @@ class FakeSim:
 
         self.state.header.frame_id="world"
         self.pubState.publish(self.state)  
-
-        if(self.publish_marker_drone):
-            self.pubMarkerDrone.publish(self.getDroneMarker());
-
+        self.pubMarkerDrone.publish(self.getDroneMarker())
 
     def goalCB(self, data):
 
-        state = State()
-
-        axis_z=[0,0,1]
-
         #Hopf fibration approach
-        thrust=np.array([data.a.x, data.a.y, data.a.z + 9.81]); 
-        thrust_normalized=thrust/np.linalg.norm(thrust);
+        thrust=np.array([data.a.x, data.a.y, data.a.z + 9.81]) 
+        thrust_normalized=thrust/np.linalg.norm(thrust)
 
-        a=thrust_normalized[0];
-        b=thrust_normalized[1];
-        c=thrust_normalized[2];
+        a=thrust_normalized[0]
+        b=thrust_normalized[1]
+        c=thrust_normalized[2]
 
-        qabc = random_quaternion();
-        tmp=(1/math.sqrt(2*(1+c)));
+        qabc = random_quaternion()
+        tmp=(1/math.sqrt(2*(1+c)))
         #From http://docs.ros.org/en/jade/api/tf/html/python/transformations.html, the documentation says
         #"Quaternions ix+jy+kz+w are represented as [x, y, z, w]."
         qabc[3] = tmp*(1+c) #w
@@ -79,17 +73,13 @@ class FakeSim:
         qabc[1] = tmp*(a)   #y
         qabc[2] = 0         #z
 
-        qpsi = random_quaternion();
-        qpsi[3] = math.cos(data.psi/2.0);  #w
-        qpsi[0] = 0;                       #x 
-        qpsi[1] = 0;                       #y
-        qpsi[2] = math.sin(data.psi/2.0);  #z
+        qpsi = random_quaternion()
+        qpsi[3] = math.cos(data.psi/2.0)  #w
+        qpsi[0] = 0                       #x 
+        qpsi[1] = 0                       #y
+        qpsi[2] = math.sin(data.psi/2.0)  #z
 
         w_q_b=quaternion_multiply(qabc,qpsi)
-
-        # accel=[data.a.x, data.a.y, data.a.z + 9.81];
-
-
         self.state.header.frame_id="world"
         self.state.pos=data.p
         self.state.vel=data.v
@@ -99,8 +89,7 @@ class FakeSim:
         self.state.quat.z=w_q_b[2]  #z
 
         self.pubState.publish(self.state) 
-        if(self.publish_marker_drone):
-            self.pubMarkerDrone.publish(self.getDroneMarker());
+        self.pubMarkerDrone.publish(self.getDroneMarker())
 
     def pubTF(self, timer):
         br = tf.TransformBroadcaster()
@@ -111,13 +100,12 @@ class FakeSim:
                          "vicon")
 
     def getDroneMarker(self):
-        marker=Marker();
-        marker.id=1;
-        marker.ns="mesh_"+self.name;
+        marker=Marker()
+        marker.id=1
+        marker.ns="mesh_"+self.name
         marker.header.frame_id="world"
-        marker.type=marker.MESH_RESOURCE;
-        marker.action=marker.ADD;
-
+        marker.type=marker.MESH_RESOURCE
+        marker.action=marker.ADD
         marker.pose.position.x=self.state.pos.x
         marker.pose.position.y=self.state.pos.y
         marker.pose.position.z=self.state.pos.z
@@ -125,13 +113,12 @@ class FakeSim:
         marker.pose.orientation.y=self.state.quat.y
         marker.pose.orientation.z=self.state.quat.z
         marker.pose.orientation.w=self.state.quat.w
-
-        marker.lifetime = rospy.Duration.from_sec(0.0);
+        marker.lifetime = rospy.Duration.from_sec(0.0)
         marker.mesh_use_embedded_materials=True
         marker.mesh_resource="package://rmader/meshes/quadrotor/quadrotor.dae"
-        marker.scale.x=0.75;
-        marker.scale.y=0.75;
-        marker.scale.z=0.75;
+        marker.scale.x=0.75
+        marker.scale.y=0.75
+        marker.scale.z=0.75
         return marker            
 
 def startNode():
@@ -150,7 +137,7 @@ if __name__ == '__main__':
             rospy.logfatal("This is tyipcally accomplished in a launch file.")
             rospy.logfatal("Command line: ROS_NAMESPACE=mQ01 $ rosrun quad_control joy.py")
         else:
-            print ("Starting perfect tracker node for: " + ns)
+            rospy.loginfo("Starting perfect controller node for vehicle: %s", ns)
             startNode()
     except rospy.ROSInterruptException:
         pass

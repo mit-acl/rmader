@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <!--
+        Parameters
+    -->
+    <arg name="quad" default="SQ01s"/>
+    <arg name="x" default="0.0"/>
+    <arg name="y" default="0.0"/>
+    <arg name="z" default="0.0"/>
+    <arg name="yaw" default="0.0"/>
+
+    <node ns="$(arg quad)" name="drone_marker_publisher" pkg="rmader" type="drone_marker_publisher.py" output="screen">
+          <param name="x" value="$(arg x)"/>
+          <param name="y" value="$(arg y)"/>
+          <param name="z" value="$(arg z)"/>
+          <param name="yaw" value="$(arg yaw)"/>
+      </node>
+</launch>

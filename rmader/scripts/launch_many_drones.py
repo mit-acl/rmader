@@ -44,7 +44,7 @@ def convertToStringCommand(action,sim_id,folder,veh,num,x,y,z,goal_x,goal_y,goal
         quad = veh + num + "s"
         return "roslaunch --wait rmader perfect_tracker_and_sim.launch quad:=" + quad + " x:=" + str(x) + " y:=" + str(y)
     if(action=="send_goal"):
-        quad = veh + num + "s";
+        quad = veh + num + "s"
         # print("sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'")
         return "sleep "+wait_time+" && rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
         # return "rostopic pub /"+quad+"/term_goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: 'world'}, pose: {position: {x: "+str(goal_x)+", y: "+str(goal_y)+", z: "+str(goal_z)+"}, orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}}}'"
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     print("num_of_agents_per_mer= ", num_of_agents_per_mer)
 
     id_number=1
-    shift_z=radius;
+    shift_z=radius
     shift_z=1.0 # should always above 0. look at terminal goal CB in mader_ros.cpp
 
     #TODO: Implement the square as well for other number_of_agents
